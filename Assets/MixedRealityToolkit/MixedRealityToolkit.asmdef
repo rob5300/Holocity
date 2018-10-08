@@ -1,0 +1,11 @@
+{
+    "name": "Microsoft.MixedReality.Toolkit",
+    "references": [
+        "Microsoft.MixedReality.Toolkit.Internal.Utilities.Editor",
+        "Microsoft.MixedReality.Toolkit.Internal.Definitions.Utilities.Editor"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
