@@ -138,7 +138,7 @@ PlayerSettings:
       maximumSupportedHeadTracking: 1
     hololens:
       depthFormat: 1
-      depthBufferSharingEnabled: 1
+      depthBufferSharingEnabled: 0
     oculus:
       sharedDepthBuffer: 0
       dashSupport: 0
@@ -642,7 +642,7 @@ PlayerSettings:
       EnterpriseAuthentication: False
       HumanInterfaceDevice: True
       InputInjectionBrokered: False
-      InternetClient: False
+      InternetClient: True
       InternetClientServer: True
       Location: False
       LowLevelDevices: False
