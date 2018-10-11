@@ -10,6 +10,9 @@ public class SpacialMapper : MonoBehaviour {
     
     [Header("Update settings")]
     public float UpdateDelay = 2.5f;
+    [Header("Visual Settings")]
+    public bool UseMeshRenderer = false;
+    public Material Material;
 
     SurfaceObserver surfaceObserver;
     Dictionary<SurfaceId, GameObject> spatialMeshObjects = new Dictionary<SurfaceId, GameObject>();
@@ -53,7 +56,7 @@ public class SpacialMapper : MonoBehaviour {
                 {
                     spatialMeshObjects[surfaceId] = new GameObject("Surface: " + surfaceId.handle);
                     spatialMeshObjects[surfaceId].transform.parent = transform;
-                    spatialMeshObjects[surfaceId].AddComponent<MeshRenderer>();
+                    if(UseMeshRenderer) spatialMeshObjects[surfaceId].AddComponent<MeshRenderer>();
                     spatialMeshObjects[surfaceId].AddComponent<MeshFilter>();
                     spatialMeshObjects[surfaceId].AddComponent<WorldAnchor>();
                     spatialMeshObjects[surfaceId].AddComponent<MeshCollider>();
@@ -92,5 +95,6 @@ public class SpacialMapper : MonoBehaviour {
     private void OnDataReady(SurfaceData bakedData, bool outputWritten, float elapsedBakeTimeSeconds)
     {
         spatialMeshObjects[bakedData.id].GetComponent<MeshFilter>().mesh = bakedData.outputMesh.mesh;
+        if(UseMeshRenderer)spatialMeshObjects[bakedData.id].GetComponent<MeshRenderer>().material = Material;
     }
 }

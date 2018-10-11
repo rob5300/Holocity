@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 1514873483
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: buildings
+      Dependencies: {}
+    Info_1:
+      Name: buildingdata
+      Dependencies: {}
