@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Infustructure
+namespace Infrastructure
 {
     public class Building : MonoBehaviour
     {

@@ -1,7 +1,7 @@
 ﻿using Resources;
 using System.Collections.Generic;
 
-namespace Infustructure {
+namespace Infrastructure {
     public class City {
 
         public string Name;
