@@ -1,5 +1,7 @@
-﻿using Resources;
+﻿using Grid;
+using Resources;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Infrastructure {
     public class City {
@@ -8,6 +10,7 @@ namespace Infrastructure {
         public string Owner;
         
         protected Dictionary<System.Type, Resource> Resources = new Dictionary<System.Type, Resource>();
+        protected List<GridSystem[][]> CityGrid = new List<GridSystem[][]>();
 
         public City(string name, string owner)
         {
@@ -21,5 +24,12 @@ namespace Infrastructure {
             else return null;
         }
 
+        //public GridTile GetTile(int gridID, Vector2Int tilePosition)
+        //{
+        //    if (CityGrid.Count <= gridID)
+        //    {
+
+        //    }
+        //}
     }
 }
