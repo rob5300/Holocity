@@ -3,7 +3,7 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
@@ -33,9 +33,9 @@ MonoBehaviour:
       axisType: 4
       inputType: 17
       inputAction:
-        id: 0
-        description: None
-        axisConstraint: 0
+        id: 5
+        description: Teleport Direction
+        axisConstraint: 4
       keyCode: 0
       axisCodeX: AXIS_1
       axisCodeY: AXIS_2
@@ -202,9 +202,9 @@ MonoBehaviour:
       axisType: 2
       inputType: 7
       inputAction:
-        id: 0
-        description: None
-        axisConstraint: 0
+        id: 2
+        description: Menu
+        axisConstraint: 2
       keyCode: 331
       axisCodeX: 
       axisCodeY: 
