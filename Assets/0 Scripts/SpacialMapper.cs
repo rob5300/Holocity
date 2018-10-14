@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR;
 using UnityEngine.XR.WSA;
 
@@ -13,6 +14,9 @@ public class SpacialMapper : MonoBehaviour {
     [Header("Visual Settings")]
     public bool UseMeshRenderer = false;
     public Material Material;
+    [Header("Events")]
+    public UnityEvent OnFirstSurfaceAdded;
+    private bool _haveInvokedOnFirstSurfaceAdded = false;
 
     SurfaceObserver surfaceObserver;
     Dictionary<SurfaceId, GameObject> spatialMeshObjects = new Dictionary<SurfaceId, GameObject>();
@@ -52,6 +56,13 @@ public class SpacialMapper : MonoBehaviour {
         {
             case SurfaceChange.Added:
             case SurfaceChange.Updated:
+                //If the OnFirstSurfaceAdded event has not been invoked yet, do that.
+                if (!_haveInvokedOnFirstSurfaceAdded)
+                {
+                    OnFirstSurfaceAdded.Invoke();
+                    _haveInvokedOnFirstSurfaceAdded = true;
+                }
+
                 if (!spatialMeshObjects.ContainsKey(surfaceId))
                 {
                     spatialMeshObjects[surfaceId] = new GameObject("Surface: " + surfaceId.handle);
