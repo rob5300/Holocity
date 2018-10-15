@@ -143,6 +143,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UpdateDelay: 2.5
+  UseMeshRenderer: 1
+  Material: {fileID: 2100000, guid: 794fdb55c20822c41b3da6563aa5965e, type: 2}
 --- !u!4 &516964810
 Transform:
   m_ObjectHideFlags: 0

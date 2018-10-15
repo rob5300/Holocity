@@ -1,0 +1,18 @@
+ManifestFileVersion: 0
+CRC: 1125475719
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 9fe8e0e8ca4ca06c99636f4256f75423
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9fc2468be3665b548016821484046a9c
+HashAppended: 0
+ClassTypes:
+- Class: 114
+  Script: {fileID: 11500000, guid: 5f188088af3d7cb4f9cc23cf0f715060, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/Buildings/Building Data/NewBuilding.asset
+Dependencies: []

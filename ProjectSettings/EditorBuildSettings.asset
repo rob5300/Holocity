@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/HololensTestSetup.unity
-    guid: 68824d653d657374cb81b961a6859d9c
+    path: Assets/4 Scenes/InfrastructureBranch.unity
+    guid: 6d8dea53ee2feb9469acf794b0eff438
   m_configObjects: {}
