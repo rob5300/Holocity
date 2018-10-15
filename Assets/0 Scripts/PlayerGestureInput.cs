@@ -14,7 +14,6 @@ public class PlayerGestureInput : MonoBehaviour {
         //Cached because apparantly this is not cached in unity
         _camera = Camera.main;
         _gestureRecognizer = new GestureRecognizer();
-
         
         _gestureRecognizer.SetRecognizableGestures(GestureSettings.Tap | GestureSettings.Hold | GestureSettings.DoubleTap);
         //Subscribe to the gesture events:

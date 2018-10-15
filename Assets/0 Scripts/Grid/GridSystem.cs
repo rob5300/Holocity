@@ -45,5 +45,11 @@ namespace Grid
             ob.AddComponent<WorldAnchor>();
             return ob;
         }
+
+        public GridTile GetTile(Vector2Int position)
+        {
+            if (position.x <= Width && position.y <= Height) return Tiles[position.x][position.y];
+            return null;
+        }
     }
 }

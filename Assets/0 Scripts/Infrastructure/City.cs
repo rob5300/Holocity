@@ -27,12 +27,10 @@ namespace Infrastructure {
             return true;
         }
 
-        //public GridTile GetTile(int gridID, Vector2Int tilePosition)
-        //{
-        //    if (CityGrid.Count <= gridID)
-        //    {
-
-        //    }
-        //}
+        public GridSystem GetGrid(int id)
+        {
+            if (CityGrids.Count > id) return CityGrids[id];
+            return null;
+        }
     }
 }
