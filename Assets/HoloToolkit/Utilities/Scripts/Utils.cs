@@ -132,7 +132,7 @@ namespace HoloToolkit.Unity
                 SetMaterialRecursiveForName(t.GetChild(ii), mat, nameToTest);
             }
 
-            Resources.UnloadUnusedAssets();
+            UnityEngine.Resources.UnloadUnusedAssets();
         }
 
         /// <summary>

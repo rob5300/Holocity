@@ -25,7 +25,7 @@ namespace HoloToolkit.Unity
 
         public static void Show(string path)
         {
-            CertificatePasswordWindow[] array = (CertificatePasswordWindow[])Resources.FindObjectsOfTypeAll(typeof(CertificatePasswordWindow));
+            CertificatePasswordWindow[] array = (CertificatePasswordWindow[])UnityEngine.Resources.FindObjectsOfTypeAll(typeof(CertificatePasswordWindow));
             CertificatePasswordWindow certificatePasswordWindow = (array.Length <= 0) ? CreateInstance<CertificatePasswordWindow>() : array[0];
             path = path.Replace("\\", "/");
             certificatePasswordWindow.path = path.Substring(path.LastIndexOf("Assets/", StringComparison.Ordinal));

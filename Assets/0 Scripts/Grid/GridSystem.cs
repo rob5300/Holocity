@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Infrastructure;
+using UnityEngine;
 using UnityEngine.XR.WSA;
 
 namespace Grid
@@ -6,20 +7,22 @@ namespace Grid
     public class GridSystem
     {
         public int Id = 0;
+        public City ParentCity;
         public GameObject AnchorObject;
         public Vector3 Position { get { return AnchorObject.transform.position; } }
         public int Width { get; private set; }
         public int Height { get; private set; }
         public GridTile[][] Tiles;
 
-        public GridSystem(int width, int height, int id) : this(width, height, id, GetDefaultAnchor(id))
+        public GridSystem(int width, int height, int id, City parentCity) : this(width, height, id, parentCity, GetDefaultAnchor(id))
         {
             
         }
 
-        public GridSystem(int width, int height, int id, GameObject anchor)
+        public GridSystem(int width, int height, int id, City parentCity, GameObject anchor)
         {
             Id = id;
+            ParentCity = parentCity;
             AnchorObject = anchor;
             if (!anchor.GetComponent<WorldAnchor>()) anchor.AddComponent<WorldAnchor>();
             Width = width;

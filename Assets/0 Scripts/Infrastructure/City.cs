@@ -1,7 +1,6 @@
 ﻿using Grid;
-using Resources;
+using CityResources;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Infrastructure {
     public class City {
@@ -23,7 +22,7 @@ namespace Infrastructure {
 
         public bool CreateGrid()
         {
-            CityGrids.Add(new GridSystem(5,5, CityGrids.Count));
+            CityGrids.Add(new GridSystem(5,5, CityGrids.Count, this));
             return true;
         }
 

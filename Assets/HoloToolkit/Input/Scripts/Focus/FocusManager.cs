@@ -875,7 +875,7 @@ namespace HoloToolkit.Unity.InputModule
 
             // This will also find disabled GameObjects in the scene.
             // Warning! this look up is very expensive!
-            var sceneCanvases = Resources.FindObjectsOfTypeAll<Canvas>();
+            var sceneCanvases = UnityEngine.Resources.FindObjectsOfTypeAll<Canvas>();
 
             for (var i = 0; i < sceneCanvases.Length; i++)
             {
