@@ -6,7 +6,7 @@ namespace Grid
     public class GridTile
     {
         public Vector2Int Position { get; private set; }
-        public GridEntity Entity { get; private set} ;
+        public GridEntity Entity { get; private set;  }
 
         public GridTile(Vector2Int position)
         {

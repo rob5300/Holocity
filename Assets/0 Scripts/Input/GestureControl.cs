@@ -6,14 +6,16 @@ using HoloToolkit.Unity.InputModule;
 public class GestureControl : MonoBehaviour, IInputClickHandler, INavigationHandler, IManipulationHandler, ISpeechHandler
 {
 
-    int mode = 2;
+    int mode = 1;
     private float RotationSensitivity = 10.0f;
     private Vector3 manipulationOriginalPosition = Vector3.zero;
 
     public void OnInputClicked(InputClickedEventData eventData)
     {
-        if(mode == 1)
+        if (mode == 1)
+        {
             gameObject.GetComponent<Renderer>().material.color = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
+        }
     }
 
 
