@@ -9,7 +9,6 @@ public static class Game {
 
     static Game(){
         //Initalize Game Data
-
     }
 
     /// <summary>

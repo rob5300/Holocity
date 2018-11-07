@@ -4,6 +4,7 @@ using System;
 public class Session {
 
     public City City { get; private set; }
+    public ResourceCache Cache;
 
     public double Version;
     public string Name;
@@ -23,6 +24,7 @@ public class Session {
 
         Version = Convert.ToDouble(UnityEngine.Application.version);
 
+        Cache = new ResourceCache();
     }
 
 }
