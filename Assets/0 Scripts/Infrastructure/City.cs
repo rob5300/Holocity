@@ -1,6 +1,6 @@
-﻿using Grid;
-using CityResources;
+﻿using CityResources;
 using System.Collections.Generic;
+using Infrastructure.Grid;
 
 namespace Infrastructure {
     public class City {
@@ -20,9 +20,9 @@ namespace Infrastructure {
             else return null;
         }
 
-        public bool CreateGrid()
+        public bool CreateGrid(int width, int height)
         {
-            CityGrids.Add(new GridSystem(5,5, CityGrids.Count, this));
+            CityGrids.Add(new GridSystem(width, height, CityGrids.Count, this));
             return true;
         }
 

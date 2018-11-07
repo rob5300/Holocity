@@ -1,7 +1,7 @@
-﻿using Infrastructure;
+﻿using Infrastructure.Grid.Entities;
 using UnityEngine;
 
-namespace Grid
+namespace Infrastructure.Grid
 {
     public class GridTile
     {
