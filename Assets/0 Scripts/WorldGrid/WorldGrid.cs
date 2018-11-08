@@ -68,9 +68,17 @@ public class WorldGrid : MonoBehaviour {
         newTileGameObject.transform.localPosition = new Vector3(position.x * Scale, 0, position.y * Scale);
         //Add WorldGridTile component and set up.
         WorldGridTile tile = newTileGameObject.AddComponent<WorldGridTile>();
+       
         tile.ParentGrid = this;
         tile.TileBorder = Instantiate(Game.CurrentSession.Cache.TileBorder, newTileGameObject.transform);
         tile.Position = position;
+
+        //Adding Gesture Events 
+        // GestureHandler gestureHandler = newTileGameObject.AddComponent<GestureHandler>();
+        //Highlighter FOR DEMO
+        tile.TileBorder.AddComponent<Highlighter>();
+        tile.TileBorder.layer = LayerMask.NameToLayer("Hologram");
+
         return tile;
     }
 

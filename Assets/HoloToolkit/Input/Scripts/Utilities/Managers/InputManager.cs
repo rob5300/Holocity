@@ -101,6 +101,15 @@ namespace HoloToolkit.Unity.InputModule
         }
 
         /// <summary>
+        /// Check if there is an object on the stack
+        /// </summary>
+        public bool CheckModalInputStack(GameObject gameObject)
+        {
+         //   bool a = (modalInputStack.Count == 0);
+            return (modalInputStack.Contains(gameObject));
+        }
+
+        /// <summary>
         /// Clear all modal input handlers off the stack.
         /// </summary>
         public void ClearModalInputStack()
