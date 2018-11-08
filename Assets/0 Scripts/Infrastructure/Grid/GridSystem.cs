@@ -1,4 +1,5 @@
 ﻿using Infrastructure;
+using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
 using UnityEngine;
 using UnityEngine.XR.WSA;
@@ -59,11 +60,62 @@ namespace Infrastructure.Grid
             return grid;
         }
 
+        /// <summary>
+        /// Adds this building to this tile. Fails if the tile already has a building/entity.
+        /// </summary>
+        /// <param name="x">x position.</param>
+        /// <param name="y">y position.</param>
+        /// <param name="building">The building to add to the tile.</param>
+        /// <returns>If the operation was successful.</returns>
         public bool AddBuildingToTile(int x, int y, Building building)
         {
             GridTile tile = GetTile(new Vector2Int(x, y));
+            if (tile.Entity != null) return false;
             tile.SetEntity(this, building);
             AddBuildingtoWorldGrid(building, x, y);
+            return true;
+        }
+
+        /// <summary>
+        /// Adds this building to this tile. Fails if the tile already has a building/entity.
+        /// </summary>
+        /// <param name="x">x position.</param>
+        /// <param name="y">y position.</param>
+        /// <param name="entity">The entity to add to the tile.</param>
+        /// <returns>If the operation was successful.</returns>
+        public bool AddEntityToTile(int x, int y, TileEntity entity)
+        {
+            GridTile tile = GetTile(new Vector2Int(x, y));
+            if (tile.Entity != null) return false;
+            tile.SetEntity(this, entity);
+            return true;
+        }
+
+        /// <summary>
+        /// Swap the tile entities between the two tiles.
+        /// </summary>
+        /// <param name="tileaposition">First tile position.</param>
+        /// <param name="tilebposition">Second tile position.</param>
+        /// <returns>If the operation was successful or not.</returns>
+        public bool SwapTileEntities(Vector2Int tileaposition, Vector2Int tilebposition)
+        {
+            GridTile tileA = GetTile(tileaposition);
+            GridTile tileB = GetTile(tilebposition);
+
+            //Return false if both are null or if any cannot be moved.
+            //Have to do the null check incase one of the entities is null.
+            if ((tileA.Entity == null && tileB.Entity == null) ||
+                (tileA.Entity != null && !tileA.Entity.CanBeMoved) || (tileB.Entity != null && !tileB.Entity.CanBeMoved)
+                ) return false;
+
+            //Store the tile entity of a.
+            TileEntity aEntity = tileA.Entity;
+            //Swap the entities.
+            tileA.SetEntityFromSwap(tileB.Entity);
+            tileB.SetEntityFromSwap(aEntity);
+            //Swap the entities on the WorldGrid:
+            WorldGrid.SwapGridTiles(tileaposition, tilebposition);
+
             return true;
         }
 

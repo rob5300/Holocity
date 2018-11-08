@@ -18,4 +18,9 @@ public class SessionCreator : MonoBehaviour {
         Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(1, 1, new House());
 	}
 	
+    [ContextMenu("Swap test")]
+    public void SwapTest()
+    {
+        Game.CurrentSession.City.GetGrid(0).SwapTileEntities(new Vector2Int(1, 1), new Vector2Int(5, 5));
+    }
 }

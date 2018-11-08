@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {
-    public abstract class Building : GridEntity
+    public abstract class Building : TileEntity
     {
         public static string BuildingResourcesFolderPath = "Buildings/";
 
