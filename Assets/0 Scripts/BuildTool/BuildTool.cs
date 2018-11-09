@@ -30,43 +30,35 @@ namespace BuildTool
         {
             LayerMask layerMask = LayerMask.NameToLayer("Hologram");
             RaycastHit hit;
-
-
-            //atm building prefab is rotated 90degrees, so have to use forward vector
-            if (Physics.Raycast(transform.position, transform.TransformDirection(-Vector3.forward), out hit, layerMask))
+            
+            if (Physics.Raycast(transform.position, -Vector3.up, out hit, layerMask))
             {
                 //checks if we are placing on a building or gridslot
-                if (hit.transform.GetComponent<GestureHandler>())
+                if (hit.transform.parent.GetComponent<WorldGridTile>())
                 {
-                    //just take the objects so you can assign the locations.
+                    
                     Vector2Int a = transform.parent.GetComponent<WorldGridTile>().Position;
                     Vector2Int b = hit.transform.parent.GetComponent<WorldGridTile>().Position;
 
-                    SwapBuilding(a, b);
+                    bool check = Game.CurrentSession.City.GetGrid(0).SwapTileEntities(a, b);
+                    ResetBuildingPos(transform);
                 }
                 else
                 {
-                    WorldGridTile tile = hit.transform.parent.GetComponent<WorldGridTile>();
-                    SpawnBuilding(tile.Position);
+                   ResetBuildingPos(transform);
                 }
             }
             else
             {
-                ResetBuildingPos(transform, pos);
+                ResetBuildingPos(transform);
             }
         }
 
-        public static void ResetBuildingPos(Transform transform, Vector3 pos)
+        public static void ResetBuildingPos(Transform transform)
         {
-          //  transform.position = pos;
+            transform.localPosition = Vector3.zero;
         }
 
-        public static void SwapBuilding(Vector2Int tileaposition, Vector2Int tilebposition)
-        {
-            //will check for grid
-            bool check = Game.CurrentSession.City.GetGrid(0).SwapTileEntities(tileaposition, tilebposition);
-            Debug.Log("Check: " + check);
-        }
         public static void SpawnBuilding(Vector2Int position)
         {
             //gonna have to check what grid to add to.

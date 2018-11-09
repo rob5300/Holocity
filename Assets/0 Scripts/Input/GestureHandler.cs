@@ -67,7 +67,7 @@ public class GestureHandler : MonoBehaviour, IInputClickHandler, IFocusable, INa
         InputManager.Instance.PushModalInputHandler(gameObject);
         originalPos = transform.position;
         raisedPos = originalPos;
-        raisedPos.y += 0.2f;
+        raisedPos.y += 0.15f;
     }
 
     void IManipulationHandler.OnManipulationUpdated(ManipulationEventData eventData)
@@ -93,7 +93,7 @@ public class GestureHandler : MonoBehaviour, IInputClickHandler, IFocusable, INa
     void IManipulationHandler.OnManipulationCanceled(ManipulationEventData eventData)
     {
         InputManager.Instance.PopModalInputHandler();
-        Tools.ResetBuildingPos(transform, originalPos);
+        Tools.ResetBuildingPos(transform);
     }
 
 }
