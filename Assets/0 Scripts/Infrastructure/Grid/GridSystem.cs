@@ -16,7 +16,7 @@ namespace Infrastructure.Grid
         public int Height { get; private set; }
         public GridTile[][] Tiles;
 
-        internal GridSystem(int width, int height, int id, City parentCity)
+        internal GridSystem(int width, int height, int id, City parentCity, Vector3 worldGridPosition)
         {
             Id = id;
             ParentCity = parentCity;
@@ -35,7 +35,7 @@ namespace Infrastructure.Grid
                 }
             }
 
-            WorldGrid = CreateWorldGrid();
+            WorldGrid = CreateWorldGrid(worldGridPosition);
         }
         
         //private static GameObject GetDefaultAnchor(int Id)
@@ -52,9 +52,11 @@ namespace Infrastructure.Grid
             return null;
         }
 
-        public WorldGrid CreateWorldGrid()
+        private WorldGrid CreateWorldGrid(Vector3 position)
         {
             GameObject gridObject = new GameObject("World Grid: " + Id);
+            gridObject.transform.position = position;
+            gridObject.AddComponent<WorldAnchor>();
             WorldGrid grid = gridObject.AddComponent<WorldGrid>();
             grid.Initialize(Width, Height);
             return grid;

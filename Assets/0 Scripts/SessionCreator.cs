@@ -13,9 +13,6 @@ public class SessionCreator : MonoBehaviour {
 	void Start () {
         Game.SetSession(new Session());
         Debug.Log("New session created and set: " + Game.CurrentSession.Name);
-        Game.CurrentSession.City.CreateGrid(width, height);
-
-        Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(1, 1, new House());
 	}
 	
     [ContextMenu("Swap test")]
