@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using UnityEngine;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {
@@ -12,6 +8,12 @@ namespace Infrastructure.Grid.Entities.Buildings
         {
             Name = "House";
             BuildingPrefabPath = "Basic House";
+        }
+
+        public override void OnWorldGridTileCreated(WorldGridTile tile)
+        {
+            Material mat = tile.Model.GetComponent<MeshRenderer>().material;
+            //Want to change the colour randomly.
         }
     }
 }

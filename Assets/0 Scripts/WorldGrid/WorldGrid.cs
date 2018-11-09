@@ -8,6 +8,7 @@ public class WorldGrid : MonoBehaviour {
 
     public int Width;
     public int Height;
+    public int Id;
     public GridSystem GridSystem;
     
     /// <summary>
@@ -27,7 +28,7 @@ public class WorldGrid : MonoBehaviour {
         _gridContainer.transform.localPosition = Vector3.zero;
     }
 
-	public void Initialize(int width, int height, GridSystem gridSystem)
+	public void Initialize(int id, int width, int height, GridSystem gridSystem)
     {
         GridSystem = gridSystem;
         GridTiles = new WorldGridTile[width][];
@@ -57,22 +58,15 @@ public class WorldGrid : MonoBehaviour {
         return GridTiles[x][y];
     }
 
-    private WorldGridTile CreateWorldGridTile(Vector2Int position)
+    private WorldGridTile CreateWorldGridTile(Vector2Int tileposition)
     {
         GameObject newTileGameObject = new GameObject();
-        newTileGameObject.name = string.Format("WorldTile({0},{1})", position.x, position.y);
+        newTileGameObject.name = string.Format("WorldTile({0},{1})", tileposition.x, tileposition.y);
         newTileGameObject.transform.SetParent(_gridContainer.transform);
-        newTileGameObject.transform.localPosition = new Vector3(position.x * Scale, 0, position.y * Scale);
+        newTileGameObject.transform.localPosition = new Vector3(tileposition.x * Scale, 0, tileposition.y * Scale);
         //Add WorldGridTile component and set up.
         WorldGridTile tile = newTileGameObject.AddComponent<WorldGridTile>();
-       
-        tile.ParentGrid = this;
-        tile.TileBorder = Instantiate(Game.CurrentSession.Cache.TileBorder, newTileGameObject.transform);
-        tile.Position = position;
-
-        //Highlighter FOR DEMO
-        tile.TileBorder.AddComponent<Highlighter>();
-        tile.TileBorder.layer = LayerMask.NameToLayer("Hologram");
+        tile.Initialize(tileposition, this);
 
         return tile;
     }

@@ -17,7 +17,7 @@ public class SessionCreator : MonoBehaviour {
 
         if (!CreateDefaultGrid) return;
 
-        Game.CurrentSession.City.CreateGrid(width, height, Vector3.zero);
+        Game.CurrentSession.City.CreateGrid(width, height, transform.position);
 
         Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(1, 1, new House());
         Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(1, 5, new House());

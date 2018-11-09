@@ -32,6 +32,11 @@ namespace Infrastructure.Grid.Entities.Buildings
             return true;
         }
 
+        public virtual void OnWorldGridTileCreated(WorldGridTile tile)
+        {
+
+        }
+
         private static GameObject GetBuildinbPrefab(string path) {
             return Resources.Load<GameObject>(BuildingResourcesFolderPath + path);
         }

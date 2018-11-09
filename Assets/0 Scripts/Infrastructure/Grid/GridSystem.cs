@@ -58,7 +58,7 @@ namespace Infrastructure.Grid
             gridObject.transform.position = position;
             gridObject.AddComponent<WorldAnchor>();
             WorldGrid grid = gridObject.AddComponent<WorldGrid>();
-            grid.Initialize(Width, Height, this);
+            grid.Initialize(Id, Width, Height, this);
             return grid;
         }
 
@@ -123,13 +123,7 @@ namespace Infrastructure.Grid
 
         private void AddBuildingtoWorldGrid(Building building, int x, int y)
         {
-            WorldGridTile worldGridTile = WorldGrid.GetTile(x,y);
-            worldGridTile.TileBorder.SetActive(false);
-            worldGridTile.Model = Object.Instantiate(building.BuildingPrefab, worldGridTile.transform);
-
-            //Adding Gesture script and setting layermask
-            worldGridTile.Model.AddComponent<GestureHandler>();
-            worldGridTile.Model.layer = LayerMask.NameToLayer("Hologram");
+            WorldGrid.GetTile(x,y).AddBuildingFromGridSystem(building);
         }
     }
 }
