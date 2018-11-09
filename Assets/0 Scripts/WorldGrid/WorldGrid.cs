@@ -51,7 +51,12 @@ public class WorldGrid : MonoBehaviour {
         //_gridContainer.transform.localScale = new Vector3(Scale, Scale, Scale);
         Width = width;
         Height = height;
-        //CenterGridTiles();
+        CenterGridTiles();
+    }
+
+    public WorldGridTile GetTile(Vector2Int position)
+    {
+        return GetTile(position.x, position.y);
     }
 
     public WorldGridTile GetTile(int x, int y)
@@ -73,8 +78,6 @@ public class WorldGrid : MonoBehaviour {
         tile.TileBorder = Instantiate(Game.CurrentSession.Cache.TileBorder, newTileGameObject.transform);
         tile.Position = position;
 
-        //Adding Gesture Events 
-        // GestureHandler gestureHandler = newTileGameObject.AddComponent<GestureHandler>();
         //Highlighter FOR DEMO
         tile.TileBorder.AddComponent<Highlighter>();
         tile.TileBorder.layer = LayerMask.NameToLayer("Hologram");
@@ -82,14 +85,34 @@ public class WorldGrid : MonoBehaviour {
         return tile;
     }
 
+    public void SwapGridTiles(Vector2Int tileA, Vector2Int tileB)
+    {
+        //Get Tiles.
+        WorldGridTile a = GetTile(tileA);
+        WorldGridTile b = GetTile(tileB);
+        //Store the old a positions.
+        Vector3 oldAPos = a.transform.position;
+        Vector2Int oldATilePos = a.Position;
+        //Change a to b's data.
+        a.Position = b.Position;
+        a.transform.position = b.transform.position;
+        GridTiles[b.Position.x][b.Position.y] = a;
+        //Change b's data to a's.
+        b.Position = oldATilePos;
+        b.transform.position = oldAPos;
+        GridTiles[oldATilePos.x][oldATilePos.y] = b;
+    }
+
+    [ContextMenu("Center Grid Tiles")]
     private void CenterGridTiles()
     {
-        Vector3 offset = new Vector3((Width / 2) - (Scale / 2), 0, (Height / 2) - (Scale / 2));
+        //Calculate the offset to apply to positions to centre the tiles.
+        Vector3 offset = new Vector3((Width / 2 * Scale) - Scale / 2, 0, (Height / 2 * Scale) - Scale / 2);
         for (int w = 0; w < Width; w++)
         {
             for (int h = 0; h < Height; h++)
             {
-                GridTiles[w][h].transform.position = GridTiles[w][h].transform.position - offset;
+                GridTiles[w][h].transform.localPosition = GridTiles[w][h].transform.localPosition - offset;
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 [SelectionBase]
 public class WorldGridTile : MonoBehaviour {
@@ -8,6 +9,17 @@ public class WorldGridTile : MonoBehaviour {
     public GameObject TileBorder;
     public GameObject Model;
 
-    public event System.Action OnInteract;
+    public event Action OnInteract;
+    public event Action OnHoverBegin;
+    public event Action OnHoverEnd;
+    public event Action OnMoveBegin;
+    public event Action<WorldGridTile> OnMoveEnd;
+    public event Action OnMoveFail;
+    public event Action OnTileDestroy;
+
+    public void OnDestroy()
+    {
+        OnTileDestroy?.Invoke();
+    }
 
 }

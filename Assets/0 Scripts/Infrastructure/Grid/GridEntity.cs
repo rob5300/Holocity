@@ -2,8 +2,10 @@
 
 namespace Infrastructure.Grid.Entities
 {
-    public class GridEntity
+    public class TileEntity
     {
+        public bool CanBeMoved = true;
+
         public virtual void OnEntityProduced(GridSystem grid)
         {
 
@@ -15,6 +17,11 @@ namespace Infrastructure.Grid.Entities
         }
 
         public virtual void OnDestroy()
+        {
+
+        }
+
+        public virtual void Tick()
         {
 
         }
