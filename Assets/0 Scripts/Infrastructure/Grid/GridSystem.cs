@@ -58,7 +58,7 @@ namespace Infrastructure.Grid
             gridObject.transform.position = position;
             gridObject.AddComponent<WorldAnchor>();
             WorldGrid grid = gridObject.AddComponent<WorldGrid>();
-            grid.Initialize(Width, Height);
+            grid.Initialize(Width, Height, this);
             return grid;
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Infrastructure.Grid;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,7 @@ public class WorldGrid : MonoBehaviour {
 
     public int Width;
     public int Height;
+    public GridSystem GridSystem;
     
     /// <summary>
     /// How wide a tile will be. Is used to scale position movements
@@ -15,12 +17,6 @@ public class WorldGrid : MonoBehaviour {
 
     [NonSerialized]
     public WorldGridTile[][] GridTiles;
-
-#if UNITY_EDITOR
-    [Header("Debug Options")]
-    public int widthdebug;
-    public int heightdebug;
-#endif
 
     private GameObject _gridContainer;
 
@@ -31,14 +27,9 @@ public class WorldGrid : MonoBehaviour {
         _gridContainer.transform.localPosition = Vector3.zero;
     }
 
-    [ContextMenu("Initialize Grid")]
-    private void initDebug()
+	public void Initialize(int width, int height, GridSystem gridSystem)
     {
-        Initialize(widthdebug, heightdebug);
-    }
-
-	public void Initialize(int width, int height)
-    {
+        GridSystem = gridSystem;
         GridTiles = new WorldGridTile[width][];
         for(int w=0; w < width; w++)
         {
