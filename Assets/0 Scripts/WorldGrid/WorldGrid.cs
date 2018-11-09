@@ -28,6 +28,7 @@ public class WorldGrid : MonoBehaviour {
     {
         _gridContainer = new GameObject("Grid Container");
         _gridContainer.transform.SetParent(transform);
+        _gridContainer.transform.localPosition = Vector3.zero;
     }
 
     [ContextMenu("Initialize Grid")]
@@ -79,6 +80,12 @@ public class WorldGrid : MonoBehaviour {
         return tile;
     }
 
+
+    /// <summary>
+    /// Swap the positions of these two tiles. Simply a data swap and visual only.
+    /// </summary>
+    /// <param name="tileA"></param>
+    /// <param name="tileB"></param>
     public void SwapGridTiles(Vector2Int tileA, Vector2Int tileB)
     {
         //Get Tiles.

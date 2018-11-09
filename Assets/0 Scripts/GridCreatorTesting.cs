@@ -20,10 +20,10 @@ public class GridCreatorTesting : MonoBehaviour, IInputClickHandler
     {
         Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
         RaycastHit hitinfo;
-        if(Physics.Raycast(ray, out hitinfo, 50f, 31))
+        if(Physics.Raycast(ray, out hitinfo, 50f, LayerMask.NameToLayer("Spatial Mapping")))
         {
             //We have hit a spacial mapper surface, whats the angle difference from an up normal?
-            if(Vector3.Angle(hitinfo.normal, Vector3.up) < 15)
+            if(Vector3.Angle(hitinfo.normal, Vector3.up) < 10)
             {
                 Game.CurrentSession.City.CreateGrid(10, 10, hitinfo.point);
             }
