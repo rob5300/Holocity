@@ -8,7 +8,7 @@ using UnityEngine.XR;
 using UnityEngine.XR.WSA;
 
 public class SpacialMapper : MonoBehaviour {
-    
+
     [Header("Update settings")]
     public float UpdateDelay = 2.5f;
     [Header("Visual Settings")]
@@ -67,7 +67,8 @@ public class SpacialMapper : MonoBehaviour {
                 {
                     spatialMeshObjects[surfaceId] = new GameObject("Surface: " + surfaceId.handle);
                     spatialMeshObjects[surfaceId].transform.parent = transform;
-                    if(UseMeshRenderer) spatialMeshObjects[surfaceId].AddComponent<MeshRenderer>();
+                    spatialMeshObjects[surfaceId].layer = 31;
+                    if (UseMeshRenderer) spatialMeshObjects[surfaceId].AddComponent<MeshRenderer>();
                     spatialMeshObjects[surfaceId].AddComponent<MeshFilter>();
                     spatialMeshObjects[surfaceId].AddComponent<WorldAnchor>();
                     spatialMeshObjects[surfaceId].AddComponent<MeshCollider>();
