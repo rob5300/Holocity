@@ -25,7 +25,7 @@ public class WorldGridTile : MonoBehaviour {
         ParentGrid = parent;
         TileBorder = Instantiate(Game.CurrentSession.Cache.TileBorder, transform);
 
-        TileBorder.AddComponent<Highlighter>();
+        TileBorder.AddComponent<FocusHighlighter>();
         TileBorder.layer = LayerMask.NameToLayer("Hologram");
     }
 
@@ -41,6 +41,7 @@ public class WorldGridTile : MonoBehaviour {
 
         //Add gesture handler to building
         Model.AddComponent<WorldTileMoveGestureHandler>();
+        Model.AddComponent<FocusHighlighter>();
 
         //Set the layer mask.
         Model.layer = LayerMask.NameToLayer("Hologram");

@@ -14,7 +14,7 @@ public class TapGesture : MonoBehaviour, IInputClickHandler {
 
     public void OnInputClicked(InputClickedEventData eventData)
     {
-        if (gazeManager.HitObject.GetComponent<Highlighter>())
+        if (gazeManager.HitObject.GetComponent<FocusHighlighter>())
         {
            WorldGridTile tile = gazeManager.HitObject.transform.parent.GetComponent<WorldGridTile>();
            Tools.SpawnBuilding(tile.Position);
