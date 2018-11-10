@@ -44,12 +44,8 @@ public class WorldGridTile : MonoBehaviour {
         TileBorder.SetActive(false);
         Model = Instantiate(building.BuildingPrefab, transform);
 
-        //Add gesture forwarder and sub to events.
-        GestureEventForwarder forwarder = Model.AddComponent<GestureEventForwarder>();
-        forwarder.E_ManipulationStarted += MoveStarted;
-        forwarder.E_ManipulationUpdated += MoveUpdated;
-        forwarder.E_ManipulationCompleted += MoveCompleted;
-        forwarder.E_ManipulationCanceled += MoveCanceled;
+        //Add gesture handler to building
+        Model.AddComponent<WorldTileMoveGestureHandler>();
 
         //Set the layer mask.
         Model.layer = LayerMask.NameToLayer("Hologram");
@@ -58,55 +54,12 @@ public class WorldGridTile : MonoBehaviour {
         building.OnWorldGridTileCreated(this);
     }
 
-    public float rotationSpeed = 5;
-    private Vector3 originalPos = Vector3.zero;
-    private Vector3 raisedPos = Vector3.zero;
-
-    private void MoveStarted(ManipulationEventData eventData)
-    {
-        InputManager.Instance.PushModalInputHandler(gameObject);
-
-        originalPos = transform.position;
-        raisedPos = originalPos;
-        raisedPos.y += 0.15f;
-    }
-
-    private void MoveUpdated(ManipulationEventData eventData)
-    {
-        if (!InputManager.Instance.CheckModalInputStack(gameObject))
-        {
-            return;
-        }
-        //Haven't able to test so will have to rely on moving buildings left or right.
-        Vector3 handPos = eventData.CumulativeDelta;
-        Vector3 newPos = raisedPos + handPos;
-        newPos.y = raisedPos.y;
-
-        transform.position = newPos;
-    }
-
-
-    private void MoveCompleted(ManipulationEventData eventData)
-    {
-        InputManager.Instance.PopModalInputHandler();
-        if (!AttemptBuildingSwap())
-        {
-            transform.position = originalPos;
-        }
-    }
-
-    private void MoveCanceled(ManipulationEventData eventData)
-    {
-        InputManager.Instance.PopModalInputHandler();
-        Tools.ResetBuildingPos(transform);
-    }
-
-    private bool AttemptBuildingSwap()
+    public bool AttemptBuildingSwap(Vector3 checkPosition)
     {
         LayerMask layerMask = LayerMask.NameToLayer("Hologram");
         RaycastHit hit;
 
-        if (Physics.Raycast(transform.position, -Vector3.up, out hit, layerMask))
+        if (Physics.Raycast(checkPosition, -Vector3.up, out hit, layerMask))
         {
             //Check for WorldGridTile.
             WorldGridTile foundTile = hit.transform.parent.GetComponent<WorldGridTile>() ?? hit.transform.parent.GetComponentInParent<WorldGridTile>();

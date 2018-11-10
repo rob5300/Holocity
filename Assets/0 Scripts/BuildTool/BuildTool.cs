@@ -28,7 +28,30 @@ namespace BuildTool
 
         public static void MoveBuilding(Transform transform, Vector3 pos)
         {
+            LayerMask layerMask = LayerMask.NameToLayer("Hologram");
+            RaycastHit hit;
             
+            if (Physics.Raycast(transform.position, -Vector3.up, out hit, layerMask))
+            {
+                //checks if we are placing on a building or gridslot
+                if (hit.transform.parent.GetComponent<WorldGridTile>())
+                {
+                    
+                    Vector2Int a = transform.parent.GetComponent<WorldGridTile>().Position;
+                    Vector2Int b = hit.transform.parent.GetComponent<WorldGridTile>().Position;
+
+                    bool check = Game.CurrentSession.City.GetGrid(0).SwapTileEntities(a, b);
+                    ResetBuildingPos(transform);
+                }
+                else
+                {
+                   ResetBuildingPos(transform);
+                }
+            }
+            else
+            {
+                ResetBuildingPos(transform);
+            }
         }
 
         public static void ResetBuildingPos(Transform transform)
