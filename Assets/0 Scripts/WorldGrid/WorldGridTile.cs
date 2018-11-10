@@ -17,11 +17,6 @@ public class WorldGridTile : MonoBehaviour {
     public GameObject Model;
 
     public event Action OnInteract;
-    public event Action OnHoverBegin;
-    public event Action OnHoverEnd;
-    public event Action OnMoveBegin;
-    public event Action<WorldGridTile> OnMoveEnd;
-    public event Action OnMoveFail;
     public event Action OnTileDestroy;
 
     public void Initialize(Vector2Int tileposition, WorldGrid parent)

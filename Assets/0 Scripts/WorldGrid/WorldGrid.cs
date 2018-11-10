@@ -10,7 +10,8 @@ public class WorldGrid : MonoBehaviour {
     public int Height;
     public int Id;
     public GridSystem GridSystem;
-    
+    public GameObject GridContainer { get { return _gridContainer; } }
+
     /// <summary>
     /// How wide a tile will be. Is used to scale position movements
     /// </summary>
@@ -45,6 +46,7 @@ public class WorldGrid : MonoBehaviour {
         Width = width;
         Height = height;
         CenterGridTiles();
+        AddMoveButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.15f));
     }
 
     public WorldGridTile GetTile(Vector2Int position)
@@ -92,6 +94,13 @@ public class WorldGrid : MonoBehaviour {
         b.Position = oldATilePos;
         b.transform.position = oldAPos;
         GridTiles[oldATilePos.x][oldATilePos.y] = b;
+    }
+
+    private void AddMoveButton(Vector3 position)
+    {
+        GameObject moveButton = Instantiate(Game.CurrentSession.Cache.MoveButton, _gridContainer.transform);
+        moveButton.transform.localPosition = position;
+        moveButton.GetComponent<WorldGridMoveButton>().GridParent = this;
     }
 
     [ContextMenu("Center Grid Tiles")]

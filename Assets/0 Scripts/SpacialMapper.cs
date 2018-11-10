@@ -68,6 +68,7 @@ public class SpacialMapper : MonoBehaviour {
                     spatialMeshObjects[surfaceId] = new GameObject("Surface: " + surfaceId.handle);
                     spatialMeshObjects[surfaceId].transform.parent = transform;
                     spatialMeshObjects[surfaceId].layer = 31;
+                    spatialMeshObjects[surfaceId].isStatic = true;
                     if (UseMeshRenderer) spatialMeshObjects[surfaceId].AddComponent<MeshRenderer>();
                     spatialMeshObjects[surfaceId].AddComponent<MeshFilter>();
                     spatialMeshObjects[surfaceId].AddComponent<WorldAnchor>();

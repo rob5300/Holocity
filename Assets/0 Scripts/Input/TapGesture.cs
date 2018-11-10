@@ -7,14 +7,9 @@ using HoloToolkit.Unity.InputModule;
 public class TapGesture : MonoBehaviour, IInputClickHandler {
 
     GazeManager gazeManager;
-	// Use this for initialization
+	
 	void Start () {
         gazeManager = GetComponent<GazeManager>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 
     public void OnInputClicked(InputClickedEventData eventData)

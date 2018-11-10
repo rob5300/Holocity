@@ -14,6 +14,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         {
             Material mat = tile.Model.GetComponent<MeshRenderer>().material;
             //Want to change the colour randomly.
+            mat.color = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
         }
     }
 }
