@@ -4,12 +4,17 @@ using UnityEngine;
 public class GridCreatorTesting : MonoBehaviour, IInputClickHandler
 {
     private Camera _cam;
-    public bool Enabled = true;
+    public bool CanPlace = true;
 
     void Start()
     {
         _cam = Camera.main;
-        if (!Enabled) Destroy(this);
+        if (!CanPlace) Destroy(this);
+    }
+
+    public void EnablePlacing()
+    {
+        CanPlace = true;
     }
 
     public void Update()
@@ -27,6 +32,7 @@ public class GridCreatorTesting : MonoBehaviour, IInputClickHandler
             if(Vector3.Angle(hitinfo.normal, Vector3.up) < 10)
             {
                 Game.CurrentSession.City.CreateGrid(10, 10, hitinfo.point);
+                Destroy(this);
             }
         }
     }

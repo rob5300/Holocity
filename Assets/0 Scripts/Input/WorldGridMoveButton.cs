@@ -3,28 +3,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldGridMoveButton : MonoBehaviour, INavigationHandler /*,IManipulationHandler */
+public class WorldGridMoveButton : MonoBehaviour ,IManipulationHandler
 {
     public WorldGrid GridParent;
 
-    public void OnNavigationCanceled(NavigationEventData eventData)
+    private Vector3 _startPosition;
+    private Vector3 _gridStartPosition;
+
+    public void OnManipulationCanceled(ManipulationEventData eventData)
     {
         transform.SetParent(GridParent.GridContainer.transform);
     }
 
-    public void OnNavigationCompleted(NavigationEventData eventData)
+    public void OnManipulationCompleted(ManipulationEventData eventData)
     {
         transform.SetParent(GridParent.GridContainer.transform);
     }
 
-    public void OnNavigationStarted(NavigationEventData eventData)
+    public void OnManipulationStarted(ManipulationEventData eventData)
     {
         transform.SetParent(null);
+        _startPosition = transform.position;
+        _gridStartPosition = GridParent.GridContainer.transform.position;
     }
 
-    public void OnNavigationUpdated(NavigationEventData eventData)
+    public void OnManipulationUpdated(ManipulationEventData eventData)
     {
-        transform.position += eventData.NormalizedOffset * Time.deltaTime;
-        GridParent.GridContainer.transform.position += eventData.NormalizedOffset * Time.deltaTime;
+        transform.position = _startPosition + eventData.CumulativeDelta;
+        GridParent.GridContainer.transform.position = _gridStartPosition + eventData.CumulativeDelta;
     }
 }

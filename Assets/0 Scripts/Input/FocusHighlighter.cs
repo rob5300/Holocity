@@ -37,6 +37,6 @@ public class FocusHighlighter : MonoBehaviour, IFocusable {
 
     private void ResetColour()
     {
-        _meshRenderer.material.color = _originalColor;
+        if (_meshRenderer) _meshRenderer.material.color = _originalColor;
     }
 }

@@ -9,23 +9,17 @@ public class SessionCreator : MonoBehaviour {
     [Header("Grid settings")]
     public int width;
     public int height;
-    public bool CreateDefaultGrid = true;
 
 	void Start () {
         Game.SetSession(new Session());
         Debug.Log("New session created and set: " + Game.CurrentSession.Name);
+	}
 
-        if (!CreateDefaultGrid) return;
-
+    public void CreateDefaultGrid()
+    {
         Game.CurrentSession.City.CreateGrid(width, height, transform.position);
 
         Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(1, 1, new House());
         Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(1, 5, new House());
-	}
-	
-    [ContextMenu("Swap test")]
-    public void SwapTest()
-    {
-        Game.CurrentSession.City.GetGrid(0).SwapTileEntities(new Vector2Int(1, 1), new Vector2Int(5, 5));
     }
 }

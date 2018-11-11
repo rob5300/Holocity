@@ -10,23 +10,26 @@ public class WorldGrid : MonoBehaviour {
     public int Height;
     public int Id;
     public GridSystem GridSystem;
-    public GameObject GridContainer { get { return _gridContainer; } }
+    public GameObject GridContainer { get; private set; }
 
     /// <summary>
     /// How wide a tile will be. Is used to scale position movements
     /// </summary>
-    public float Scale = 0.15f;
+    public float TileScale = 0.15f;
+
+    /// <summary>
+    /// The scale to apply to the container to reduce its size.
+    /// </summary>
+    public Vector3 ContainerScaleFactor = new Vector3(0.5f, 0.5f, 0.5f);
 
     [NonSerialized]
     public WorldGridTile[][] GridTiles;
 
-    private GameObject _gridContainer;
-
     public void Awake()
     {
-        _gridContainer = new GameObject("Grid Container");
-        _gridContainer.transform.SetParent(transform);
-        _gridContainer.transform.localPosition = Vector3.zero;
+        GridContainer = new GameObject("Grid Container");
+        GridContainer.transform.SetParent(transform);
+        GridContainer.transform.localPosition = Vector3.zero;
     }
 
 	public void Initialize(int id, int width, int height, GridSystem gridSystem)
@@ -41,12 +44,15 @@ public class WorldGrid : MonoBehaviour {
                 GridTiles[w][h] = CreateWorldGridTile(new Vector2Int(w, h));
             }
         }
-        //Wont apply scale like this as it causes wierd issues.
-        //_gridContainer.transform.localScale = new Vector3(Scale, Scale, Scale);
         Width = width;
         Height = height;
         CenterGridTiles();
         AddMoveButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.15f));
+
+        //Attempt to scale the grid container
+        GridContainer.transform.localScale = ContainerScaleFactor;
+
+        RotateToFaceUser();
     }
 
     public WorldGridTile GetTile(Vector2Int position)
@@ -64,8 +70,8 @@ public class WorldGrid : MonoBehaviour {
     {
         GameObject newTileGameObject = new GameObject();
         newTileGameObject.name = string.Format("WorldTile({0},{1})", tileposition.x, tileposition.y);
-        newTileGameObject.transform.SetParent(_gridContainer.transform);
-        newTileGameObject.transform.localPosition = new Vector3(tileposition.x * Scale, 0, tileposition.y * Scale);
+        newTileGameObject.transform.SetParent(GridContainer.transform);
+        newTileGameObject.transform.localPosition = new Vector3(tileposition.x * TileScale, 0, tileposition.y * TileScale);
         //Add WorldGridTile component and set up.
         WorldGridTile tile = newTileGameObject.AddComponent<WorldGridTile>();
         tile.Initialize(tileposition, this);
@@ -98,7 +104,7 @@ public class WorldGrid : MonoBehaviour {
 
     private void AddMoveButton(Vector3 position)
     {
-        GameObject moveButton = Instantiate(Game.CurrentSession.Cache.MoveButton, _gridContainer.transform);
+        GameObject moveButton = Instantiate(Game.CurrentSession.Cache.MoveButton, GridContainer.transform);
         moveButton.transform.localPosition = position;
         moveButton.GetComponent<WorldGridMoveButton>().GridParent = this;
     }
@@ -107,7 +113,7 @@ public class WorldGrid : MonoBehaviour {
     private void CenterGridTiles()
     {
         //Calculate the offset to apply to positions to centre the tiles.
-        Vector3 offset = new Vector3((Width / 2 * Scale) - Scale / 2, 0, (Height / 2 * Scale) - Scale / 2);
+        Vector3 offset = new Vector3((Width / 2 * TileScale) - TileScale / 2, 0, (Height / 2 * TileScale) - TileScale / 2);
         for (int w = 0; w < Width; w++)
         {
             for (int h = 0; h < Height; h++)
@@ -115,5 +121,15 @@ public class WorldGrid : MonoBehaviour {
                 GridTiles[w][h].transform.localPosition = GridTiles[w][h].transform.localPosition - offset;
             }
         }
+    }
+
+    /// <summary>
+    /// Rotates the grid container to face the user when placed.
+    /// </summary>
+    private void RotateToFaceUser()
+    {
+        Vector3 target = Camera.main.transform.position - GridContainer.transform.position;
+        target.y = 0;
+        GridContainer.transform.rotation = Quaternion.LookRotation(target);
     }
 }
