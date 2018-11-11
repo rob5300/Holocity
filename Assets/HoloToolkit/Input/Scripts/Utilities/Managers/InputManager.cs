@@ -109,6 +109,10 @@ namespace HoloToolkit.Unity.InputModule
             return (modalInputStack.Contains(gameObject));
         }
 
+        public float ModalInputStackSize()
+        {
+            return modalInputStack.Count;
+        }
         /// <summary>
         /// Clear all modal input handlers off the stack.
         /// </summary>

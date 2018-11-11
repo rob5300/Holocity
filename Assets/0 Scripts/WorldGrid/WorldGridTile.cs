@@ -39,8 +39,9 @@ public class WorldGridTile : MonoBehaviour {
         TileBorder.SetActive(false);
         Model = Instantiate(building.BuildingPrefab, transform);
 
-        //Add gesture handler to building
+        //Add Gesture Components to Buildings
         Model.AddComponent<WorldTileMoveGestureHandler>();
+        Model.AddComponent<WorldTileRotateGestureHandler>();
         Model.AddComponent<FocusHighlighter>();
 
         //Set the layer mask.
@@ -69,4 +70,27 @@ public class WorldGridTile : MonoBehaviour {
         }
         return false;
     }
+
+    public void RotateBuilding(Transform buildingTransform)
+    {
+        //will change this to buildingTransform.forward
+        float dotF = Vector3.Dot(buildingTransform.forward, buildingTransform.parent.forward);
+        float dotR = Vector3.Dot(buildingTransform.forward, buildingTransform.parent.right);
+        Vector3 dir;
+        
+
+        if (Mathf.Abs(dotF) > Mathf.Abs(dotR))
+        {
+            dir = (buildingTransform.parent.forward * Mathf.Round(dotF));
+            buildingTransform.rotation = Quaternion.LookRotation(dir);
+        
+        }
+        else if(Mathf.Abs(dotF) < Mathf.Abs(dotR))
+        {
+            dir = (buildingTransform.parent.right * Mathf.Round(dotR));
+            buildingTransform.rotation = Quaternion.LookRotation(dir);
+        }
+        
+    }
 }
+
