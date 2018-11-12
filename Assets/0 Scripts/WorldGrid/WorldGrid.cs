@@ -131,5 +131,7 @@ public class WorldGrid : MonoBehaviour {
         Vector3 target = Camera.main.transform.position - GridContainer.transform.position;
         target.y = 0;
         GridContainer.transform.rotation = Quaternion.LookRotation(target);
+        //We rotate 180 on Y otherwise we are facing away from the player.
+        GridContainer.transform.Rotate(0, 180, 0);
     }
 }

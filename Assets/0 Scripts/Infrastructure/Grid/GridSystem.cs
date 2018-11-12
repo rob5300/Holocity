@@ -55,7 +55,7 @@ namespace Infrastructure.Grid
         private WorldGrid CreateWorldGrid(Vector3 position)
         {
             GameObject gridObject = new GameObject("World Grid: " + Id);
-            gridObject.transform.position = position;
+            gridObject.transform.position = position + new Vector3(0, 0.05f, 0);
             gridObject.AddComponent<WorldAnchor>();
             WorldGrid grid = gridObject.AddComponent<WorldGrid>();
             grid.Initialize(Id, Width, Height, this);

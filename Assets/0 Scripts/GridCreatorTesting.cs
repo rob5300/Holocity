@@ -9,7 +9,6 @@ public class GridCreatorTesting : MonoBehaviour, IInputClickHandler
     void Start()
     {
         _cam = Camera.main;
-        if (!CanPlace) Destroy(this);
     }
 
     public void EnablePlacing()
@@ -17,13 +16,10 @@ public class GridCreatorTesting : MonoBehaviour, IInputClickHandler
         CanPlace = true;
     }
 
-    public void Update()
-    {
-        if (Input.GetMouseButtonDown(0)) OnInputClicked(null);
-    }
-
     public void OnInputClicked(InputClickedEventData eventData)
     {
+        if (!CanPlace) return;
+
         Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
         RaycastHit hitinfo;
         if(Physics.Raycast(ray, out hitinfo, 50f))
