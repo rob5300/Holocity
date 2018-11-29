@@ -13,6 +13,7 @@ public class FocusHighlighter : MonoBehaviour, IFocusable {
     {
         _meshRenderer = GetComponent<MeshRenderer>();
         _originalColor = _meshRenderer.material.color;
+		if(_meshRenderer == null) Destroy(this);
     }
 
     void IFocusable.OnFocusEnter()

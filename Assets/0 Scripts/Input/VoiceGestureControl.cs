@@ -18,12 +18,17 @@ public class VoiceGestureControl : MonoBehaviour, ISpeechHandler
 
         if (eventData.RecognizedText.Equals("Move Building"))
         {
+			Debug.Log("VOICE: Moving");
             IsNavigating = false;
         }
         else if (eventData.RecognizedText.Equals("Rotate Building"))
         {
+			Debug.Log("VOICE: Rotating");
             IsNavigating = true;
         }
+		else{
+			Debug.Log("VOICE: something else ???:" + eventData.RecognizedText);
+		}
 
     }
 }
