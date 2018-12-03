@@ -8,6 +8,12 @@ namespace BuildTool
 {
     public static class Tools
     {
+        private static System.Random r;
+
+        static Tools(){
+            r = new System.Random();
+        }
+
         public static void SnapRotation(Transform target)
         {
             float dotF = Vector3.Dot(target.up, target.root.forward);
@@ -61,9 +67,13 @@ namespace BuildTool
 
         public static void SpawnBuilding(Vector2Int position)
         {
-            //gonna have to check what grid to add to.
-            Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(position.x, position.y, new House());
+            Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(position.x, position.y, GetRandomBuilding());
         }
-        
+
+        private static Building GetRandomBuilding()
+        {
+            if (r.Next(5) < 4) return new House();
+            else return new Modern_CityBuildings();
+        }
     }
 }
