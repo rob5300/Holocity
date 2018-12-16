@@ -1,6 +1,8 @@
-﻿using Infrastructure;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
+using Infrastructure.Tick;
 using UnityEngine;
 using UnityEngine.XR.WSA;
 
@@ -15,6 +17,11 @@ namespace Infrastructure.Grid
         public int Width { get; private set; }
         public int Height { get; private set; }
         public GridTile[][] Tiles;
+        /// <summary>
+        /// A list of all tickables that will be ticked by the owning city and session tick manager.
+        /// </summary>
+        public ConcurrentQueue<Tickable> TickAddQueue;
+        public ConcurrentQueue<Tickable> ToRemoveFromTickSystem;
 
         internal GridSystem(int width, int height, int id, City parentCity, Vector3 worldGridPosition)
         {
@@ -34,6 +41,8 @@ namespace Infrastructure.Grid
                     Tiles[x][y] = new GridTile(new Vector2Int(x, y));
                 }
             }
+
+            TickAddQueue = new ConcurrentQueue<Tickable>();
 
             WorldGrid = CreateWorldGrid(worldGridPosition);
         }
@@ -75,6 +84,11 @@ namespace Infrastructure.Grid
             if (tile.Entity != null) return false;
             tile.SetEntity(this, building);
             AddBuildingtoWorldGrid(building, x, y);
+            //We check if this is Tickable, if soo we add this to the tick manager in our session.
+            if(building is Tickable)
+            {
+                TickAddQueue.Enqueue((Tickable)building);
+            }
             return true;
         }
 

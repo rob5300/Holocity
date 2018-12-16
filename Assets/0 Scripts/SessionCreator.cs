@@ -3,6 +3,7 @@ using Infrastructure.Grid.Entities.Buildings;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Infrastructure.Tick.TickManager;
 
 public class SessionCreator : MonoBehaviour {
 
@@ -19,7 +20,15 @@ public class SessionCreator : MonoBehaviour {
     {
         Game.CurrentSession.City.CreateGrid(width, height, transform.position);
 
-        Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(1, 1, new House());
-        Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(1, 5, new House());
+        GridSystem grid = Game.CurrentSession.City.GetGrid(0);
+
+        for (int x = 0; x < grid.Width; x++)
+        {
+            for (int y = 0; y < grid.Height; y++)
+            {
+                grid.AddBuildingToTile(x, y, new PowerPlant());
+            }
+        }
     }
+
 }

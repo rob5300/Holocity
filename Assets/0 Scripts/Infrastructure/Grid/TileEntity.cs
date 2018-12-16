@@ -21,9 +21,5 @@ namespace Infrastructure.Grid.Entities
 
         }
 
-        public virtual void Tick()
-        {
-
-        }
     }
 }
