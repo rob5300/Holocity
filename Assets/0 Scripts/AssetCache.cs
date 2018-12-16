@@ -5,14 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class ResourceCache
+public class AssetCache
 {
     public GameObject TileBorder;
     public GameObject MoveButton;
 
-    public ResourceCache()
+    public GameObject ResourceUI;
+
+    public AssetCache()
     {
         TileBorder = Resources.Load<GameObject>("Tile Border");
         MoveButton = Resources.Load<GameObject>("Move Button");
+        ResourceUI = Resources.Load<GameObject>("UI/Resource UI");
     }
 }

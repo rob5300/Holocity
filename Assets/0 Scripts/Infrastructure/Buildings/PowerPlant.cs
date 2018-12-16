@@ -1,4 +1,5 @@
-﻿using Infrastructure.Tick;
+﻿using CityResources;
+using Infrastructure.Tick;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,23 +10,23 @@ namespace Infrastructure.Grid.Entities.Buildings
 {
     public class PowerPlant : Building, Tickable
     {
-        public int Power = 0;
         public int PowerIncreaseRate = 5;
+
+        private Electricity elecResource;
 
         public PowerPlant()
         {
             BuildingPrefabPath = "Powerplant";
         }
 
-        public override void OnWorldGridTileCreated(WorldGridTile tile)
+        public override void OnEntityProduced(GridSystem grid)
         {
-            //PowerPrint p = tile.gameObject.AddComponent<PowerPrint>();
-            //p.plant = this;
+            elecResource = grid.ParentCity.GetResource<Electricity>();
         }
 
         public void Tick()
         {
-            Power += PowerIncreaseRate;
+            elecResource.Add(PowerIncreaseRate);
         }
     }
 }

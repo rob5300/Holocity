@@ -10,7 +10,7 @@ namespace Infrastructure {
         public string Owner;
         public Session ParentSession;
 
-        protected Dictionary<System.Type, Resource> Resources = new Dictionary<System.Type, Resource>();
+        protected Dictionary<Type, Resource> Resources = new Dictionary<System.Type, Resource>();
         protected List<GridSystem> CityGrids = new List<GridSystem>();
 
         public City(string owner, Session sess)
@@ -19,9 +19,14 @@ namespace Infrastructure {
             ParentSession = sess;
         }
 
-        public Resource GetResource<T>() where T : Resource {
-            if (Resources.ContainsKey(typeof(T))) return Resources[typeof(T)];
-            else return null;
+        public void PostSetup()
+        {
+            ParentSession.TickManager.PostTick += ResetResourceTickCounters;
+        }
+
+        public T GetResource<T>() where T : Resource {
+            if (!Resources.ContainsKey(typeof(T))) Resources.Add(typeof(T), Activator.CreateInstance<T>());
+            return (T)Resources[typeof(T)];
         }
 
         public bool CreateGrid(int width, int height, Vector3 worldGridPosition)
@@ -37,6 +42,14 @@ namespace Infrastructure {
         {
             if (CityGrids.Count > id) return CityGrids[id];
             return null;
+        }
+
+        public void ResetResourceTickCounters(Session s)
+        {
+            foreach(Resource r in Resources.Values)
+            {
+                r.ResetCounters();
+            }
         }
     }
 }

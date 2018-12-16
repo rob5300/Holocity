@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp:HUX.Buttons:ButtonIconProfileTexture
   _IconNotFound: {fileID: 0}
   AlphaTransitionSpeed: 0.25
-  IconMaterial: {fileID: 2100000, guid: 4f37668d794e3694c9ee36b62447d99b, type: 2}
+  IconMaterial: {fileID: 2100000, guid: 1c018e76b2657e041976bfa8486880aa, type: 2}
   IconMesh: {fileID: 4300010, guid: c68a88ae5c5b91f41b94c83aa4c4196e, type: 3}
   AlphaColorProperty: _Color
   GlobalNavButton: {fileID: 0}

@@ -10,14 +10,24 @@ namespace CityResources
     {
         public Resource()
         {
-
+            CapValue = false;
         }
 
-        public int Avaliable { get; private set; }
+        public int Value { get; private set; }
+        public bool CapValue { get; private set; }
+        public int ValueCap;
+
+        //Changes for last tick
+        public int AddedLastTick { get; private set; }
+        public int RecievedLastTick { get; private set; }
+        //Changes for this tick.
+        public int AddedThisTick { get; private set; }
+        public int RecievedThisTick { get; private set; }
 
         public void Add(int amount)
         {
-            Avaliable += amount;
+            Value += amount;
+            AddedThisTick += amount;
         }
 
         /// <summary>
@@ -28,12 +38,24 @@ namespace CityResources
         public int Recieve(int amount)
         {
             int toReturn;
-            if (Avaliable >= amount) toReturn = amount;
-            else toReturn = Avaliable;
+            if (Value >= amount) toReturn = amount;
+            else toReturn = Value;
 
-            Avaliable -= toReturn;
+            Value -= toReturn;
+            RecievedThisTick -= toReturn;
 
             return toReturn;
+        }
+
+        /// <summary>
+        /// Reset recieved tick counters and update last tick values.
+        /// </summary>
+        public void ResetCounters()
+        {
+            AddedLastTick = AddedThisTick;
+            AddedThisTick = 0;
+            RecievedLastTick = RecievedThisTick;
+            RecievedThisTick = 0;
         }
     }
 }

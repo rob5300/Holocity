@@ -11,6 +11,8 @@ namespace Infrastructure.Tick
         public float TickDelay;
         public bool IsRunning { get; private set; }
         public City TargetCity { get; private set; }
+        public event SessionAction PreTick;
+        public event SessionAction PostTick;
         public ConcurrentQueue<SessionAction> SessionActionsQueue;
         public ConcurrentQueue<GridSystem> NewGridSystems;
 
@@ -19,6 +21,7 @@ namespace Infrastructure.Tick
         private Thread _thread;
         private System.Timers.Timer _timer;
         private ElapsedEventHandler _timerHandle;
+        private Session _session;
 
         /// <summary>
         /// All the tickables that we tick.
@@ -34,6 +37,7 @@ namespace Infrastructure.Tick
         {
             TickDelay = tickDelay;
             TargetCity = targetCity;
+            _session = TargetCity.ParentSession;
 
             TickTargets = new List<Tickable>();
             GridNewTickableQueues = new List<ConcurrentQueue<Tickable>>();
@@ -78,12 +82,13 @@ namespace Infrastructure.Tick
         private void Tick(object sender, ElapsedEventArgs args)
         {
             //This is called when we tick.
+            PreTick?.Invoke(_session);
 
             //Execute any delegates that are waiting.
             for (int x = 0; x < SessionActionsQueue.Count; x++)
             {
                 SessionAction sessionAction;
-                while (SessionActionsQueue.TryDequeue(out sessionAction)) sessionAction.Invoke(Game.CurrentSession);
+                while (SessionActionsQueue.TryDequeue(out sessionAction)) sessionAction.Invoke(_session);
             }
 
             //Check if there are any new grids
@@ -97,6 +102,9 @@ namespace Infrastructure.Tick
             {
                 TickTargets[i].Tick();
             }
+
+            //Post tick event.
+            PostTick?.Invoke(_session);
         }
 
         private void TryDequeingNewGrids()

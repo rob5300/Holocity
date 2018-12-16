@@ -11,6 +11,7 @@ public class WorldGrid : MonoBehaviour {
     public int Id;
     public GridSystem GridSystem;
     public GameObject GridContainer { get; private set; }
+    public GameObject ResourceUI;
 
     /// <summary>
     /// How wide a tile will be. Is used to scale position movements
@@ -48,6 +49,9 @@ public class WorldGrid : MonoBehaviour {
         Height = height;
         CenterGridTiles();
         AddMoveButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.15f));
+
+        //Add in the resources UI.
+        AddResourcesUI();
 
         //Attempt to scale the grid container
         GridContainer.transform.localScale = ContainerScaleFactor;
@@ -133,5 +137,11 @@ public class WorldGrid : MonoBehaviour {
         GridContainer.transform.rotation = Quaternion.LookRotation(target);
         //We rotate 180 on Y otherwise we are facing away from the player.
         GridContainer.transform.Rotate(0, 180, 0);
+    }
+
+    private void AddResourcesUI()
+    {
+        ResourceUI = Instantiate(Game.CurrentSession.Cache.ResourceUI, GridContainer.transform);
+        ResourceUI.transform.localPosition = new Vector3(0, 0.3f, 0);
     }
 }

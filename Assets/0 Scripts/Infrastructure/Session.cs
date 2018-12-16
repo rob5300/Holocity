@@ -6,7 +6,7 @@ using System.Threading;
 public class Session {
 
     public City City { get; private set; }
-    public ResourceCache Cache;
+    public AssetCache Cache;
 
     public TickManager TickManager;
 
@@ -26,10 +26,12 @@ public class Session {
 
         Version = Convert.ToDouble(UnityEngine.Application.version);
 
-        Cache = new ResourceCache();
+        Cache = new AssetCache();
 
         //Create a tickmanager and start it off on a new thread.
         TickManager = new TickManager(City);
+
+        City.PostSetup();
     }
 
 }

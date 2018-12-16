@@ -40,7 +40,7 @@ namespace UnityGLTF
         protected string _gltfDirectoryPath;
         protected Stream _gltfStream;
         protected GLTFRoot _root;
-        protected AssetCache _assetCache;
+        protected Cache.AssetCache _assetCache;
         protected AsyncAction _asyncAction;
         protected bool _addColliders = false;
         byte[] _gltfData;
@@ -152,7 +152,7 @@ namespace UnityGLTF
                 throw new Exception("No default scene in gltf file.");
             }
 
-            _assetCache = new AssetCache(
+            _assetCache = new Cache.AssetCache(
                 _root.Images != null ? _root.Images.Count : 0,
                 _root.Textures != null ? _root.Textures.Count : 0,
                 _root.Materials != null ? _root.Materials.Count : 0,
