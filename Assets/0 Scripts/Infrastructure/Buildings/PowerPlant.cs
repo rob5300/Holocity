@@ -24,9 +24,9 @@ namespace Infrastructure.Grid.Entities.Buildings
             elecResource = grid.ParentCity.GetResource<Electricity>();
         }
 
-        public void Tick()
+        public void Tick(float time)
         {
-            elecResource.Add(PowerIncreaseRate);
+            elecResource.Add(PowerIncreaseRate * time);
         }
     }
 }

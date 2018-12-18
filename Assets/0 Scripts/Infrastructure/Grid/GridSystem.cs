@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
@@ -21,7 +22,11 @@ namespace Infrastructure.Grid
         /// A list of all tickables that will be ticked by the owning city and session tick manager.
         /// </summary>
         public ConcurrentQueue<Tickable> TickAddQueue;
+        /// <summary>
+        /// YET TO IMPLEMENT
+        /// </summary>
         public ConcurrentQueue<Tickable> ToRemoveFromTickSystem;
+        public event Action<Residential> OnNewResidentialBuilding;
 
         internal GridSystem(int width, int height, int id, City parentCity, Vector3 worldGridPosition)
         {
@@ -88,6 +93,11 @@ namespace Infrastructure.Grid
             if(building is Tickable)
             {
                 TickAddQueue.Enqueue((Tickable)building);
+            }
+            if(building is Residential)
+            {
+                //We call the event to let the city know that we have a new residential building.
+                OnNewResidentialBuilding?.Invoke((Residential)building);
             }
             return true;
         }

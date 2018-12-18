@@ -13,18 +13,18 @@ namespace CityResources
             CapValue = false;
         }
 
-        public int Value { get; private set; }
+        public float Value { get; private set; }
         public bool CapValue { get; private set; }
-        public int ValueCap;
+        public float ValueCap;
 
         //Changes for last tick
-        public int AddedLastTick { get; private set; }
-        public int RecievedLastTick { get; private set; }
+        public float AddedLastTick { get; private set; }
+        public float RecievedLastTick { get; private set; }
         //Changes for this tick.
-        public int AddedThisTick { get; private set; }
-        public int RecievedThisTick { get; private set; }
+        public float AddedThisTick { get; private set; }
+        public float RecievedThisTick { get; private set; }
 
-        public void Add(int amount)
+        public void Add(float amount)
         {
             Value += amount;
             AddedThisTick += amount;
@@ -35,9 +35,10 @@ namespace CityResources
         /// </summary>
         /// <param name="amount">How many of this resource to request.</param>
         /// <returns>Part or whole of resources requested.</returns>
-        public int Recieve(int amount)
+        public float Recieve(float amount)
         {
-            int toReturn;
+            float toReturn;
+
             if (Value >= amount) toReturn = amount;
             else toReturn = Value;
 

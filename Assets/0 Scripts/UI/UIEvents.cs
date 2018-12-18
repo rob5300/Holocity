@@ -13,8 +13,17 @@ public class UIEvents : MonoBehaviour {
 
     public void Start()
     {
-        CreateGridButton.OnButtonClicked += (GameObject ob) => { OnCreateGrid?.Invoke(); };
-        OnDefaultCreateButton.OnButtonClicked += (GameObject ob) => { OnDefaultCreateGrid?.Invoke(); };
+        CreateGridButton.OnButtonClicked += CreateGridInvoke;
+        OnDefaultCreateButton.OnButtonClicked += CreateDefaultGridInvoke;
     }
 
+    private void CreateGridInvoke(GameObject go)
+    {
+        OnCreateGrid?.Invoke();
+    }
+
+    private void CreateDefaultGridInvoke(GameObject go)
+    {
+        OnDefaultCreateGrid?.Invoke();
+    }
 }

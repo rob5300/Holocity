@@ -8,15 +8,16 @@ namespace Infrastructure.Tick
 {
     public class TickManager
     {
-        public float TickDelay;
+        public float TickDelay { get; private set; }
         public bool IsRunning { get; private set; }
         public City TargetCity { get; private set; }
         public event SessionAction PreTick;
         public event SessionAction PostTick;
         public ConcurrentQueue<SessionAction> SessionActionsQueue;
         public ConcurrentQueue<GridSystem> NewGridSystems;
+        public ConcurrentQueue<Tickable> IncomingTickableQueue;
 
-        public delegate void SessionAction(Session s);
+        public delegate void SessionAction(Session s, float tickTime);
 
         private Thread _thread;
         private System.Timers.Timer _timer;
@@ -32,7 +33,11 @@ namespace Infrastructure.Tick
         /// </summary>
         private List<ConcurrentQueue<Tickable>> GridNewTickableQueues;
         
-
+        /// <summary>
+        /// Creates a new tickmanager on a new thread.
+        /// </summary>
+        /// <param name="targetCity">The target city to manage</param>
+        /// <param name="tickDelay">How long in ms to wait to tick again.</param>
         public TickManager(City targetCity, float tickDelay = 100)
         {
             TickDelay = tickDelay;
@@ -43,6 +48,7 @@ namespace Infrastructure.Tick
             GridNewTickableQueues = new List<ConcurrentQueue<Tickable>>();
             SessionActionsQueue = new ConcurrentQueue<SessionAction>();
             NewGridSystems = new ConcurrentQueue<GridSystem>();
+            IncomingTickableQueue = new ConcurrentQueue<Tickable>();
 
             IsRunning = false;
 
@@ -55,11 +61,6 @@ namespace Infrastructure.Tick
             _thread = new Thread(new ThreadStart(ThreadStart));
             _thread.Start();
             IsRunning = true;
-        }
-
-        public void Stop()
-        {
-
         }
 
         public bool AddSessionAction(SessionAction action)
@@ -82,29 +83,33 @@ namespace Infrastructure.Tick
         private void Tick(object sender, ElapsedEventArgs args)
         {
             //This is called when we tick.
-            PreTick?.Invoke(_session);
+            PreTick?.Invoke(_session, TickDelay);
 
             //Execute any delegates that are waiting.
             for (int x = 0; x < SessionActionsQueue.Count; x++)
             {
                 SessionAction sessionAction;
-                while (SessionActionsQueue.TryDequeue(out sessionAction)) sessionAction.Invoke(_session);
+                while (SessionActionsQueue.TryDequeue(out sessionAction)) sessionAction.Invoke(_session, TickDelay);
             }
+
+            //Check if there are any new tickables in the queue.
 
             //Check if there are any new grids
             TryDequeingNewGrids();
 
-            //Test to see if there are any new targets to get.
+            //Test to see if there are any new tickable targets to get from grid systems.
             TryDequeingNewTargets();
+
+            float ticktimeinseconds = TickDelay / 1000;
 
             //Execute all ticks
             for (int i = 0; i < TickTargets.Count; i++)
             {
-                TickTargets[i].Tick();
+                TickTargets[i].Tick(ticktimeinseconds);
             }
 
             //Post tick event.
-            PostTick?.Invoke(_session);
+            PostTick?.Invoke(_session, TickDelay);
         }
 
         private void TryDequeingNewGrids()
@@ -113,6 +118,15 @@ namespace Infrastructure.Tick
             {
                 GridSystem newGrid;
                 while (NewGridSystems.TryDequeue(out newGrid)) GridNewTickableQueues.Add(newGrid.TickAddQueue);
+            }
+        }
+
+        private void TryDequingNewTickables()
+        {
+            for (int i = 0; i < IncomingTickableQueue.Count; i++)
+            {
+                Tickable newTickable;
+                while (IncomingTickableQueue.TryDequeue(out newTickable)) TickTargets.Add(newTickable);
             }
         }
 
