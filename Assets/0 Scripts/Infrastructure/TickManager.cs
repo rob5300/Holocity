@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using Infrastructure.Grid;
 
@@ -82,8 +83,12 @@ namespace Infrastructure.Tick
 
         private void Tick(object sender, ElapsedEventArgs args)
         {
+            //Convert the tick delay to a float in seconds.
+            float ticktimeinseconds = TickDelay / 1000;
+
             //This is called when we tick.
-            PreTick?.Invoke(_session, TickDelay);
+            //Task.Run(() => { PreTick?.Invoke(_session, ticktimeinseconds); });
+            PreTick?.Invoke(_session, ticktimeinseconds);
 
             //Execute any delegates that are waiting.
             for (int x = 0; x < SessionActionsQueue.Count; x++)
@@ -93,14 +98,13 @@ namespace Infrastructure.Tick
             }
 
             //Check if there are any new tickables in the queue.
+            TryDequingNewTickables();
 
             //Check if there are any new grids
             TryDequeingNewGrids();
 
             //Test to see if there are any new tickable targets to get from grid systems.
             TryDequeingNewTargets();
-
-            float ticktimeinseconds = TickDelay / 1000;
 
             //Execute all ticks
             for (int i = 0; i < TickTargets.Count; i++)
@@ -109,7 +113,7 @@ namespace Infrastructure.Tick
             }
 
             //Post tick event.
-            PostTick?.Invoke(_session, TickDelay);
+            PostTick?.Invoke(_session, ticktimeinseconds);
         }
 
         private void TryDequeingNewGrids()

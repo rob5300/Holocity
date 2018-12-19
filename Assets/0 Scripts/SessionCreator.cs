@@ -12,6 +12,9 @@ public class SessionCreator : MonoBehaviour {
     public int height;
 
 	void Start () {
+#if UNITY_EDITOR
+        if (!Application.isPlaying) return;
+#endif
         Game.SetSession(new Session());
         Debug.Log("New session created and set: " + Game.CurrentSession.Name);
 	}
@@ -22,13 +25,10 @@ public class SessionCreator : MonoBehaviour {
 
         GridSystem grid = Game.CurrentSession.City.GetGrid(0);
 
-        for (int x = 0; x < grid.Width; x++)
-        {
-            for (int y = 0; y < grid.Height; y++)
-            {
-                grid.AddBuildingToTile(x, y, new PowerPlant());
-            }
-        }
+        grid.AddBuildingToTile(0, 0, new PowerPlant());
+        grid.AddBuildingToTile(0, 1, new House());
+        grid.AddBuildingToTile(0, 2, new House());
+        grid.AddBuildingToTile(0, 3, new House());
     }
 
 }

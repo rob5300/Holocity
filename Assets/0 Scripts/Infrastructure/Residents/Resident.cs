@@ -1,4 +1,5 @@
 ﻿
+using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Tick;
 
 namespace Infrastructure.Residents
@@ -34,6 +35,7 @@ namespace Infrastructure.Residents
 
         public string FirstName;
         public string SecondName;
+        public Residential Home;
 
         public Resident()
         {

@@ -16,6 +16,7 @@ namespace Infrastructure.Grid
         public void SetEntity(GridSystem grid, TileEntity entity)
         {
             Entity = entity;
+            Entity.ParentTile = this;
             Entity.OnEntityProduced(grid);
         }
 

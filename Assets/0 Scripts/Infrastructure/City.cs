@@ -11,6 +11,10 @@ namespace Infrastructure {
         
         public string Owner;
         public Session ParentSession;
+        /// <summary>
+        /// How many residents can fill a vacant building per update.
+        /// </summary>
+        public int FillLimitPerUpdate = 3;
 
         private List<Resident> Residents;
         protected Dictionary<Type, Resource> Resources = new Dictionary<Type, Resource>();
@@ -20,9 +24,9 @@ namespace Infrastructure {
         private List<Residential> VacantResidentialBuildings;
 
         /// <summary>
-        /// The demand for residents to move in. If there is avaliable housing found or a new house built, this will reduce to fill the houses.
+        /// The demand for residents to move in. If there is avaliable housing found or a new house built, this will reduce to fill the buildings.
         /// </summary>
-        public int ResidentDemand { get; private set; }
+        public int ResidentialDemand { get; private set; }
 
         private float _residentUpdateTime;
 
@@ -31,7 +35,9 @@ namespace Infrastructure {
             owner = owner != string.Empty ? owner : "Mayor";
             ParentSession = sess;
             Residents = new List<Resident>(10);
-            ResidentDemand = 10;
+            ResidentialDemand = 10;
+            ResidentialBuildings = new List<Residential>(10);
+            VacantResidentialBuildings = new List<Residential>(10);
         }
 
         /// <summary>
@@ -40,7 +46,7 @@ namespace Infrastructure {
         public void PostSetup()
         {
             ParentSession.TickManager.PostTick += ResetResourceTickCounters;
-
+            ParentSession.TickManager.PreTick += ResidentVacancyUpdate;
         }
 
         public T GetResource<T>() where T : Resource {
@@ -84,12 +90,26 @@ namespace Infrastructure {
             }
         }
 
+        /// <summary>
+        /// Checks if there is any avaliable residential properties to move residents into
+        /// </summary>
         private void ResidentVacancyUpdate(Session s, float time)
         {
             _residentUpdateTime += time;
-            if(time > 1000)
+            //If we have waited 1.5 seconds run.
+            if(_residentUpdateTime > 1.5)
             {
-                
+                if(VacantResidentialBuildings.Count > 0 && ResidentialDemand > 0)
+                {
+                    time = 0;
+                    for (int i = VacantResidentialBuildings.Count - 1; i >= 0; i--)
+                    {
+                        VacantResidentialBuildings[i].SetResident(new Resident());
+                        VacantResidentialBuildings.RemoveAt(i);
+                        ResidentialDemand--;
+                        if (ResidentialDemand < 1) return;
+                    }
+                }
             }
         }
     }

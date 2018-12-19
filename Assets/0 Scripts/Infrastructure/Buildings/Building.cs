@@ -20,8 +20,6 @@ namespace Infrastructure.Grid.Entities.Buildings
         [NonSerialized]
         private GameObject _buildingPrefab;
 
-        public City ParentCity { get; internal set; }
-
         public Building()
         {
             

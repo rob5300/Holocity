@@ -15,7 +15,8 @@ namespace Infrastructure.Grid.Entities.Buildings
             if(res is Tickable)
             {
                 //Add this resident to the TickManagers tickables.
-                ParentCity.ParentSession.TickManager.IncomingTickableQueue.Enqueue(res);
+                Game.CurrentSession.TickManager.IncomingTickableQueue.Enqueue(res);
+                res.Home = this;
             }
         }
     }
