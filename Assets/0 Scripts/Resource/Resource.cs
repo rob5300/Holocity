@@ -14,7 +14,7 @@ namespace CityResources
         }
 
         public float Value { get; private set; }
-        public bool CapValue { get; private set; }
+        public bool CapValue { get; protected set; }
         public float ValueCap;
 
         //Changes for last tick
@@ -24,9 +24,12 @@ namespace CityResources
         public float AddedThisTick { get; private set; }
         public float RecievedThisTick { get; private set; }
 
+        public float TimeoutTime { get; protected set; }
+
         public void Add(float amount)
         {
             Value += amount;
+            if (CapValue && Value > ValueCap) Value = ValueCap;
             AddedThisTick += amount;
         }
 

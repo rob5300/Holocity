@@ -14,7 +14,7 @@ namespace Infrastructure {
         /// <summary>
         /// How many residents can fill a vacant building per update.
         /// </summary>
-        public int FillLimitPerUpdate = 3;
+        public int FillLimitPerUpdate = 1;
 
         private List<Resident> Residents;
         protected Dictionary<Type, Resource> Resources = new Dictionary<Type, Resource>();
@@ -95,22 +95,44 @@ namespace Infrastructure {
         /// </summary>
         private void ResidentVacancyUpdate(Session s, float time)
         {
+            if (VacantResidentialBuildings.Count == 0) return;
             _residentUpdateTime += time;
-            //If we have waited 1.5 seconds run.
-            if(_residentUpdateTime > 1.5)
+            //If we have waited 0.1 seconds run.
+            if(_residentUpdateTime > 0.25)
             {
                 if(VacantResidentialBuildings.Count > 0 && ResidentialDemand > 0)
                 {
                     time = 0;
                     for (int i = VacantResidentialBuildings.Count - 1; i >= 0; i--)
                     {
+                        //Go through the vacant buildings and add the residents to them.
                         VacantResidentialBuildings[i].SetResident(new Resident());
+                        //Enqueue the new resident in the tick manager as low priority.
+                        ParentSession.TickManager.LowPriorityIncomingQueue.Enqueue(VacantResidentialBuildings[i].Resident);
                         VacantResidentialBuildings.RemoveAt(i);
                         ResidentialDemand--;
-                        if (ResidentialDemand < 1) return;
+
+                        //Check if we should increase the fill limit incase the vacant bulding amount has increased to make the fill rate very slow
+                        if(FillLimitPerUpdate < Mathf.CeilToInt(ResidentialBuildings.Count * 0.5f))
+                        {
+                            RecalculateFillLimit();
+                        }
+
+                        //If the demand is now empty or if the fill limit was reached, stop.
+                        if (ResidentialDemand < 1 || i+1 > FillLimitPerUpdate) return;
                     }
                 }
+                else
+                {
+                    //There are no vacant buildings. Update the fill rate using the current number of residential buildings that are populated.
+                    RecalculateFillLimit();
+                }
             }
+        }
+
+        private void RecalculateFillLimit()
+        {
+            FillLimitPerUpdate = Mathf.CeilToInt(ResidentialBuildings.Count * 0.1f);
         }
     }
 }

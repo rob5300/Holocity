@@ -18,6 +18,8 @@ public class FocusHighlighter : MonoBehaviour, IFocusable {
 
     void IFocusable.OnFocusEnter()
     {
+        //Store the current material colouring when we get focus each time incase it was changed before.
+        _originalColor = _meshRenderer.material.color;
         _meshRenderer.material.color = FocusTint;
     }
 

@@ -7,9 +7,12 @@ using Infrastructure.Grid;
 
 namespace Infrastructure.Tick
 {
+    /// <summary>
+    /// Manages executing tasks and ticks on a constant tick cycle. Runs on its own thread. Offers thread safe queues to input references and data.
+    /// </summary>
     public class TickManager
     {
-        public float TickDelay { get; private set; }
+        public readonly float TickDelay;
         public bool IsRunning { get; private set; }
         public City TargetCity { get; private set; }
         public event SessionAction PreTick;
@@ -17,6 +20,7 @@ namespace Infrastructure.Tick
         public ConcurrentQueue<SessionAction> SessionActionsQueue;
         public ConcurrentQueue<GridSystem> NewGridSystems;
         public ConcurrentQueue<Tickable> IncomingTickableQueue;
+        public ConcurrentQueue<Tickable> LowPriorityIncomingQueue;
 
         public delegate void SessionAction(Session s, float tickTime);
 
@@ -24,11 +28,20 @@ namespace Infrastructure.Tick
         private System.Timers.Timer _timer;
         private ElapsedEventHandler _timerHandle;
         private Session _session;
+        /// <summary>
+        /// The tick delay of which low priority tickables are ticked.
+        /// </summary>
+        private readonly float _lowPriorityRate = 4;
+        private float _lowPriorityTicksPassed = 0;
 
         /// <summary>
         /// All the tickables that we tick.
         /// </summary>
         private List<Tickable> TickTargets;
+        /// <summary>
+        /// List of all LowPriority tickable objects. This List is ticked at a lower rate.
+        /// </summary>
+        private List<Tickable> LowPriorityTickTargets;
         /// <summary>
         /// List of referneces to the queues that all existing grid systems hold. These queues hold new tickables waiting to be added to the master TickTargets list.
         /// </summary>
@@ -51,11 +64,17 @@ namespace Infrastructure.Tick
             NewGridSystems = new ConcurrentQueue<GridSystem>();
             IncomingTickableQueue = new ConcurrentQueue<Tickable>();
 
+            LowPriorityIncomingQueue = new ConcurrentQueue<Tickable>();
+            LowPriorityTickTargets = new List<Tickable>();
+
             IsRunning = false;
 
             Start();
         }
 
+        /// <summary>
+        /// Start the Tick Manager. The thread is created at this stage and constant ticks begin.
+        /// </summary>
         public void Start()
         {
             if (IsRunning) return;
@@ -81,6 +100,7 @@ namespace Infrastructure.Tick
             _timer.Start();
         }
 
+        //The method that performs ticks. This is subscribed to the Timer Elapsed event.
         private void Tick(object sender, ElapsedEventArgs args)
         {
             //Convert the tick delay to a float in seconds.
@@ -112,6 +132,20 @@ namespace Infrastructure.Tick
                 TickTargets[i].Tick(ticktimeinseconds);
             }
 
+            #region Low Priority
+            //Check if we should tick low priority targets.
+            //Increase the timer and check its value.
+            _lowPriorityTicksPassed++;
+            if(_lowPriorityTicksPassed >= _lowPriorityRate)
+            {
+                for (int i = 0; i < LowPriorityTickTargets.Count; i++)
+                {
+                    LowPriorityTickTargets[i].Tick(ticktimeinseconds * _lowPriorityRate);
+                }
+                _lowPriorityTicksPassed = 0;
+            }
+            #endregion
+
             //Post tick event.
             PostTick?.Invoke(_session, ticktimeinseconds);
         }
@@ -131,6 +165,12 @@ namespace Infrastructure.Tick
             {
                 Tickable newTickable;
                 while (IncomingTickableQueue.TryDequeue(out newTickable)) TickTargets.Add(newTickable);
+            }
+            //Dequeue Low Priority targets.
+            for (int i = 0; i < LowPriorityIncomingQueue.Count; i++)
+            {
+                Tickable newTickable;
+                while (LowPriorityIncomingQueue.TryDequeue(out newTickable)) LowPriorityTickTargets.Add(newTickable);
             }
         }
 

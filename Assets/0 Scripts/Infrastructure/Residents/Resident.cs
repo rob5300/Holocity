@@ -1,5 +1,4 @@
-﻿
-using Infrastructure.Grid.Entities.Buildings;
+﻿using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Tick;
 
 namespace Infrastructure.Residents
@@ -33,19 +32,24 @@ namespace Infrastructure.Residents
         }
         #endregion
 
-        public string FirstName;
-        public string SecondName;
+        public string FirstName { get; protected set; }
+        public string SecondName { get; protected set; }
         public Residential Home;
+        public Happiness Happiness { get; protected set; }
 
         public Resident()
         {
             FirstName = GetRandomFirstName();
             SecondName = GetRandomSecondName();
+            Happiness = new Happiness(this);
         }
 
         public void Tick(float time)
         {
-            
+            if(Happiness.Level < 0.2)
+            {
+                //Move Out.
+            }
         }
     }
 }

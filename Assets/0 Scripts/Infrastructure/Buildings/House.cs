@@ -8,8 +8,11 @@ namespace Infrastructure.Grid.Entities.Buildings
     public class House : Residential, Tickable
     {
         public float ElectricityDrain = 1;
+        public float WaterDrain = 0.3f;
+        public float[] ResourceMissingTimes = { 0f, 0f };
 
         private Electricity _elec;
+        private Water _water;
         WorldGridTile gridtile;
         //Hoping this helps with garbage soo i can still use a lambda xD
         private WorldGridTaskManager.WorldGridTask setResTask;
@@ -23,6 +26,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         public override void OnEntityProduced(GridSystem grid)
         {
             _elec = grid.ParentCity.GetResource<Electricity>();
+            _water = grid.ParentCity.GetResource<Water>();
         }
 
         public override void OnWorldGridTileCreated(WorldGridTile tile)
@@ -49,14 +53,38 @@ namespace Infrastructure.Grid.Entities.Buildings
         public void Tick(float time)
         {
             if (IsVacant) return;
-            float request = ElectricityDrain * time;
-            float recieved = _elec.Recieve(request);
-            if (recieved != request)
-            {
-                //If the amount we requested is not the same as what we got, track this.
-                //This will be to handle uphappiness later.
 
+            //Request the drain amount of each resource. If the request and recieved amount doesnt match we handle that.
+            #region Electricity
+            float request_electricity = ElectricityDrain * time;
+            float recieved_electricity = _elec.Recieve(request_electricity);
+            if (recieved_electricity != request_electricity)
+            {
+                //Track how long we have not had the power we requested. If its above the acceptable value we dont consider this house to have power.
+                ResourceMissingTimes[0] += time;
+                if (time > _elec.TimeoutTime) HasPower = false;
             }
+            else
+            {
+                //We got the power we requested.
+                ResourceMissingTimes[0] = 0;
+                HasPower = true;
+            }
+            #endregion
+            #region Water
+            float request_water = WaterDrain * time;
+            float recieved_water = _water.Recieve(request_water);
+            if(recieved_water != request_water)
+            {
+                ResourceMissingTimes[1] += time;
+                if (time > _water.TimeoutTime) HasWaterSupply = false;
+            }
+            else
+            {
+                HasWaterSupply = true;
+                ResourceMissingTimes[1] = 0;
+            }
+            #endregion
         }
     }
 }
