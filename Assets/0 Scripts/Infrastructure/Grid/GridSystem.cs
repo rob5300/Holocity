@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
+using Infrastructure.Residents;
 using Infrastructure.Tick;
 using UnityEngine;
 using UnityEngine.XR.WSA;
@@ -18,6 +19,8 @@ namespace Infrastructure.Grid
         public int Width { get; private set; }
         public int Height { get; private set; }
         public GridTile[][] Tiles;
+        public float AverageResidentHappiness = 0;
+        public List<Resident> Residents;
         /// <summary>
         /// A list of all tickables that will be ticked by the owning city and session tick manager.
         /// </summary>
@@ -43,7 +46,7 @@ namespace Infrastructure.Grid
                 Tiles[x] = new GridTile[Height];
                 for(int y = 0; y < Height; y++)
                 {
-                    Tiles[x][y] = new GridTile(new Vector2Int(x, y));
+                    Tiles[x][y] = new GridTile(new Vector2Int(x, y), this);
                 }
             }
 
@@ -148,6 +151,18 @@ namespace Infrastructure.Grid
         private void AddBuildingtoWorldGrid(Building building, int x, int y)
         {
             WorldGrid.GetTile(x,y).AddBuildingFromGridSystem(building);
+        }
+
+        public float UpdateHappiness()
+        {
+            //Get an average of all residents happinesses levels.
+            float totalhappiness = 0;
+            foreach(Resident res in Residents)
+            {
+                totalhappiness += res.Happiness.Level;
+            }
+            AverageResidentHappiness = totalhappiness / Residents.Count + 1;
+            return AverageResidentHappiness;
         }
     }
 }

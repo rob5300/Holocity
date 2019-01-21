@@ -17,6 +17,7 @@ namespace Infrastructure.Tick
         public City TargetCity { get; private set; }
         public event SessionAction PreTick;
         public event SessionAction PostTick;
+        public event SessionAction LowPriorityTick;
         public ConcurrentQueue<SessionAction> SessionActionsQueue;
         public ConcurrentQueue<GridSystem> NewGridSystems;
         public ConcurrentQueue<Tickable> IncomingTickableQueue;
@@ -138,10 +139,15 @@ namespace Infrastructure.Tick
             _lowPriorityTicksPassed++;
             if(_lowPriorityTicksPassed >= _lowPriorityRate)
             {
+                //Tick all low priority objects
                 for (int i = 0; i < LowPriorityTickTargets.Count; i++)
                 {
                     LowPriorityTickTargets[i].Tick(ticktimeinseconds * _lowPriorityRate);
                 }
+                //Invoke event
+                LowPriorityTick?.Invoke(_session, ticktimeinseconds * _lowPriorityRate);
+
+                //Reset counter
                 _lowPriorityTicksPassed = 0;
             }
             #endregion

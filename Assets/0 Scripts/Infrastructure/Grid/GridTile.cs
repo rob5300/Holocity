@@ -5,12 +5,14 @@ namespace Infrastructure.Grid
 {
     public class GridTile
     {
+        public GridSystem ParentGridSystem;
         public Vector2Int Position { get; private set; }
         public TileEntity Entity { get; private set;  }
 
-        public GridTile(Vector2Int position)
+        public GridTile(Vector2Int position, GridSystem system)
         {
             Position = position;
+            ParentGridSystem = system;
         }
 
         public void SetEntity(GridSystem grid, TileEntity entity)

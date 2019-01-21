@@ -26,9 +26,10 @@ namespace Infrastructure.Grid.Entities.Buildings
             if (Resident == null) Resident = res;
             if(res is Tickable)
             {
-                //Add this resident to the TickManagers tickables.
-                Game.CurrentSession.TickManager.IncomingTickableQueue.Enqueue(res);
                 res.Home = this;
+                //Add this new resident to the owning gridsystem reference list.
+                GridSystem gs = ParentTile.ParentGridSystem;
+                if(!gs.Residents.Contains(res)) gs.Residents.Add(res);
             }
         }
     }

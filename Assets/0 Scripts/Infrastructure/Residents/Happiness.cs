@@ -8,7 +8,7 @@
         /// <summary>
         /// Should electricity be evaluated for happiness?
         /// </summary>
-        public static bool EvaluateElecticity {
+        public static bool EvaluateElectricity {
             get {
                 return evaluateElecticity;
             }
@@ -55,7 +55,7 @@
                 {
                     _evalIsDirty = false;
                     int value = 0;
-                    if (EvaluateElecticity) value++;
+                    if (EvaluateElectricity) value++;
                     if (EvaluateWater) value++;
                     if (EnableBaseHappiness) value++;
                     _evalQuantity = value;
@@ -66,9 +66,9 @@
         private static bool _evalIsDirty = true;
         private static int _evalQuantity = 0;
 
-        private static bool evaluateElecticity;
-        private static bool evaluateWater;
-        private static bool enableBaseHappiness;
+        private static bool evaluateElecticity = false;
+        private static bool evaluateWater = false;
+        private static bool enableBaseHappiness = true;
         #endregion
 
 
@@ -87,7 +87,7 @@
         private float GetLevel()
         {
             float value = 0;
-            if (EvaluateElecticity)
+            if (EvaluateElectricity)
             {
                 if (resident.Home.HasPower) value += 1 / EvaluationQuantity;
             }

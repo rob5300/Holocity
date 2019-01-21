@@ -19,6 +19,7 @@ namespace Infrastructure {
         private List<Resident> Residents;
         protected Dictionary<Type, Resource> Resources = new Dictionary<Type, Resource>();
         protected List<GridSystem> CityGrids = new List<GridSystem>();
+        public float TotalHappinessAverage = 0;
 
         private List<Residential> ResidentialBuildings;
         private List<Residential> VacantResidentialBuildings;
@@ -47,6 +48,24 @@ namespace Infrastructure {
         {
             ParentSession.TickManager.PostTick += ResetResourceTickCounters;
             ParentSession.TickManager.PreTick += ResidentVacancyUpdate;
+            ParentSession.TickManager.LowPriorityTick += ResidentHappinessUpdate;
+        }
+
+        /// <summary>
+        /// Update the happiness average on each grid system and the total city wide level.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="tickTime"></param>
+        private void ResidentHappinessUpdate(Session s, float tickTime)
+        {
+            float totalAverage = 0;
+            //Update the happiness totals for each grid.
+            foreach(GridSystem grid in CityGrids)
+            {
+                totalAverage += grid.UpdateHappiness();
+            }
+            //Get the average for all grid system happiness averages.
+            TotalHappinessAverage = totalAverage / CityGrids.Count + 1;
         }
 
         public T GetResource<T>() where T : Resource {

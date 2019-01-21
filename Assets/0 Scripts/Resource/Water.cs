@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Infrastructure.Residents;
 
 namespace CityResources
 {
@@ -13,6 +9,8 @@ namespace CityResources
             CapValue = true;
             ValueCap = 500000;
             TimeoutTime = 10f;
+
+            Happiness.EvaluateWater = true;
         }
     }
 }
