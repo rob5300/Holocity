@@ -1,10 +1,5 @@
 ﻿using CityResources;
 using Infrastructure.Tick;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {

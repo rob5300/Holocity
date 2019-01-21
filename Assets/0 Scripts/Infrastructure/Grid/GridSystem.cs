@@ -51,6 +51,7 @@ namespace Infrastructure.Grid
             }
 
             TickAddQueue = new ConcurrentQueue<Tickable>();
+            Residents = new List<Resident>();
 
             WorldGrid = CreateWorldGrid(worldGridPosition);
         }

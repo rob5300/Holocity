@@ -11,6 +11,7 @@ namespace CityResources
         public Resource()
         {
             CapValue = false;
+            Value = 0;
         }
 
         public float Value { get; private set; }

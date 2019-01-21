@@ -146,6 +146,8 @@ public class WorldGrid : MonoBehaviour {
     private void AddResourcesUI()
     {
         ResourceUI = Instantiate(Game.CurrentSession.Cache.ResourceUI, GridContainer.transform);
+        //Set references to the world grid for the ui.
+        ResourceUI.GetComponent<ResourcesUI>().WorldGrid = this;
         ResourceUI.transform.localPosition = new Vector3(0, 0.3f, 0);
     }
 }
