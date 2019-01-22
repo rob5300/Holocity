@@ -7,7 +7,7 @@ public class EdgeGuidance : MonoBehaviour
 {
     public static EdgeGuidance instance;
     public float lerpSpeed = 6.0f;
-    public Sprite defaultIcon;
+    public GameObject defaultIcon;
 
     //List of all targets.
     List<UITarget> targets = new List<UITarget>();
@@ -57,15 +57,14 @@ public class EdgeGuidance : MonoBehaviour
 
     public void AddTarget(Transform target,  Color colour)
     {
-        GameObject targetGuide = new GameObject("guide" + targets.Count);
+        GameObject targetGuide = Instantiate(defaultIcon, transform);
+        //            new GameObject("guide" + targets.Count);
 
-        targetGuide.transform.parent = transform;
-        Image img = targetGuide.AddComponent<Image>();
-        img.sprite = defaultIcon;
-        img.color = colour;
-        img.rectTransform.position = Vector3.zero;
+        targetGuide.transform.position = Vector3.zero;
 
         targets.Add(new UITarget(target, targetGuide.GetComponent<Image>().rectTransform));
+
+        targetGuide.SetActive(true);
     }
 
     public void RemoveTarget(Transform pos)
