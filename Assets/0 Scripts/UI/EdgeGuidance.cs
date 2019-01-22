@@ -87,7 +87,6 @@ public class EdgeGuidance : MonoBehaviour
             if (CheckOutOfView(target))
             {
             }
-            //{
             Vector3 targetDir = target.targetTransform.position - mainCamera.transform.position;
             float angle = Vector3.SignedAngle(targetDir, mainCamera.transform.forward, Vector3.up) * Mathf.PI / 180;
             float angleY = Vector3.SignedAngle(targetDir, mainCamera.transform.right, Vector3.up) * Mathf.PI / 180;
@@ -122,7 +121,8 @@ public class EdgeGuidance : MonoBehaviour
             //Could possibly change, fixes jump at 180degrees
             target.guideTransform.localPosition = Vector3.Lerp(target.guideTransform.localPosition,
                 new Vector3(xPos, yPos, 0), Time.deltaTime * lerpSpeed);
-            // }
+
+            target.guideTransform.Rotate(0, 0, angle);
         }
     }
 
