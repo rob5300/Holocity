@@ -15,7 +15,7 @@ MonoBehaviour:
   Anchor: 4
   Style: 0
   Size: 77
-  Color: {r: 0, g: 0, b: 0, a: 1}
+  Color: {r: 1, g: 1, b: 1, a: 1}
   Font: {fileID: 12800000, guid: 86574c70442309b45be5a1c37a37a40b, type: 3}
   AnchorLowerCenterOffset: {x: 0, y: -0.035, z: -0.0075}
   AnchorLowerLeftOffset: {x: 0, y: -0.035, z: -0.0075}

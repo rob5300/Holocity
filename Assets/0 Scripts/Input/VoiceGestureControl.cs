@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using HoloToolkit.Unity.InputModule;
+using UnityEngine.SceneManagement;
 
 public class VoiceGestureControl : MonoBehaviour, ISpeechHandler
 {
@@ -26,7 +27,12 @@ public class VoiceGestureControl : MonoBehaviour, ISpeechHandler
 			Debug.Log("VOICE: Rotating");
             IsNavigating = true;
         }
-		else{
+        else if (eventData.RecognizedText.Equals("Reload Game"))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+        }
+        else
+        {
 			Debug.Log("VOICE: something else ???:" + eventData.RecognizedText);
 		}
 
