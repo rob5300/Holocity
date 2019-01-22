@@ -5,15 +5,20 @@ using UnityEngine.UI;
 
 public class EdgeGuidance : MonoBehaviour
 {
-
+    public static EdgeGuidance instance;
     public float lerpSpeed = 6.0f;
+    public Sprite defaultIcon;
 
     //List of all targets.
     List<UITarget> targets = new List<UITarget>();
     Camera mainCamera;
     Vector2 CamBound;
 
-    // Use this for initialization
+    private void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
         mainCamera = transform.parent.GetComponent<Camera>();
@@ -44,6 +49,19 @@ public class EdgeGuidance : MonoBehaviour
         targetGuide.transform.parent = transform;
         Image img = targetGuide.AddComponent<Image>();
         img.sprite = icon;
+        img.color = colour;
+        img.rectTransform.position = Vector3.zero;
+
+        targets.Add(new UITarget(target, targetGuide.GetComponent<Image>().rectTransform));
+    }
+
+    public void AddTarget(Transform target,  Color colour)
+    {
+        GameObject targetGuide = new GameObject("guide" + targets.Count);
+
+        targetGuide.transform.parent = transform;
+        Image img = targetGuide.AddComponent<Image>();
+        img.sprite = defaultIcon;
         img.color = colour;
         img.rectTransform.position = Vector3.zero;
 
