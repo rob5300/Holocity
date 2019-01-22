@@ -121,7 +121,7 @@ public class EdgeGuidance : MonoBehaviour
             target.guideTransform.localPosition = Vector3.Lerp(target.guideTransform.localPosition,
                 new Vector3(xPos, yPos, 0), Time.deltaTime * lerpSpeed);
 
-            target.guideTransform.Rotate(0, 0, angle);
+            target.guideTransform.localRotation = Quaternion.Euler(0, 0, Vector3.SignedAngle(targetDir, mainCamera.transform.forward, Vector3.up));
         }
     }
 
