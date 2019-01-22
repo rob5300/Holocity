@@ -12,7 +12,6 @@ public class WorldGrid : MonoBehaviour {
     public GridSystem GridSystem;
     public GameObject GridContainer { get; private set; }
     public GameObject ResourceUI;
-
     public WorldGridTaskManager TaskManager;
 
     /// <summary>
@@ -61,6 +60,10 @@ public class WorldGrid : MonoBehaviour {
         GridContainer.transform.localScale = ContainerScaleFactor;
 
         RotateToFaceUser();
+
+
+        EdgeGuidance.instance.AddTarget(transform, Color.red);
+
     }
 
     public WorldGridTile GetTile(Vector2Int position)

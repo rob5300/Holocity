@@ -21,6 +21,9 @@ namespace Infrastructure.Grid
         public GridTile[][] Tiles;
         public float AverageResidentHappiness = 0;
         public List<Resident> Residents;
+        public EdgeGuidance edgeGuidance;
+        public Sprite icon;
+
         /// <summary>
         /// A list of all tickables that will be ticked by the owning city and session tick manager.
         /// </summary>
@@ -77,6 +80,7 @@ namespace Infrastructure.Grid
             gridObject.AddComponent<WorldAnchor>();
             WorldGrid grid = gridObject.AddComponent<WorldGrid>();
             grid.Initialize(Id, Width, Height, this);
+
             return grid;
         }
 

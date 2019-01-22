@@ -618,7 +618,7 @@ PlayerSettings:
   metroCertificateNotAfter: 000ab7ea087ed501
   metroApplicationDescription: Template_Lightweight
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: SimcityHololens
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
@@ -642,8 +642,8 @@ PlayerSettings:
       EnterpriseAuthentication: False
       HumanInterfaceDevice: False
       InputInjectionBrokered: False
-      InternetClient: True
-      InternetClientServer: True
+      InternetClient: False
+      InternetClientServer: False
       Location: False
       LowLevelDevices: False
       Microphone: True
@@ -654,7 +654,7 @@ PlayerSettings:
       PhoneCallHistoryPublic: False
       PicturesLibrary: False
       PointOfService: False
-      PrivateNetworkClientServer: True
+      PrivateNetworkClientServer: False
       Proximity: False
       RecordedCallsFolder: False
       RemoteSystem: False
