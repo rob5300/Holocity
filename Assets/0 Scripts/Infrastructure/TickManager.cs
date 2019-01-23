@@ -1,5 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -25,8 +27,9 @@ namespace Infrastructure.Tick
 
         public delegate void SessionAction(Session s, float tickTime);
 
-        private Thread _thread;
         private System.Timers.Timer _timer;
+        private static object _tickLock;
+        //private TickEventSynchronise _syncronisingObject;
         private ElapsedEventHandler _timerHandle;
         private Session _session;
         /// <summary>
@@ -69,19 +72,9 @@ namespace Infrastructure.Tick
             LowPriorityTickTargets = new List<Tickable>();
 
             IsRunning = false;
-
+            _tickLock = new object();
+            //_syncronisingObject = new TickEventSynchronise();
             Start();
-        }
-
-        /// <summary>
-        /// Start the Tick Manager. The thread is created at this stage and constant ticks begin.
-        /// </summary>
-        public void Start()
-        {
-            if (IsRunning) return;
-            _thread = new Thread(new ThreadStart(ThreadStart));
-            _thread.Start();
-            IsRunning = true;
         }
 
         public bool AddSessionAction(SessionAction action)
@@ -91,69 +84,87 @@ namespace Infrastructure.Tick
             return true;
         }
 
-        private void ThreadStart()
+        private void Start()
         {
             //The thread is open and we begin setting up the tick manager to tick.
             _timer = new System.Timers.Timer(TickDelay);
             _timerHandle = Tick;
             _timer.Elapsed += _timerHandle;
             _timer.AutoReset = true;
+            //_timer.SynchronizingObject = _syncronisingObject;
             _timer.Start();
         }
 
         //The method that performs ticks. This is subscribed to the Timer Elapsed event.
         private void Tick(object sender, ElapsedEventArgs args)
         {
-            //Convert the tick delay to a float in seconds.
-            float ticktimeinseconds = TickDelay / 1000;
-
-            //This is called when we tick.
-            //Task.Run(() => { PreTick?.Invoke(_session, ticktimeinseconds); });
-            PreTick?.Invoke(_session, ticktimeinseconds);
-
-            //Execute any delegates that are waiting.
-            for (int x = 0; x < SessionActionsQueue.Count; x++)
+            //=====
+            //We use a lock and use Monitor to check if we can aquire it. We dont use lock as we want to end the execution instead of pausing it.
+            //=====
+            bool haveLock = false;
+            try
             {
-                SessionAction sessionAction;
-                while (SessionActionsQueue.TryDequeue(out sessionAction)) sessionAction.Invoke(_session, TickDelay);
-            }
+                Monitor.TryEnter(_tickLock, ref haveLock);
+                //If we were not able to get the lock, return.
+                if (!haveLock) return;
 
-            //Check if there are any new tickables in the queue.
-            TryDequingNewTickables();
+                //*** TICK BODY ***
 
-            //Check if there are any new grids
-            TryDequeingNewGrids();
+                //Convert the tick delay to a float in seconds.
+                float ticktimeinseconds = TickDelay / 1000;
 
-            //Test to see if there are any new tickable targets to get from grid systems.
-            TryDequeingNewTargets();
+                //This is called when we tick.
+                //Task.Run(() => { PreTick?.Invoke(_session, ticktimeinseconds); });
+                PreTick?.Invoke(_session, ticktimeinseconds);
 
-            //Execute all ticks
-            for (int i = 0; i < TickTargets.Count; i++)
-            {
-                TickTargets[i].Tick(ticktimeinseconds);
-            }
-
-            #region Low Priority
-            //Check if we should tick low priority targets.
-            //Increase the timer and check its value.
-            _lowPriorityTicksPassed++;
-            if(_lowPriorityTicksPassed >= _lowPriorityRate)
-            {
-                //Tick all low priority objects
-                for (int i = 0; i < LowPriorityTickTargets.Count; i++)
+                //Execute any delegates that are waiting.
+                for (int x = 0; x < SessionActionsQueue.Count; x++)
                 {
-                    LowPriorityTickTargets[i].Tick(ticktimeinseconds * _lowPriorityRate);
+                    SessionAction sessionAction;
+                    while (SessionActionsQueue.TryDequeue(out sessionAction)) sessionAction.Invoke(_session, TickDelay);
                 }
-                //Invoke event
-                LowPriorityTick?.Invoke(_session, ticktimeinseconds * _lowPriorityRate);
 
-                //Reset counter
-                _lowPriorityTicksPassed = 0;
+                //Check if there are any new tickables in the queue.
+                TryDequingNewTickables();
+
+                //Check if there are any new grids
+                TryDequeingNewGrids();
+
+                //Test to see if there are any new tickable targets to get from grid systems.
+                TryDequeingNewTargets();
+
+                //Execute all ticks
+                for (int i = 0; i < TickTargets.Count; i++)
+                {
+                    TickTargets[i].Tick(ticktimeinseconds);
+                }
+
+                #region Low Priority
+                //Check if we should tick low priority targets.
+                //Increase the timer and check its value.
+                _lowPriorityTicksPassed++;
+                if (_lowPriorityTicksPassed >= _lowPriorityRate)
+                {
+                    //Tick all low priority objects
+                    for (int i = 0; i < LowPriorityTickTargets.Count; i++)
+                    {
+                        LowPriorityTickTargets[i].Tick(ticktimeinseconds * _lowPriorityRate);
+                    }
+                    //Invoke event
+                    LowPriorityTick?.Invoke(_session, ticktimeinseconds * _lowPriorityRate);
+
+                    //Reset counter
+                    _lowPriorityTicksPassed = 0;
+                }
+                #endregion
+
+                //Post tick event.
+                PostTick?.Invoke(_session, ticktimeinseconds);
             }
-            #endregion
-
-            //Post tick event.
-            PostTick?.Invoke(_session, ticktimeinseconds);
+            finally
+            {
+                if (haveLock) Monitor.Exit(_tickLock);
+            }
         }
 
         private void TryDequeingNewGrids()
@@ -196,3 +207,23 @@ namespace Infrastructure.Tick
         }
     }
 }
+
+//public class TickEventSynchronise : ISynchronizeInvoke
+//{
+//    public bool InvokeRequired => true;
+
+//    public IAsyncResult BeginInvoke(Delegate method, object[] args)
+//    {
+//        throw new NotImplementedException();
+//    }
+
+//    public object EndInvoke(IAsyncResult result)
+//    {
+//        throw new NotImplementedException();
+//    }
+
+//    public object Invoke(Delegate method, object[] args)
+//    {
+//        return method.DynamicInvoke(args);
+//    }
+//}

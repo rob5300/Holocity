@@ -89,11 +89,11 @@
             float value = 0;
             if (EvaluateElectricity)
             {
-                if (resident.Home.HasPower) value += 1 / EvaluationQuantity;
+                if (resident.Home.HasPower) value += (float)1 / EvaluationQuantity;
             }
             if (EvaluateWater)
             {
-                if (resident.Home.HasWaterSupply) value += 1 / EvaluationQuantity;
+                if (resident.Home.HasWaterSupply) value += (float)1 / EvaluationQuantity;
             }
             if (EnableBaseHappiness)
             {
