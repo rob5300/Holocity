@@ -30,7 +30,7 @@ public class EdgeGuidance : MonoBehaviour
     {
         UpdateGuide();
     }
-
+    //Update as it uses centre of grid atm
     bool CheckOutOfView(UITarget target)
     {
         Vector3 screenPoint = mainCamera.WorldToViewportPoint(target.targetTransform.position);
@@ -57,12 +57,19 @@ public class EdgeGuidance : MonoBehaviour
 
     public void AddTarget(Transform target,  Color colour)
     {
+        //Instantiate the circle
         GameObject targetGuide = Instantiate(defaultIcon, transform);
-        //            new GameObject("guide" + targets.Count);
+        
+        //centre the circle on player
+        Vector3 guidePos = mainCamera.transform.position;
+        guidePos.y = target.position.y;
+        targetGuide.transform.position = guidePos;
 
-        targetGuide.transform.position = Vector3.zero;
+        //Set Scale
+        float scale = Vector3.Distance(guidePos, target.position);
+        targetGuide.transform.localScale += new Vector3(scale, 0, scale); // set X and Z scale to 0 for prefab!!
 
-        targets.Add(new UITarget(target, targetGuide.GetComponent<Image>().rectTransform));
+        //targets.Add(new UITarget(target, targetGuide.GetComponent<Image>().rectTransform));
 
         targetGuide.SetActive(true);
     }
