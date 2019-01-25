@@ -37,7 +37,8 @@ public class ResourcesUI : MonoBehaviour
             _lastUpdateTime = Time.time;
         }
         //Update the happiness value in the UI
-        GridHappinessText.text = WorldGrid.GridSystem.AverageResidentHappiness.ToString();
+        float happiness = WorldGrid.GridSystem.AverageResidentHappiness;
+        GridHappinessText.text = happiness.ToString();
     }
 }
 

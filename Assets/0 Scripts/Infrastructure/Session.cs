@@ -8,6 +8,7 @@ public class Session {
     public City City { get; private set; }
     public AssetCache Cache;
 
+    private Thread _thread;
     public TickManager TickManager;
 
     public double Version;
@@ -28,10 +29,19 @@ public class Session {
 
         Cache = new AssetCache();
 
+        //Create a new thread for the tick manager.
+        _thread = new Thread(new ThreadStart(ThreadStart));
+#if UNITY_EDITOR
+        UnityEngine.Debug.Log("Thread ID: " + _thread.Name);
+#endif
+        _thread.Start();
+    }
+
+    private void ThreadStart()
+    {
         //Create a tickmanager and start it off on a new thread.
         TickManager = new TickManager(City);
 
         City.PostSetup();
     }
-
 }

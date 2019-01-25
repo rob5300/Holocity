@@ -166,7 +166,7 @@ namespace Infrastructure.Grid
             {
                 totalhappiness += res.Happiness.Level;
             }
-            AverageResidentHappiness = totalhappiness / Residents.Count + 1;
+            AverageResidentHappiness = totalhappiness / Residents.Count;
             return AverageResidentHappiness;
         }
     }
