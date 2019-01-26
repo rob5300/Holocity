@@ -11,7 +11,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         public Modern_CityBuildings()
         {
             Name = "City Buildings";
-            BuildingPrefabPath = "City Buildings Modern Day";
+            PrefabName = "City Buildings Modern Day";
         }
     }
 }

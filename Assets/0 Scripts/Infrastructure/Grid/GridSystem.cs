@@ -155,7 +155,7 @@ namespace Infrastructure.Grid
 
         private void AddBuildingtoWorldGrid(Building building, int x, int y)
         {
-            WorldGrid.GetTile(x,y).AddBuildingFromGridSystem(building);
+            WorldGrid.GetTile(x,y).AddModelToTile(building);
         }
 
         public float UpdateHappiness()

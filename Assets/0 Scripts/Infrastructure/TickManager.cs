@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 using Infrastructure.Grid;
 
@@ -14,6 +11,7 @@ namespace Infrastructure.Tick
     /// </summary>
     public class TickManager
     {
+        #region Public Members
         public readonly float TickDelay;
         public bool IsRunning { get; private set; }
         public City TargetCity { get; private set; }
@@ -24,12 +22,18 @@ namespace Infrastructure.Tick
         public ConcurrentQueue<GridSystem> NewGridSystems;
         public ConcurrentQueue<Tickable> IncomingTickableQueue;
         public ConcurrentQueue<Tickable> LowPriorityIncomingQueue;
-
         public delegate void SessionAction(Session s, float tickTime);
+        #endregion
 
+        #region Private Members
+        /// <summary>
+        /// The timer used to tick the Tick method.
+        /// </summary>
         private System.Timers.Timer _timer;
+        /// <summary>
+        /// Used as a lock to prevent overlapping ticks.
+        /// </summary>
         private static object _tickLock;
-        //private TickEventSynchronise _syncronisingObject;
         private ElapsedEventHandler _timerHandle;
         private Session _session;
         /// <summary>
@@ -37,7 +41,6 @@ namespace Infrastructure.Tick
         /// </summary>
         private readonly float _lowPriorityRate = 4;
         private float _lowPriorityTicksPassed = 0;
-
         /// <summary>
         /// All the tickables that we tick.
         /// </summary>
@@ -50,13 +53,14 @@ namespace Infrastructure.Tick
         /// List of referneces to the queues that all existing grid systems hold. These queues hold new tickables waiting to be added to the master TickTargets list.
         /// </summary>
         private List<ConcurrentQueue<Tickable>> GridNewTickableQueues;
-        
+        #endregion
+
         /// <summary>
-        /// Creates a new tickmanager on a new thread.
+        /// Creates a new tickmanager. The given tick delay is fixed and used throughout the lifetime of the tick manager.
         /// </summary>
         /// <param name="targetCity">The target city to manage</param>
         /// <param name="tickDelay">How long in ms to wait to tick again.</param>
-        public TickManager(City targetCity, float tickDelay = 100)
+        public TickManager(City targetCity, float tickDelay = 100, bool autoStart = false)
         {
             TickDelay = tickDelay;
             TargetCity = targetCity;
@@ -73,18 +77,14 @@ namespace Infrastructure.Tick
 
             IsRunning = false;
             _tickLock = new object();
-            //_syncronisingObject = new TickEventSynchronise();
-            Start();
+
+            if (autoStart) Start();
         }
 
-        public bool AddSessionAction(SessionAction action)
-        {
-            if (action == null) return false;
-            SessionActionsQueue.Enqueue(action);
-            return true;
-        }
-
-        private void Start()
+        /// <summary>
+        /// Sets up the timer and begins the ticking.
+        /// </summary>
+        public void Start()
         {
             //The thread is open and we begin setting up the tick manager to tick.
             _timer = new System.Timers.Timer(TickDelay);
@@ -95,7 +95,9 @@ namespace Infrastructure.Tick
             _timer.Start();
         }
 
-        //The method that performs ticks. This is subscribed to the Timer Elapsed event.
+        /// <summary>
+        /// The method that performs ticks. This is subscribed to the Timer Elapsed event.
+        /// </summary>
         private void Tick(object sender, ElapsedEventArgs args)
         {
             //=====
@@ -114,7 +116,6 @@ namespace Infrastructure.Tick
                 float ticktimeinseconds = TickDelay / 1000;
 
                 //This is called when we tick.
-                //Task.Run(() => { PreTick?.Invoke(_session, ticktimeinseconds); });
                 PreTick?.Invoke(_session, ticktimeinseconds);
 
                 //Execute any delegates that are waiting.
@@ -167,6 +168,13 @@ namespace Infrastructure.Tick
             }
         }
 
+        public bool AddSessionAction(SessionAction action)
+        {
+            if (action == null) return false;
+            SessionActionsQueue.Enqueue(action);
+            return true;
+        }
+
         private void TryDequeingNewGrids()
         {
             for (int i = 0; i < NewGridSystems.Count; i++)
@@ -207,23 +215,3 @@ namespace Infrastructure.Tick
         }
     }
 }
-
-//public class TickEventSynchronise : ISynchronizeInvoke
-//{
-//    public bool InvokeRequired => true;
-
-//    public IAsyncResult BeginInvoke(Delegate method, object[] args)
-//    {
-//        throw new NotImplementedException();
-//    }
-
-//    public object EndInvoke(IAsyncResult result)
-//    {
-//        throw new NotImplementedException();
-//    }
-
-//    public object Invoke(Delegate method, object[] args)
-//    {
-//        return method.DynamicInvoke(args);
-//    }
-//}

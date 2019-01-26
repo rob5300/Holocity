@@ -4,6 +4,7 @@ using Infrastructure.Grid;
 using Infrastructure.Grid.Entities.Buildings;
 using HoloToolkit.Unity.InputModule;
 using BuildTool;
+using Infrastructure.Grid.Entities;
 
 [SelectionBase]
 public class WorldGridTile : MonoBehaviour {
@@ -34,10 +35,10 @@ public class WorldGridTile : MonoBehaviour {
         OnTileDestroy?.Invoke();
     }
 
-    internal void AddBuildingFromGridSystem(Building building)
+    internal void AddModelToTile(TileEntity tileEnt)
     {
         TileBorder.SetActive(false);
-        Model = Instantiate(building.BuildingPrefab, transform);
+        Model = Instantiate(tileEnt.GetModel(), transform);
 
         //Add Gesture Components to Buildings
         Model.AddComponent<WorldTileMoveGestureHandler>();
@@ -47,8 +48,8 @@ public class WorldGridTile : MonoBehaviour {
         //Set the layer mask.
         Model.layer = LayerMask.NameToLayer("Hologram");
 
-        //Tell the building that this tile exists now.
-        building.OnWorldGridTileCreated(this);
+        //Tell the Tile entity that this tile exists now.
+        tileEnt.OnWorldGridTileCreated(this);
     }
 
     public bool AttemptBuildingSwap(Vector3 checkPosition)

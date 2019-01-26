@@ -17,6 +17,9 @@ public class SessionCreator : MonoBehaviour {
 #endif
         Game.SetSession(new Session());
         Debug.Log("New session created and set: " + Game.CurrentSession.Name);
+
+        //Give the player some money
+        Game.CurrentSession.AddFunds(1000);
 	}
 
     public void CreateDefaultGrid()
