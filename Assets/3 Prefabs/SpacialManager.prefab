@@ -109,7 +109,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b67f0fe81d6c8954bade7ca559a74920, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OriginPoint: {fileID: 4003726925854780}
-  ExtentPoint: {fileID: 4414168173719296}
-  DrawAreaGizmo: 1
-  UpdatesPerSecond: 30
+  UpdateDelay: 2.5
+  UseMeshRenderer: 0
+  Material: {fileID: 0}
+  OnFirstSurfaceAdded:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null

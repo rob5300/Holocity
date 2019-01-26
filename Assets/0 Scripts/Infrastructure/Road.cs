@@ -6,7 +6,7 @@ namespace Infrastructure.Grid.Entities
     {
         private static bool _cachedPrefabs = false;
         private static GameObject[] RoadPrefabs;
-        public static string ResourcesFolderpath = "Roads/";
+        public static string RoadPath = "Roads/";
 
         public bool CarryingPower = false;
         public bool CarryingWater = false;
@@ -39,7 +39,7 @@ namespace Infrastructure.Grid.Entities
             //May need optimising
 
 
-            return null;
+            return RoadPrefabs[0];
             
         }
 
@@ -47,17 +47,17 @@ namespace Infrastructure.Grid.Entities
         {
             Vector2Int positionToCheck = ParentTile.Position + tilePosition;
             GridTile tile = ParentTile.ParentGridSystem.GetTile(positionToCheck);
-            return tile.Entity is Road;
+            return tile?.Entity is Road;
         }
 
         private static void LoadRoadPrefabs()
         {
             //Cache and load all road prefabs.
             RoadPrefabs = new GameObject[4];
-            RoadPrefabs[0] = Resources.Load<GameObject>(ResourcesFolderpath + "Road EW");
-            RoadPrefabs[1] = Resources.Load<GameObject>(ResourcesFolderpath + "Road NSEW");
-            RoadPrefabs[2] = Resources.Load<GameObject>(ResourcesFolderpath + "Road NSW");
-            RoadPrefabs[3] = Resources.Load<GameObject>(ResourcesFolderpath + "Road NW");
+            RoadPrefabs[0] = Resources.Load<GameObject>(RoadPath + "Road EW");
+            RoadPrefabs[1] = Resources.Load<GameObject>(RoadPath + "Road NSEW");
+            RoadPrefabs[2] = Resources.Load<GameObject>(RoadPath + "Road NSW");
+            RoadPrefabs[3] = Resources.Load<GameObject>(RoadPath + "Road NW");
         }
     }
 }

@@ -39,6 +39,8 @@ public class WorldGridTile : MonoBehaviour {
     {
         TileBorder.SetActive(false);
         Model = Instantiate(tileEnt.GetModel(), transform);
+        //Reset the position of the model to 0.
+        Model.transform.localPosition = Vector3.zero;
 
         //Add Gesture Components to Buildings
         Model.AddComponent<WorldTileMoveGestureHandler>();
