@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {
+
     public abstract class Building : TileEntity
     {
         public static string BuildingResourcesFolderPath = "Buildings/";
@@ -11,7 +12,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         public string Name;
         public GameObject BuildingPrefab {
             get {
-                if (_buildingPrefab == null) _buildingPrefab = GetBuildinbPrefab(BuildingPrefabPath);
+                if (_buildingPrefab == null) _buildingPrefab = GetBuildingPrefab(BuildingPrefabPath);
                 return _buildingPrefab;
             }
         }
@@ -35,7 +36,7 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         }
 
-        private static GameObject GetBuildinbPrefab(string path) {
+        private static GameObject GetBuildingPrefab(string path) {
             return Resources.Load<GameObject>(BuildingResourcesFolderPath + path);
         }
     }

@@ -70,6 +70,7 @@ namespace HoloToolkit.Unity.Buttons
             // Set the color from the datum 
             if (_renderer != null)
                     _renderer.material.color = stateDatum.StateColor;
+                    _renderer.transform.localScale = stateDatum.Scale;
 
             base.OnStateChange(newState);
         }

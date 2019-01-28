@@ -15,14 +15,19 @@ public class ResourcesUI : MonoBehaviour
     [NonSerialized]
     public WorldGrid WorldGrid;
 
+    //Rotate resource towards player
+    private Camera camera;
+
     public void Start()
     {
         _electricity = Game.CurrentSession.City.GetResource<Electricity>();
         _water = Game.CurrentSession.City.GetResource<Water>();
+        camera = GameObject.Find("MixedRealityCamera").GetComponent<Camera>();
     }
 
     public void Update()
     {
+        transform.rotation = Quaternion.LookRotation(camera.transform.forward);
         //Update the resources ui for city resources.
         if(_lastUpdateTime + UpdateDelay < Time.time)
         {

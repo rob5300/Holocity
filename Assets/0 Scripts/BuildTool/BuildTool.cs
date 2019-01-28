@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BuildEnums;
 using Infrastructure.Grid;
 using Infrastructure.Grid.Entities.Buildings;
+using System;
 
 namespace BuildTool
 {
@@ -12,7 +14,8 @@ namespace BuildTool
 
         private static int buildingNum = 0;
 
-        static Tools(){
+        static Tools()
+        {
             r = new System.Random();
         }
 
@@ -34,17 +37,19 @@ namespace BuildTool
             }
         }
 
+
+
         public static void MoveBuilding(Transform transform, Vector3 pos)
         {
             LayerMask layerMask = LayerMask.NameToLayer("Hologram");
             RaycastHit hit;
-            
+
             if (Physics.Raycast(transform.position, -Vector3.up, out hit, layerMask))
             {
                 //checks if we are placing on a building or gridslot
                 if (hit.transform.parent.GetComponent<WorldGridTile>())
                 {
-                    
+
                     Vector2Int a = transform.parent.GetComponent<WorldGridTile>().Position;
                     Vector2Int b = hit.transform.parent.GetComponent<WorldGridTile>().Position;
 
@@ -53,7 +58,7 @@ namespace BuildTool
                 }
                 else
                 {
-                   ResetBuildingPos(transform);
+                    ResetBuildingPos(transform);
                 }
             }
             else
@@ -88,6 +93,29 @@ namespace BuildTool
                     return new Old_Church();
                 default:
                     return new House();
+            }
+        }
+
+        public static void SpawnBuilding(Vector2Int position, ModernBuildings building)
+        {
+            Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(position.x, position.y, GetBuilding(building));
+
+        }
+
+        public static Building GetBuilding(ModernBuildings building)
+        {
+            switch (building)
+            {
+                case ModernBuildings.House:
+                    return new House();
+                case ModernBuildings.Future_House:
+                    return new Future_House();
+                case ModernBuildings.Modern_CityBuildings:
+                    return new Modern_CityBuildings();
+                case ModernBuildings.Old_Church:
+                    return new Old_Church();
+
+                default: return new House();
             }
         }
     }
