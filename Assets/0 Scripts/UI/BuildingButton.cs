@@ -11,25 +11,24 @@ public class BuildingButton : MonoBehaviour {
     public Building building = new House();
     public ModernBuildings buildingEnum = ModernBuildings.House;
 
+    float Cost = 50;
+
     // Use this for initialization
     void Start()
     {
-        Mesh mesh = GetComponent<MeshFilter>().mesh;
+        SetBuilding();
+    }
 
-        //Would like to assign the mesh as it's instantiated.
-       // if (mesh)
-         //   mesh = FindBuilding(mesh.name);
-        
-        /*
-        if(mesh != null && building != null)
-           mesh = building.BuildingPrefab.GetComponent<MeshFilter>().mesh;
-           */
+    void Update()
+    {
+
     }
 
     //TEMPORARY
-    /*
-    Mesh FindBuilding(string name)
+    void SetBuilding()
     {
+       string name = GetComponentInChildren<MeshFilter>().mesh.name;
+
         switch (name)
         {
             case "House Instance":
@@ -48,12 +47,5 @@ public class BuildingButton : MonoBehaviour {
                 buildingEnum = ModernBuildings.House;
                 break;
         }
-        
-       // return Tools.GetBuilding(buildingEnum).BuildingPrefab.GetComponent<MeshFilter>().GetComponent<Mesh>();
-    }
-    */
-    void Update()
-    {
-        
     }
 }

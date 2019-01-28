@@ -94,7 +94,7 @@ namespace BuildTool
 
         public static void SpawnBuilding(Vector2Int position, ModernBuildings building)
         {
-           // Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(position.x, position.y, GetBuilding(building));
+           Game.CurrentSession.City.GetGrid(0).AddTileEntityToTile(position.x, position.y, GetBuilding(building));
 
         }
 

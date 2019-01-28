@@ -11,19 +11,18 @@ public class BuildToolUI : MonoBehaviour {
     enum MenuState {MainMenu, BuildingSelect}
 
     MenuState menuState = MenuState.MainMenu;
+    
 
-    //Menus
+    [Header("Main Menu")]
     public GameObject mainMenu;
-    public GameObject BuildingMenu;
-
-    //Buttons
     public CompoundButton BuildButton;
     public CompoundButton RoadButton;
     public CompoundButton DestroyButton;
 
-    //will need to update this somehow.
-    public List<CompoundButton> buildingButtons;
+    [Header("Building Menu")]
+    public GameObject BuildingMenu;
     public GameObject buildingBtnPrefab;
+    public List<CompoundButton> buildingButtons;
 
     public void Start()
     {
@@ -47,7 +46,7 @@ public class BuildToolUI : MonoBehaviour {
     void BuildPressed(GameObject go)
     {
         SwitchState(MenuState.BuildingSelect);
-        GenerateBuildingButtons();
+        //GenerateBuildingButtons();
     }
 
     void RoadPressed(GameObject go)
@@ -66,6 +65,7 @@ public class BuildToolUI : MonoBehaviour {
         ModernBuildings building = go.GetComponent<BuildingButton>().buildingEnum;
 
         Tools.SpawnBuilding(pos, building);
+        
     }
 
     //BuildTool Methods
@@ -103,7 +103,7 @@ public class BuildToolUI : MonoBehaviour {
             case MenuState.MainMenu:
                 mainMenu.SetActive(true);
                 BuildingMenu.SetActive(false);
-                    break;
+                break;
             case MenuState.BuildingSelect:
                 mainMenu.SetActive(false);
                 BuildingMenu.SetActive(true);
