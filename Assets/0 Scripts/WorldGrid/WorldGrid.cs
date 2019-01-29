@@ -62,7 +62,7 @@ public class WorldGrid : MonoBehaviour {
         RotateToFaceUser();
 
 
-        UIGuideCircle.instance.AddTarget(transform, Color.red);
+        UIGuideCircle.instance.AddTarget(transform, Color.cyan);
 
     }
 
