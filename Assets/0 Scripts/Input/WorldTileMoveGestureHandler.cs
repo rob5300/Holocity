@@ -39,7 +39,7 @@ public class WorldTileMoveGestureHandler : MonoBehaviour, IManipulationHandler {
 		
         if (!InputManager.Instance.CheckModalInputStack(gameObject) || _voiceCommand.IsNavigating) return;
         Vector3 gestureMovemnt = eventData.CumulativeDelta;
-        gestureMovemnt.y = 0;
+        //gestureMovemnt.y = 0;
         transform.position = MoveOffset + gestureMovemnt;
 
         eventData.Use();
