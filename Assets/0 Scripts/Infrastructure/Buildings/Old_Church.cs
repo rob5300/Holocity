@@ -11,7 +11,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         public Old_Church()
         {
             Name = "Old Church";
-            BuildingPrefabPath = "Old Church";
+            PrefabName = "Old Church";
         }
     }
 }

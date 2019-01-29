@@ -69,7 +69,8 @@ namespace Infrastructure.Grid
 
         public GridTile GetTile(Vector2Int position)
         {
-            if (position.x <= Width && position.y <= Height) return Tiles[position.x][position.y];
+            //Make sure the given position is inbounds of the array, if not we return null.
+            if ((position.x < Width && position.y < Height) && (position.x >= 0 && position.y >= 0)) return Tiles[position.x][position.y];
             return null;
         }
 
@@ -85,27 +86,27 @@ namespace Infrastructure.Grid
         }
 
         /// <summary>
-        /// Adds this building to this tile. Fails if the tile already has a building/entity.
+        /// Adds this tile entity/building to this tile. Fails if the tile already has a building/entity.
         /// </summary>
         /// <param name="x">x position.</param>
         /// <param name="y">y position.</param>
         /// <param name="building">The building to add to the tile.</param>
         /// <returns>If the operation was successful.</returns>
-        public bool AddBuildingToTile(int x, int y, Building building)
+        public bool AddTileEntityToTile(int x, int y, TileEntity tileEnt)
         {
             GridTile tile = GetTile(new Vector2Int(x, y));
             if (tile.Entity != null) return false;
-            tile.SetEntity(this, building);
-            AddBuildingtoWorldGrid(building, x, y);
+            tile.SetEntity(this, tileEnt);
+            AddTileEntityToWorldGrid(tileEnt, x, y);
             //We check if this is Tickable, if soo we add this to the tick manager in our session.
-            if(building is Tickable)
+            if(tileEnt is Tickable)
             {
-                TickAddQueue.Enqueue((Tickable)building);
+                TickAddQueue.Enqueue((Tickable)tileEnt);
             }
-            if(building is Residential)
+            if(tileEnt is Residential)
             {
                 //We call the event to let the city know that we have a new residential building.
-                OnNewResidentialBuilding?.Invoke((Residential)building);
+                OnNewResidentialBuilding?.Invoke((Residential)tileEnt);
             }
             return true;
         }
@@ -153,9 +154,9 @@ namespace Infrastructure.Grid
             return true;
         }
 
-        private void AddBuildingtoWorldGrid(Building building, int x, int y)
+        private void AddTileEntityToWorldGrid(TileEntity tileEnt, int x, int y)
         {
-            WorldGrid.GetTile(x,y).AddBuildingFromGridSystem(building);
+            WorldGrid.GetTile(x,y).AddModelToTile(tileEnt);
         }
 
         public float UpdateHappiness()

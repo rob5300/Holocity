@@ -10,7 +10,7 @@ namespace Infrastructure.Grid.Entities.Buildings
     {
         public Future_House()
         {
-            BuildingPrefabPath = "Future House";
+            PrefabName = "Future House";
         }
     }
 }

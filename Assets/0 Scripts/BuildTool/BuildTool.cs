@@ -74,7 +74,7 @@ namespace BuildTool
 
         public static void SpawnBuilding(Vector2Int position)
         {
-            Game.CurrentSession.City.GetGrid(0).AddBuildingToTile(position.x, position.y, GetRandomBuilding());
+            Game.CurrentSession.City.GetGrid(0).AddTileEntityToTile(position.x, position.y, GetRandomBuilding());
             buildingNum++;
             if (buildingNum > 3) buildingNum = 0;
         }

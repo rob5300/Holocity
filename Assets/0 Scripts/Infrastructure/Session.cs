@@ -6,28 +6,25 @@ using System.Threading;
 public class Session {
 
     public City City { get; private set; }
+    public uint Funds { get; private set; }
+    public readonly string CurrencySymbol;
     public AssetCache Cache;
-
-    private Thread _thread;
     public TickManager TickManager;
-
     public double Version;
     public string Name;
     public DateTime CreationDateTime;
 
-    public Session() : this(DateTime.Now.ToShortDateString(), DateTime.Now){}
-
-    public Session(string name) : this(name, DateTime.Now){}
+    private const uint _fundsCap = 1000000;
+    private Thread _thread;
 
     public Session(string name, DateTime dateTime)
     {
         Name = name != string.Empty ? name : System.DateTime.Now.ToShortTimeString() + ":" + System.DateTime.Now.ToShortDateString();
         CreationDateTime = dateTime;
         City = new City(Game.PlayerName, this);
-
         Version = Convert.ToDouble(UnityEngine.Application.version);
-
         Cache = new AssetCache();
+        Funds = 0;
 
         //Create a new thread for the tick manager.
         _thread = new Thread(new ThreadStart(ThreadStart));
@@ -37,11 +34,38 @@ public class Session {
         _thread.Start();
     }
 
+    public Session() : this(DateTime.Now.ToShortDateString(), DateTime.Now) { }
+
+    public Session(string name) : this(name, DateTime.Now) { }
+
     private void ThreadStart()
     {
         //Create a tickmanager and start it off on a new thread.
         TickManager = new TickManager(City);
-
+        TickManager.Start();
         City.PostSetup();
+    }
+
+    /// <summary>
+    /// Add the amount to the players funds.
+    /// </summary>
+    /// <param name="amount">How much to add</param>
+    /// <returns></returns>
+    public uint AddFunds(uint amount)
+    {
+        if (amount > _fundsCap) amount = _fundsCap;
+        return Funds += amount;
+    }
+
+    /// <summary>
+    /// Take the requested amount off the players funds. If there is not enough funds, nothing is taken. Returns if the operation was successful or not.
+    /// </summary>
+    /// <param name="amount">Amount to attempt to take.</param>
+    /// <returns>If the operation was successful.</returns>
+    public bool TakeFunds(uint amount)
+    {
+        if (amount > Funds) return false;
+        else Funds -= amount;
+        return true;
     }
 }

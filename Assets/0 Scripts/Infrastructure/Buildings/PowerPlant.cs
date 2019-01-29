@@ -11,7 +11,7 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         public PowerPlant()
         {
-            BuildingPrefabPath = "Powerplant";
+            PrefabName = "Powerplant";
         }
 
         public override void OnEntityProduced(GridSystem grid)
