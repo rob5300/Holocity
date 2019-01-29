@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ColorPropertyName: _Color
   ValuePropertyName: 
-  SmoothStateChanges: 0
+  SmoothStateChanges: 1
   StickyPressedEvents: 0
   StickyPressedTime: 0.15
   AnimationSpeed: 1
@@ -23,25 +23,25 @@ MonoBehaviour:
     StateColor: {r: 0.29411766, g: 0.4784314, b: 0.59607846, a: 1}
     StateValue: 0
     Offset: {x: 0, y: 0, z: 0}
-    Scale: {x: 0.18, y: 0.18, z: 0.18}
+    Scale: {x: 0.1, y: 0.1, z: 0.1}
   - Name: Targeted
     ActiveState: 1
     StateColor: {r: 0.29411766, g: 0.47843137, b: 0.59607846, a: 1}
     StateValue: 0
     Offset: {x: 0, y: 0, z: 0}
-    Scale: {x: 0.15, y: 0.15, z: 0.15}
+    Scale: {x: 0.1, y: 0.1, z: 0.1}
   - Name: Interactive
     ActiveState: 2
     StateColor: {r: 0.29411766, g: 0.47843137, b: 0.59607846, a: 1}
     StateValue: 0
     Offset: {x: 0, y: 0, z: 0}
-    Scale: {x: 0, y: 0, z: 0}
+    Scale: {x: 0.1, y: 0.1, z: 0.1}
   - Name: ObservationTargeted
     ActiveState: 3
     StateColor: {r: 0.29411766, g: 0.47843137, b: 0.59607846, a: 1}
     StateValue: 0
     Offset: {x: 0, y: 0, z: 0}
-    Scale: {x: 0.18, y: 0.18, z: 0.18}
+    Scale: {x: 0.1, y: 0.1, z: 0.1}
   - Name: Observation
     ActiveState: 4
     StateColor: {r: 0.29411766, g: 0.47843137, b: 0.59607846, a: 1}
