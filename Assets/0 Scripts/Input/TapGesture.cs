@@ -10,6 +10,7 @@ public class TapGesture : MonoBehaviour, IInputClickHandler {
     public BuildToolUI buildToolUI;
 
     GazeManager gazeManager;
+    float timeofuse = -999;
 
 	void Start () {
         gazeManager = GetComponent<GazeManager>();
@@ -17,7 +18,9 @@ public class TapGesture : MonoBehaviour, IInputClickHandler {
 
     public void OnInputClicked(InputClickedEventData eventData)
     {
-        if(eventData.used) return;
+        if(timeofuse + 0.1 > Time.time) return;
+
+        timeofuse = Time.time;
 
         eventData.Use();
 

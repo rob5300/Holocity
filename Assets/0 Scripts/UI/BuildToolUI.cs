@@ -69,6 +69,8 @@ public class BuildToolUI : MonoBehaviour {
     {
         Vector2Int pos = transform.parent.GetComponent<WorldGridTile>().Position;
         Tools.SpawnBuilding(pos, Activator.CreateInstance(Buildings[go.GetComponent<BuildingButton>().index].BuildingType) as TileEntity);
+        //Take money
+        Game.CurrentSession.TakeFunds(Buildings[go.GetComponent<BuildingButton>().index].Cost);
         ToggleUI();
     }
 
