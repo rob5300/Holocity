@@ -30,7 +30,7 @@ public class BuildToolUI : MonoBehaviour {
     public void Start()
     {
         BuildButton.OnButtonClicked += BuildPressed;
-        RoadButton.OnButtonClicked += RoadPressed;
+        //RoadButton.OnButtonClicked += RoadPressed;
         DestroyButton.OnButtonClicked += DestroyPressed;
 
         Buildings = BuildingLibrary.GetListForTimePeriod();
