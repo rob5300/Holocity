@@ -24,7 +24,8 @@ public class EdgeGuidance : MonoBehaviour
         mainCamera = transform.parent.GetComponent<Camera>();
         CamBound = new Vector2(mainCamera.pixelWidth, mainCamera.pixelHeight) / 2;
     }
-
+}
+    /*
     // Update is called once per frame
     void Update()
     {
@@ -133,4 +134,4 @@ public class EdgeGuidance : MonoBehaviour
     }
 
 }
-
+*/

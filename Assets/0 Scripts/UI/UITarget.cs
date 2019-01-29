@@ -7,9 +7,9 @@ public class UITarget
 {
 
     public Transform targetTransform;
-    public RectTransform guideTransform;
+    public Transform guideTransform;
 
-    public UITarget(Transform targetTransform, RectTransform guideTransform)
+    public UITarget(Transform targetTransform, Transform guideTransform)
     {
         this.targetTransform = targetTransform;
         this.guideTransform = guideTransform;

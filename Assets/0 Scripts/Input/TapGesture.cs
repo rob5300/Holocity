@@ -28,12 +28,11 @@ public class TapGesture : MonoBehaviour, IInputClickHandler {
            //Tools.SpawnBuilding(tile.Position);
 
             buildToolUI.MoveUI(tile);
-            
-            Debug.Log("NOTHING HIT");
+
         }
         else
         {
-            Debug.Log("NOTHING HIT");
+            //turn off UI if player clicks away.
         }
     }
 

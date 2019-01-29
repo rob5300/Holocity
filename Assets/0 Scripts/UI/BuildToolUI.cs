@@ -78,7 +78,7 @@ public class BuildToolUI : MonoBehaviour {
         transform.localPosition = new Vector2(0, 0);
     }
 
-    bool ToggleUI(WorldGridTile tile)
+    public bool ToggleUI(WorldGridTile tile)
     {
         //check if player has tapped on the same grid
         if(gameObject.activeSelf && transform.parent == tile.transform)
