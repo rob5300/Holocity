@@ -37,18 +37,22 @@ namespace Infrastructure.Residents
         public Residential Home;
         public Happiness Happiness { get; protected set; }
 
+        private Session sess;
+
         public Resident()
         {
             FirstName = GetRandomFirstName();
             SecondName = GetRandomSecondName();
             Happiness = new Happiness(this);
+            sess = Game.CurrentSession;
         }
 
         public void Tick(float time)
         {
+            sess.AddFunds(1);
             if(Happiness.Level < 0.2)
             {
-                //Move Out.
+                
             }
         }
     }

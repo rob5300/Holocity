@@ -8,6 +8,7 @@ public class ResourcesUI : MonoBehaviour
     public float UpdateDelay = 0.25f;
     public ResourceDataInfo[] ResourceDataObjects;
     public Text GridHappinessText;
+    public Text FundsText;
 
     private Electricity _electricity;
     private Water _water;
@@ -35,6 +36,8 @@ public class ResourcesUI : MonoBehaviour
             ResourceDataObjects[1].InputText.text = _water.AddedLastTick.ToString();
             ResourceDataObjects[1].OutputText.text = _water.RecievedLastTick.ToString();
             _lastUpdateTime = Time.time;
+            //Update Money
+            FundsText.text = Game.CurrentSession.Funds.ToString();
         }
         //Update the happiness value in the UI
         float happiness = WorldGrid.GridSystem.AverageResidentHappiness;
