@@ -1,24 +1,14 @@
 fileFormatVersion: 2
-guid: 642da0226e949e34a84b293126fb2df3
+guid: b6840d823d294224dab3dfef34aa4281
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: Arrows Icon
-    100002: Circle Icon
-    100004: //RootNode
-    400000: Arrows Icon
-    400002: Circle Icon
-    400004: //RootNode
+    100000: //RootNode
+    400000: //RootNode
     2100000: No Name
-    2300000: Arrows Icon
-    2300002: Circle Icon
-    2300004: //RootNode
-    3300000: Arrows Icon
-    3300002: Circle Icon
-    3300004: //RootNode
-    4300000: Button
-    4300002: Circle Icon
-    4300004: Arrows Icon
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: City Buildings
   externalObjects: {}
   materials:
     importMaterials: 1
