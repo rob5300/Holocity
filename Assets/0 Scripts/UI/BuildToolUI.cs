@@ -41,6 +41,7 @@ public class BuildToolUI : MonoBehaviour {
             GameObject model = Instantiate(Buildings[i].Model, go.transform);
             model.transform.localScale *= 5;
             go.GetComponent<BuildingButton>().index = i;
+            go.GetComponent<BuildingButton>().costText.text = "£" + Buildings[i].Cost.ToString();
             go.GetComponent<CompoundButton>().OnButtonClicked += BuildingPressed;
             go.SetActive(true);
         }
