@@ -1,10 +1,7 @@
 ﻿using Infrastructure.Grid;
 using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static Infrastructure.Tick.TickManager;
 
 public class SessionCreator : MonoBehaviour {
 
@@ -21,7 +18,9 @@ public class SessionCreator : MonoBehaviour {
 
         //Give the player some money
         Game.CurrentSession.AddFunds(1000);
-	}
+
+        Debug.Log(BuildingLibrary.ModernBuildings.Count);
+    }
 
     public void CreateDefaultGrid()
     {

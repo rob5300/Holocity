@@ -7,8 +7,9 @@ using Infrastructure.Residents;
 using Infrastructure.Grid.Entities.Buildings;
 
 namespace Infrastructure {
+    public enum TimePeriod { Modern, Future, Past }
+
     public class City {
-        
         public string Owner;
         public Session ParentSession;
         /// <summary>
@@ -20,6 +21,7 @@ namespace Infrastructure {
         protected Dictionary<Type, Resource> Resources = new Dictionary<Type, Resource>();
         protected List<GridSystem> CityGrids = new List<GridSystem>();
         public float TotalHappinessAverage = 0;
+        public TimePeriod CurrentTimePeriod = TimePeriod.Modern;
 
         private List<Residential> ResidentialBuildings;
         private List<Residential> VacantResidentialBuildings;
