@@ -8,7 +8,7 @@ namespace Infrastructure.Grid.Entities
     {
         public bool CanBeMoved = true;
         public GridTile ParentTile;
-        public readonly uint Cost = 0;
+        public uint Cost = 0;
 
         /// <summary>
         /// Name of the prefab to get in the corrisponding Resources folder.

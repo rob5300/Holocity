@@ -12,6 +12,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         {
             Name = "City Buildings";
             PrefabName = "City Buildings Modern Day";
+            Cost = 200;
         }
     }
 }

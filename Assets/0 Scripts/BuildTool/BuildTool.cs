@@ -4,6 +4,7 @@ using UnityEngine;
 using BuildEnums;
 using Infrastructure.Grid;
 using Infrastructure.Grid.Entities.Buildings;
+using Infrastructure.Grid.Entities;
 
 namespace BuildTool
 {
@@ -92,9 +93,9 @@ namespace BuildTool
             }
         }
 
-        public static void SpawnBuilding(Vector2Int position, ModernBuildings building)
+        public static void SpawnBuilding(Vector2Int position, TileEntity ent)
         {
-           Game.CurrentSession.City.GetGrid(0).AddTileEntityToTile(position.x, position.y, GetBuilding(building));
+           Game.CurrentSession.City.GetGrid(0).AddTileEntityToTile(position.x, position.y, ent);
 
         }
 

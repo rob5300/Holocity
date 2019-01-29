@@ -12,6 +12,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         public WaterPlant()
         {
             PrefabName = "Waterplant";
+            Cost = 10000;
         }
 
         public override void OnEntityProduced(GridSystem grid)

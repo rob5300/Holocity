@@ -12,6 +12,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         {
             Name = "Old Church";
             PrefabName = "Old Church";
+            Cost = 200;
         }
     }
 }

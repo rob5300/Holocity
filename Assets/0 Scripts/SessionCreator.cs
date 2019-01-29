@@ -17,7 +17,7 @@ public class SessionCreator : MonoBehaviour {
         Debug.Log("New session created and set: " + Game.CurrentSession.Name);
 
         //Give the player some money
-        Game.CurrentSession.AddFunds(1000);
+        Game.CurrentSession.AddFunds(50000);
 
         Debug.Log(BuildingLibrary.ModernBuildings.Count);
     }

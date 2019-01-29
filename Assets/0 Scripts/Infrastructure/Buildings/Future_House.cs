@@ -11,6 +11,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         public Future_House()
         {
             PrefabName = "Future House";
+            Cost = 250;
         }
     }
 }

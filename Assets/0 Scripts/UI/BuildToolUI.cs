@@ -5,13 +5,14 @@ using UnityEngine;
 using BuildEnums;
 using UnityEngine.Events;
 using BuildTool;
+using Infrastructure.Grid.Entities;
+using System;
 
 public class BuildToolUI : MonoBehaviour {
 
     enum MenuState {MainMenu, BuildingSelect}
 
     MenuState menuState = MenuState.MainMenu;
-    
 
     [Header("Main Menu")]
     public GameObject mainMenu;
@@ -24,21 +25,25 @@ public class BuildToolUI : MonoBehaviour {
     public GameObject buildingBtnPrefab;
     public List<CompoundButton> buildingButtons;
 
+    private List<BuildingMap> Buildings;
+
     public void Start()
     {
-        BuildButton.OnButtonClicked += BuildPressed;    
-        RoadButton.OnButtonClicked += RoadPressed;    
+        BuildButton.OnButtonClicked += BuildPressed;
+        RoadButton.OnButtonClicked += RoadPressed;
         DestroyButton.OnButtonClicked += DestroyPressed;
-        
-        foreach(CompoundButton btn in buildingButtons)
-        {
-            btn.OnButtonClicked += BuildingPressed;
-        }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
+        Buildings = BuildingLibrary.GetListForTimePeriod();
+
+        for (int i = 0; i < Buildings.Count; i++)
+        {
+            GameObject go = Instantiate(buildingBtnPrefab, BuildingMenu.transform);
+            GameObject model = Instantiate(Buildings[i].Model, go.transform);
+            model.transform.localScale *= 5;
+            go.GetComponent<BuildingButton>().index = i;
+            go.GetComponent<CompoundButton>().OnButtonClicked += BuildingPressed;
+            go.SetActive(true);
+        }
     }
 
     //Button Event Methods
@@ -62,10 +67,8 @@ public class BuildToolUI : MonoBehaviour {
     void BuildingPressed(GameObject go)
     {
         Vector2Int pos = transform.parent.GetComponent<WorldGridTile>().Position;
-        ModernBuildings building = go.GetComponent<BuildingButton>().buildingEnum;
-
-        Tools.SpawnBuilding(pos, building);
-        
+        Tools.SpawnBuilding(pos, Activator.CreateInstance(Buildings[go.GetComponent<BuildingButton>().index].BuildingType) as TileEntity);
+        ToggleUI();
     }
 
     //BuildTool Methods
@@ -76,6 +79,12 @@ public class BuildToolUI : MonoBehaviour {
 
         transform.SetParent(tile.transform);
         transform.localPosition = new Vector2(0, 0);
+    }
+
+    public void ToggleUI()
+    {
+        gameObject.SetActive(!gameObject.activeSelf);
+        SwitchState(MenuState.MainMenu);
     }
 
     public bool ToggleUI(WorldGridTile tile)

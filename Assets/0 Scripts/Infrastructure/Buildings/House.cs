@@ -10,7 +10,6 @@ namespace Infrastructure.Grid.Entities.Buildings
         public float ElectricityDrain = 1;
         public float WaterDrain = 0.3f;
         public float[] ResourceMissingTimes = { 0f, 0f };
-        public new readonly uint Cost = 100;
 
         private Electricity _elec;
         private Water _water;
@@ -22,6 +21,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         {
             Name = "House";
             PrefabName = "Basic House";
+            Cost = 100;
         }
 
         public override void OnEntityProduced(GridSystem grid)

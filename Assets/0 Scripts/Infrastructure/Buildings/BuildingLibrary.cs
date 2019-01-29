@@ -11,7 +11,8 @@ public static class BuildingLibrary
             typeof(Modern_CityBuildings),
             typeof(Old_Church),
             typeof(PowerPlant),
-            typeof(WaterPlant)
+            typeof(WaterPlant),
+            typeof(Future_House)
             };
     public static List<BuildingMap> ModernBuildings = new List<BuildingMap>();
 
@@ -36,6 +37,14 @@ public static class BuildingLibrary
             }
 
         }
+#if UNITY_EDITOR
+        Debug.Log("Built Building Library");
+#endif
+    }
+
+    public static List<BuildingMap> GetListForTimePeriod()
+    {
+        return ModernBuildings;
     }
 }
 
