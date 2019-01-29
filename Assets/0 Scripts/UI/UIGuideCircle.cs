@@ -57,7 +57,7 @@ public class UIGuideCircle : MonoBehaviour {
         float angle = Mathf.Abs(Vector3.SignedAngle(targetDir, mainCamera.transform.forward, Vector3.up));
 
         Color colour = target.guideTransform.GetComponent<Renderer>().material.color;
-        colour.a = Mathf.Clamp((1f / 180f) * angle, 0.05f, 1.0f);
+        colour.a = Mathf.Clamp((1f / 180f) * angle, 0.02f, 1.0f);
 
         target.guideTransform.GetComponent<Renderer>().material.color = colour;
     }
@@ -66,7 +66,7 @@ public class UIGuideCircle : MonoBehaviour {
     {
         //scale
         float scale = Vector3.Distance(target.targetTransform.position, mainCamera.transform.position);
-        target.guideTransform.localScale = new Vector3(ScaleMultiplier * scale, ScaleMultiplier ,ScaleMultiplier * scale);
+        target.guideTransform.localScale = new Vector3(ScaleMultiplier * scale, ScaleMultiplier / 5f,ScaleMultiplier * scale);
 
         //position
         Vector3 pos = mainCamera.transform.position;
