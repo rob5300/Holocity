@@ -22,25 +22,25 @@ MonoBehaviour:
     ActiveState: 0
     StateColor: {r: 0.69411767, g: 0.57254905, b: 0.2509804, a: 1}
     StateValue: 0
-    Offset: {x: -0.115, y: -0.363, z: 0.00024271}
+    Offset: {x: -0.15, y: -0.3, z: 0.00024271}
     Scale: {x: 0.2, y: 0.2, z: 0.2}
   - Name: Targeted
     ActiveState: 1
     StateColor: {r: 0.69411767, g: 0.57254905, b: 0.2509804, a: 1}
     StateValue: 0
-    Offset: {x: -0.115, y: -0.363, z: 0.00024271}
+    Offset: {x: -0.15, y: -0.3, z: 0.00024271}
     Scale: {x: 0.2, y: 0.2, z: 0.2}
   - Name: Interactive
     ActiveState: 2
     StateColor: {r: 0.69411767, g: 0.57254905, b: 0.2509804, a: 1}
     StateValue: 0
-    Offset: {x: -0.115, y: -0.363, z: 0.00024271}
+    Offset: {x: -0.15, y: -0.3, z: 0.00024271}
     Scale: {x: 0.2, y: 0.2, z: 0.2}
   - Name: ObservationTargeted
     ActiveState: 3
     StateColor: {r: 0.69411767, g: 0.57254905, b: 0.2509804, a: 1}
     StateValue: 0
-    Offset: {x: -0.115, y: -0.3, z: 0.00024271}
+    Offset: {x: -0.15, y: -0.3, z: 0.00024271}
     Scale: {x: 0.26, y: 0.26, z: 0.26}
   - Name: Observation
     ActiveState: 4
@@ -52,5 +52,5 @@ MonoBehaviour:
     ActiveState: 5
     StateColor: {r: 0.31132078, g: 0.31132078, b: 0.31132078, a: 0.8039216}
     StateValue: 0
-    Offset: {x: -0.115, y: -0.363, z: 0.00024271}
+    Offset: {x: -0.15, y: -0.3, z: 0.00024271}
     Scale: {x: 0.2, y: 0.2, z: 0.2}
