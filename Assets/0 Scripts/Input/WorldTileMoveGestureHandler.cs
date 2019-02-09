@@ -15,8 +15,10 @@ public class WorldTileMoveGestureHandler : MonoBehaviour, IManipulationHandler {
     private Vector3 _startPosition;
     private VoiceGestureControl _voiceCommand;
 
-    public void Start()
+
+    void Start()
     {
+
         _tileParent = GetComponentInParent<WorldGridTile>();
         _voiceCommand = FindObjectOfType<VoiceGestureControl>();
     }
@@ -38,6 +40,7 @@ public class WorldTileMoveGestureHandler : MonoBehaviour, IManipulationHandler {
     {
 		
         if (!InputManager.Instance.CheckModalInputStack(gameObject) || _voiceCommand.IsNavigating) return;
+        
         Vector3 gestureMovemnt = eventData.CumulativeDelta;
         //gestureMovemnt.y = 0;
         transform.position = MoveOffset + gestureMovemnt;
