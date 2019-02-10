@@ -1,9 +1,6 @@
 ﻿using HoloToolkit.Unity.Buttons;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BuildEnums;
-using UnityEngine.Events;
 using BuildTool;
 using Infrastructure.Grid.Entities;
 using System;
@@ -57,7 +54,9 @@ public class BuildToolUI : MonoBehaviour {
 
     void RoadPressed(GameObject go)
     {
-        Debug.Log("road");
+        Vector2Int pos = transform.parent.GetComponent<WorldGridTile>().Position;
+        transform.parent.GetComponent<WorldGridTile>().ParentGrid.GridSystem.AddTileEntityToTile(pos, new Road());
+        ToggleUI();
     }
 
     void DestroyPressed(GameObject go)

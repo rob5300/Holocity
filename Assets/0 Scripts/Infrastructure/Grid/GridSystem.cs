@@ -112,18 +112,14 @@ namespace Infrastructure.Grid
         }
 
         /// <summary>
-        /// Adds this building to this tile. Fails if the tile already has a building/entity.
+        /// Adds this tile entity/building to this tile. Fails if the tile already has a building/entity.
         /// </summary>
-        /// <param name="x">x position.</param>
-        /// <param name="y">y position.</param>
-        /// <param name="entity">The entity to add to the tile.</param>
+        /// <param name="position">Position of tile</param>
+        /// <param name="building">The building to add to the tile.</param>
         /// <returns>If the operation was successful.</returns>
-        public bool AddEntityToTile(int x, int y, TileEntity entity)
+        public bool AddTileEntityToTile(Vector2Int position, TileEntity tileEnt)
         {
-            GridTile tile = GetTile(new Vector2Int(x, y));
-            if (tile.Entity != null) return false;
-            tile.SetEntity(this, entity);
-            return true;
+            return AddTileEntityToTile(position.x, position.y, tileEnt);
         }
 
         /// <summary>

@@ -35,6 +35,7 @@ public class SessionCreator : MonoBehaviour {
         grid.AddTileEntityToTile(0, 6, new WaterPlant());
         grid.AddTileEntityToTile(1, 0, new Road());
         grid.AddTileEntityToTile(2, 0, new Road());
+        grid.AddTileEntityToTile(2, 1, new Road());
         grid.AddTileEntityToTile(3, 0, new Future_House());
     }
 
