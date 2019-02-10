@@ -43,6 +43,7 @@ public class WorldGridTile : MonoBehaviour {
         Model.transform.localPosition = Vector3.zero;
 
         //Add Gesture Components to Buildings
+        //Model.AddComponent<MoveGesture>();
         Model.AddComponent<WorldTileMoveGestureHandler>();
         Model.AddComponent<WorldTileRotateGestureHandler>();
         Model.AddComponent<FocusHighlighter>();
@@ -56,6 +57,8 @@ public class WorldGridTile : MonoBehaviour {
 
     public bool AttemptBuildingSwap(Vector3 checkPosition)
     {
+        //Will need to update to work with multiple grids.
+
         LayerMask layerMask = LayerMask.NameToLayer("Hologram");
         RaycastHit hit;
 

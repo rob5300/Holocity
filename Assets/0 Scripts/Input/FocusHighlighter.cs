@@ -8,9 +8,11 @@ public class FocusHighlighter : MonoBehaviour, IFocusable {
 
     private Color _originalColor;
     private MeshRenderer _meshRenderer;
-
+    private HandDetection _handDetection;
+    
     public void Start()
     {
+        _handDetection = FindObjectOfType<HandDetection>();
         _meshRenderer = GetComponent<MeshRenderer>();
         _originalColor = _meshRenderer.material.color;
 		if(_meshRenderer == null) Destroy(this);
@@ -18,9 +20,10 @@ public class FocusHighlighter : MonoBehaviour, IFocusable {
 
     void IFocusable.OnFocusEnter()
     {
+        if (InputManager.Instance.CheckModalInputStack()) return;
+
         //Store the current material colouring when we get focus each time incase it was changed before.
-        _originalColor = _meshRenderer.material.color;
-        _meshRenderer.material.color = FocusTint;
+        HighlightObject();
     }
 
     void IFocusable.OnFocusExit()
@@ -38,7 +41,12 @@ public class FocusHighlighter : MonoBehaviour, IFocusable {
         if(_meshRenderer) ResetColour();
     }
 
-    private void ResetColour()
+    public void HighlightObject()
+    {
+        _originalColor = _meshRenderer.material.color;
+        _meshRenderer.material.color = FocusTint;
+    }
+    public void ResetColour()
     {
         if (_meshRenderer) _meshRenderer.material.color = _originalColor;
     }

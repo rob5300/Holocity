@@ -15,14 +15,12 @@ public class WorldTileMoveGestureHandler : MonoBehaviour, IManipulationHandler {
     private Vector3 _startPosition;
     private VoiceGestureControl _voiceCommand;
 
-
     void Start()
     {
 
         _tileParent = GetComponentInParent<WorldGridTile>();
         _voiceCommand = FindObjectOfType<VoiceGestureControl>();
     }
-    
     void IManipulationHandler.OnManipulationStarted(ManipulationEventData eventData)
     {
         if (_voiceCommand.IsNavigating) return;
@@ -77,5 +75,4 @@ public class WorldTileMoveGestureHandler : MonoBehaviour, IManipulationHandler {
 
         eventData.Use();
     }
-
 }
