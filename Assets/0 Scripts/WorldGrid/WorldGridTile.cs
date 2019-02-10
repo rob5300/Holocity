@@ -35,7 +35,7 @@ public class WorldGridTile : MonoBehaviour {
         OnTileDestroy?.Invoke();
     }
 
-    internal void AddModelToTile(TileEntity tileEnt)
+    public void AddModelToTile(TileEntity tileEnt)
     {
         TileBorder.SetActive(false);
         Model = Instantiate(tileEnt.GetModel(), transform);
@@ -53,6 +53,21 @@ public class WorldGridTile : MonoBehaviour {
 
         //Tell the Tile entity that this tile exists now.
         tileEnt.OnWorldGridTileCreated(this);
+    }
+
+    public void UpdateModel(GameObject newModel)
+    {
+        Destroy(Model);
+        Model = Instantiate(newModel, transform);
+        Model.transform.localPosition = Vector3.zero;
+
+        //Add Gesture Components to Buildings
+        Model.AddComponent<WorldTileMoveGestureHandler>();
+        Model.AddComponent<WorldTileRotateGestureHandler>();
+        Model.AddComponent<FocusHighlighter>();
+
+        //Set the layer mask.
+        Model.layer = LayerMask.NameToLayer("Hologram");
     }
 
     public bool AttemptBuildingSwap(Vector3 checkPosition)
