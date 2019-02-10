@@ -135,10 +135,10 @@ namespace Infrastructure.Grid.Entities
 
             //Tell any adjacent road tiles to check and update their models.
             GridTile[] adjacentTiles = {
-                ParentTile.ParentGridSystem.GetTile(new Vector2Int(0, 1)),
-                ParentTile.ParentGridSystem.GetTile(new Vector2Int(1, 0)),
-                ParentTile.ParentGridSystem.GetTile(new Vector2Int(0, -1)),
-                ParentTile.ParentGridSystem.GetTile(new Vector2Int(-1, 0))
+                ParentTile.ParentGridSystem.GetTile(ParentTile.Position + new Vector2Int(0, 1)),
+                ParentTile.ParentGridSystem.GetTile(ParentTile.Position + new Vector2Int(1, 0)),
+                ParentTile.ParentGridSystem.GetTile(ParentTile.Position + new Vector2Int(0, -1)),
+                ParentTile.ParentGridSystem.GetTile(ParentTile.Position + new Vector2Int(-1, 0))
             };
 
             foreach(GridTile adjtile in adjacentTiles)
@@ -146,6 +146,7 @@ namespace Infrastructure.Grid.Entities
                 if(adjtile?.Entity is Road)
                 {
                     ((Road)adjtile.Entity).RecheckAndApplyRoadModel();
+                    Debug.Log("Sent recheck for road!");
                 }
             }
         }
@@ -164,7 +165,7 @@ namespace Infrastructure.Grid.Entities
         public void RecheckAndApplyRoadModel()
         {
             GameObject newModel = GetModel();
-            if (newModel.name + "(Clone)" != worldTile.Model.name) worldTile.UpdateModel(newModel);
+            worldTile.UpdateModel(newModel);
             ApplyModelRotation();
         }
 
