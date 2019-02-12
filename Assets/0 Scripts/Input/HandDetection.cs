@@ -32,7 +32,7 @@ public class HandDetection : MonoBehaviour{
     {
         Vector3 handPos = Vector3.zero;
 
-        if (handOne.obj && handOne.isPressed && handOne.ID == id)
+        if (true)//handOne.obj )//&& handOne.isPressed)// && handOne.ID == id)
         {
             handPos = handOne.pos;
         }
@@ -41,7 +41,7 @@ public class HandDetection : MonoBehaviour{
             handPos = handTwo.pos;
         }
 
-        return handOne.pos;
+        return handPos;
     }
 
     private void SourceFound(InteractionSourceDetectedEventArgs obj)

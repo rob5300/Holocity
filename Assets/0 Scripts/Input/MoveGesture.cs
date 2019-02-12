@@ -34,7 +34,7 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
         InputManager.Instance.PushModalInputHandler(gameObject);
 
         _startPosition = _handDetection.GetHandPos(eventData.SourceId);
-        _startPosition += _cameraTransform.forward * offset;
+        //_startPosition += _cameraTransform.forward * offset;
         transform.position = _startPosition;
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
         
