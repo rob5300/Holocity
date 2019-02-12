@@ -43,8 +43,8 @@ public class WorldGridTile : MonoBehaviour {
         Model.transform.localPosition = Vector3.zero;
 
         //Add Gesture Components to Buildings
-        //Model.AddComponent<MoveGesture>();
-        Model.AddComponent<WorldTileMoveGestureHandler>();
+        Model.AddComponent<MoveGesture>();
+       // Model.AddComponent<WorldTileMoveGestureHandler>();
         Model.AddComponent<WorldTileRotateGestureHandler>();
         Model.AddComponent<FocusHighlighter>();
 

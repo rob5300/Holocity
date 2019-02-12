@@ -14,12 +14,17 @@ public class WorldTileMoveGestureHandler : MonoBehaviour, IManipulationHandler {
     private WorldGridTile _tileParent;
     private Vector3 _startPosition;
     private VoiceGestureControl _voiceCommand;
+    private FocusHighlighter _currentFocus;
 
     void Start()
     {
 
         _tileParent = GetComponentInParent<WorldGridTile>();
         _voiceCommand = FindObjectOfType<VoiceGestureControl>();
+    }
+    void Update()
+    {
+        MoveBuilding();
     }
     void IManipulationHandler.OnManipulationStarted(ManipulationEventData eventData)
     {
@@ -74,5 +79,30 @@ public class WorldTileMoveGestureHandler : MonoBehaviour, IManipulationHandler {
         MoveOffset = new Vector3(0, 0.15f, 0);
 
         eventData.Use();
+    }
+
+    void MoveBuilding()
+    {
+        if (_voiceCommand.IsNavigating || !InputManager.Instance.CheckModalInputStack(gameObject)) return;
+
+        LayerMask layerMask = LayerMask.NameToLayer("Hologram");
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, -Vector3.up, out hit, layerMask))
+        {
+            FocusHighlighter focus = hit.transform.GetComponent<FocusHighlighter>();
+
+            if (focus)
+            {
+                if (focus != _currentFocus)
+                {
+                    if (_currentFocus)
+                        _currentFocus.ResetColour();
+
+                    focus.HighlightObject();
+                    _currentFocus = focus;
+                }
+            }
+        }
     }
 }

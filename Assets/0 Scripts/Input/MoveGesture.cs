@@ -6,6 +6,7 @@ using HoloToolkit.Unity.InputModule;
 
 public class MoveGesture : MonoBehaviour, IManipulationHandler
 {
+    public float offset = 0.15f;
     private WorldGridTile _tileParent;
     private Vector3 _startPosition;
     private VoiceGestureControl _voiceCommand;
@@ -33,7 +34,7 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
         InputManager.Instance.PushModalInputHandler(gameObject);
 
         _startPosition = _handDetection.GetHandPos(eventData.SourceId);
-        _startPosition += _cameraTransform.forward * 0.15f;
+        _startPosition += _cameraTransform.forward * offset;
         transform.position = _startPosition;
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
         
@@ -44,7 +45,7 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
     {
         if (!InputManager.Instance.CheckModalInputStack(gameObject) || _voiceCommand.IsNavigating) return;
 
-        transform.position += eventData.CumulativeDelta;
+        transform.position = _startPosition + eventData.CumulativeDelta;
        // transform.rotation = _cameraTransform.rotation;
 
         eventData.Use();
