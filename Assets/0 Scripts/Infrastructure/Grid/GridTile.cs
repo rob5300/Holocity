@@ -30,5 +30,16 @@ namespace Infrastructure.Grid
         {
             Entity = ent;
         }
+
+        public GridTile[] GetAdjacentGridTiles()
+        {
+            GridTile[] adjacentTiles = {
+                ParentGridSystem.GetTile(Position + new Vector2Int(0, 1)),
+                ParentGridSystem.GetTile(Position + new Vector2Int(1, 0)),
+                ParentGridSystem.GetTile(Position + new Vector2Int(0, -1)),
+                ParentGridSystem.GetTile(Position + new Vector2Int(-1, 0))
+            };
+            return adjacentTiles;
+        }
     }
 }

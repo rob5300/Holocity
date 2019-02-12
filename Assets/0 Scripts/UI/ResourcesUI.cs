@@ -42,6 +42,7 @@ public class ResourcesUI : MonoBehaviour
         //Update the happiness value in the UI
         float happiness = WorldGrid.GridSystem.AverageResidentHappiness;
         GridHappinessText.text = happiness.ToString();
+
     }
 }
 

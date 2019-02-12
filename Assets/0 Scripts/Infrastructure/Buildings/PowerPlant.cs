@@ -17,7 +17,16 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         public override void OnEntityProduced(GridSystem grid)
         {
-            elecResource = grid.ParentCity.GetResource<Electricity>();
+            base.OnEntityProduced(grid);
+
+            //Get or make the electricity resource
+            if (!ResourceReferenceManager.HaveResourceConnection<Electricity>())
+            {
+                elecResource = new Electricity();
+                ResourceReferenceManager.AddResource(elecResource);
+            }
+            else
+                elecResource = ResourceReferenceManager.GetResource<Electricity>();
         }
 
         public void Tick(float time)

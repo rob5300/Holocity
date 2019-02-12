@@ -12,9 +12,10 @@ namespace Infrastructure.Grid.Entities.Buildings
         public float[] ResourceMissingTimes = { 0f, 0f };
 
         private Electricity _elec;
+        private bool showingElectricityWarning = false;
         private Water _water;
         WorldGridTile gridtile;
-        //Hoping this helps with garbage soo i can still use a lambda xD
+
         private WorldGridTaskManager.WorldGridTask setResTask;
 
         public House()
@@ -26,8 +27,25 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         public override void OnEntityProduced(GridSystem grid)
         {
-            _elec = grid.ParentCity.GetResource<Electricity>();
-            _water = grid.ParentCity.GetResource<Water>();
+            base.OnEntityProduced(grid);
+
+            //Get or make the water resource
+            if (!ResourceReferenceManager.HaveResourceConnection<Electricity>())
+            {
+                _water = new Water();
+                ResourceReferenceManager.AddResource(_water);
+            }
+            else
+                _water = ResourceReferenceManager.GetResource<Water>();
+
+            //Get or make the electricity resource
+            if (!ResourceReferenceManager.HaveResourceConnection<Electricity>())
+            {
+                _elec = new Electricity();
+                ResourceReferenceManager.AddResource(_elec);
+            }
+            else
+                _elec = ResourceReferenceManager.GetResource<Electricity>();
         }
 
         public override void OnWorldGridTileCreated(WorldGridTile tile)
@@ -86,6 +104,11 @@ namespace Infrastructure.Grid.Entities.Buildings
                 ResourceMissingTimes[1] = 0;
             }
             #endregion
+
+            if (!HasPower)
+            {
+
+            }
         }
     }
 }

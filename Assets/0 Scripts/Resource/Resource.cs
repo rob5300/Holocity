@@ -62,5 +62,10 @@ namespace CityResources
             RecievedLastTick = RecievedThisTick;
             RecievedThisTick = 0;
         }
+
+        public void AddFromMerge(float amount)
+        {
+            Value += amount;
+        }
     }
 }
