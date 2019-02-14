@@ -7,14 +7,19 @@ using System;
 
 public class HandDetection : MonoBehaviour{
     
-    GameObject leftHand;
-    Vector3 leftHandPos;
-    uint leftHandSourceID;
+    private struct Hand
+    {
+        public GameObject obj;
+        public Vector3 pos;
+        public uint ID;
+        public bool isPressed;
+    }
 
-    GameObject rightHand;
-    Vector3 rightHandPos;
-    uint rightHandSourceID;
+    Hand handOne = new Hand();
+    Hand handTwo = new Hand();
 
+    Vector3 scale = new Vector3(0.1f, 0.1f, 0.1f);
+    
 
     private void Awake()
     {
@@ -22,67 +27,81 @@ public class HandDetection : MonoBehaviour{
         InteractionManager.InteractionSourceLost += SourceLost;
         InteractionManager.InteractionSourceUpdated += SourceUpdated;
     }
+    
+    public Vector3 GetHandPos(uint id)
+    {
+        Vector3 handPos = Vector3.zero;
+
+        if (true)//handOne.obj )//&& handOne.isPressed)// && handOne.ID == id)
+        {
+            handPos = handOne.pos;
+        }
+        else if (handTwo.obj && handTwo.isPressed && handTwo.ID == id)
+        {
+            handPos = handTwo.pos;
+        }
+
+        return handPos;
+    }
 
     private void SourceFound(InteractionSourceDetectedEventArgs obj)
     {
-        /*
-        if (rightHand == null && obj.state.source.kind.ToString() == "Hand")
+        if (obj.state.source.kind.ToString() != "Hand") return;
+
+        if (handOne.obj == null)
         {
-            rightHand = GameObject.Instantiate(GameObject.CreatePrimitive(PrimitiveType.Sphere));
-            rightHand.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            rightHandSourceID = obj.state.source.id;
+            handOne.obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            handOne.obj.transform.localScale = scale;
+            handOne.ID = obj.state.source.id;
 
-            if (obj.state.sourcePose.TryGetPosition(out rightHandPos))
-                rightHand.transform.position = rightHandPos;
-
-            if (rightHandPos != Vector3.zero)
-                Debug.Log("Right Hand: " + rightHandSourceID + "  ::  " + rightHandPos);
+            if (obj.state.sourcePose.TryGetPosition(out handOne.pos))
+                handOne.obj.transform.position = handOne.pos;
         }
-        else if (leftHand == null && obj.state.source.kind.ToString() == "Hand")
+        else if (handTwo.obj == null)
         {
-            leftHand = GameObject.Instantiate(GameObject.CreatePrimitive(PrimitiveType.Sphere));
-            leftHand.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            leftHandSourceID = obj.state.source.id;
+            handTwo.obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            handTwo.obj.transform.localScale = scale;
+            handTwo.ID = obj.state.source.id;
 
-            if (obj.state.sourcePose.TryGetPosition(out leftHandPos))
-                leftHand.transform.position = leftHandPos;
-
-            if (leftHandPos != Vector3.zero)
-                Debug.Log("Left Hand: " + rightHandSourceID + " :: " + rightHandPos);
+            if (obj.state.sourcePose.TryGetPosition(out handTwo.pos))
+                handTwo.obj.transform.position = handTwo.pos;
         }
-        */
     }
 
     private void SourceLost(InteractionSourceLostEventArgs obj)
     {
-        if(obj.state.source.id == rightHandSourceID)
+        if(obj.state.source.id == handOne.ID)
         {
-            Destroy(rightHand);
-            rightHandPos = Vector3.zero;
-            rightHandSourceID = 0;
+            Destroy(handOne.obj);
+            handOne.pos = Vector3.zero;
+            handOne.ID = 0;
         }
-        else if(obj.state.source.id == leftHandSourceID)
+        else if(obj.state.source.id == handTwo.ID)
         {
-            Destroy(leftHand);
-            leftHandPos = Vector3.zero;
-            leftHandSourceID = 0;
+            Destroy(handTwo.obj);
+            handTwo.pos = Vector3.zero;
+            handTwo.ID = 0;
         }
     }
 
     private void SourceUpdated(InteractionSourceUpdatedEventArgs obj)
     {
-        if (rightHand && rightHandSourceID == obj.state.source.id)
+        if (handOne.obj && handOne.ID == obj.state.source.id)
         {
-            if (obj.state.sourcePose.TryGetPosition(out rightHandPos))
-                rightHand.transform.position = rightHandPos;
+            if (obj.state.sourcePose.TryGetPosition(out handOne.pos))
+                handOne.obj.transform.position = handOne.pos;
+
+            handOne.isPressed = obj.state.selectPressed;
         }
 
-        if (leftHand && leftHandSourceID == obj.state.source.id)
+        if (handTwo.obj && handTwo.ID == obj.state.source.id)
         {
-            if (obj.state.sourcePose.TryGetPosition(out leftHandPos))
-                leftHand.transform.position = leftHandPos;
+            if (obj.state.sourcePose.TryGetPosition(out handTwo.pos))
+                handTwo.obj.transform.position = handTwo.pos;
+
+            handTwo.isPressed = obj.state.selectPressed;
         }
     }
 
-   
+    
 }
