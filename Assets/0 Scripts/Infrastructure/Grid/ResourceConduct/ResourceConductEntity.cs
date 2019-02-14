@@ -64,7 +64,7 @@ namespace Infrastructure.Grid.Entities
             else
             {
                 //We found no managers, lets request one and add the reference to ourselves.
-                managerToUse = ResourceReferenceManager.GetNewManager();
+                managerToUse = ResourceReferenceManager.GetNewManager(ParentTile.ParentGridSystem.Id);
             }
 
             ResourceReferenceManager = managerToUse;
