@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System;
 using Infrastructure.Grid;
-using Infrastructure.Grid.Entities.Buildings;
-using HoloToolkit.Unity.InputModule;
-using BuildTool;
 using Infrastructure.Grid.Entities;
 
 [SelectionBase]
@@ -68,6 +65,13 @@ public class WorldGridTile : MonoBehaviour {
 
         //Set the layer mask.
         Model.layer = LayerMask.NameToLayer("Hologram");
+    }
+
+    public void RemoveModel()
+    {
+        Destroy(Model);
+        Model = null;
+        TileBorder.SetActive(true);
     }
 
     public bool AttemptBuildingSwap(Vector3 checkPosition)

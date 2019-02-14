@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Grid.Entities;
+using Infrastructure.Tick;
 using UnityEngine;
 
 namespace Infrastructure.Grid
@@ -20,6 +21,11 @@ namespace Infrastructure.Grid
             Entity = entity;
             Entity.ParentTile = this;
             Entity.OnEntityProduced(grid);
+        }
+
+        public void DestroyEntity()
+        {
+            Entity = null;
         }
 
         /// <summary>

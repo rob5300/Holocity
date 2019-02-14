@@ -29,7 +29,7 @@ namespace Infrastructure.Grid
         /// </summary>
         public ConcurrentQueue<Tickable> TickAddQueue;
         /// <summary>
-        /// YET TO IMPLEMENT
+        /// A list of tickables to be removed from the tick system.
         /// </summary>
         public ConcurrentQueue<Tickable> ToRemoveFromTickSystem;
         public event Action<Residential> OnNewResidentialBuilding;
@@ -54,6 +54,7 @@ namespace Infrastructure.Grid
             }
 
             TickAddQueue = new ConcurrentQueue<Tickable>();
+            ToRemoveFromTickSystem = new ConcurrentQueue<Tickable>();
             Residents = new List<Resident>();
 
             WorldGrid = CreateWorldGrid(worldGridPosition);
@@ -148,6 +149,16 @@ namespace Infrastructure.Grid
             WorldGrid.SwapGridTiles(tileaposition, tilebposition);
 
             return true;
+        }
+
+        public void DestroyTileEntity(Vector2Int position)
+        {
+            GridTile tile =  GetTile(position);
+            if (tile.Entity != null) tile.Entity.OnDestroy();
+            Tickable eTick = tile.Entity as Tickable;
+            if(eTick != null) ToRemoveFromTickSystem.Enqueue(eTick);
+            WorldGrid.GetTile(position).RemoveModel();
+            tile.DestroyEntity();
         }
 
         private void AddTileEntityToWorldGrid(TileEntity tileEnt, int x, int y)

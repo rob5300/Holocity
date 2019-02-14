@@ -27,25 +27,7 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         public override void OnEntityProduced(GridSystem grid)
         {
-            base.OnEntityProduced(grid);
-
-            //Get or make the water resource
-            if (!ResourceReferenceManager.HaveResourceConnection<Electricity>())
-            {
-                _water = new Water();
-                ResourceReferenceManager.AddResource(_water);
-            }
-            else
-                _water = ResourceReferenceManager.GetResource<Water>();
-
-            //Get or make the electricity resource
-            if (!ResourceReferenceManager.HaveResourceConnection<Electricity>())
-            {
-                _elec = new Electricity();
-                ResourceReferenceManager.AddResource(_elec);
-            }
-            else
-                _elec = ResourceReferenceManager.GetResource<Electricity>();
+            
         }
 
         public override void OnWorldGridTileCreated(WorldGridTile tile)
@@ -69,8 +51,10 @@ namespace Infrastructure.Grid.Entities.Buildings
             gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(setResTask);
         }
 
-        public void Tick(float time)
+        public override void Tick(float time)
         {
+            base.Tick(time);
+
             if (IsVacant) return;
 
             //Request the drain amount of each resource. If the request and recieved amount doesnt match we handle that.
