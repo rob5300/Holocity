@@ -13,25 +13,45 @@ namespace Infrastructure.Grid.Entities
     {
         public bool CanConduct = true;
         public List<ResourceData> NewResources;
-        public Dictionary<Type, List<ResourceData>> Resources;
+        public Dictionary<Type, List<ResourceData>> CurrentResources;
+
+        private bool ShouldContinueResourceInform = false;
+        private HashSet<GridTile> _tilesToIgnore;
+        private List<ResourceData> _newResourceData;
 
         public ResourceConductEntity()
         {
             NewResources = new List<ResourceData>();
-            Resources = new Dictionary<Type, List<ResourceData>>();
+            CurrentResources = new Dictionary<Type, List<ResourceData>>();
         }
 
-        public virtual void OnNewResourceViaConnection(GridTile source, ResourceData resourceData)
+        public virtual void LookForResources()
         {
-            
+            //We were just placed, lets look for resources on our neighbours.
         }
 
-        public void InformNeighboursOfNewResource(ResourceData resourceData, HashSet<GridTile> tilesToIgnore)
+        public void BeginResourceInform()
         {
-            InformNeighboursOfNewResource(new List<ResourceData> { resourceData }, tilesToIgnore);
+            //We are the first object to start this process
         }
 
-        public void InformNeighboursOfNewResource(List<ResourceData> resourceData, HashSet<GridTile> tilesToIgnore)
+        public virtual void OnNewResourceViaConnection_Event(List<ResourceData> resourceData, HashSet<GridTile> tilesToIgnore)
+        {
+            //We are being told about a new resource by a neighbour. We are given the resource information as well as the tiles to ignore for when we pass this on.
+            //At this level we will just pass the info on and not store any.
+            tilesToIgnore.Add(ParentTile);
+            foreach(ResourceData data in resourceData)
+            {
+                AddNewResource(data.GetType(), data);
+            }
+        }
+
+        public void ContinueResourceInform(ResourceData resourceData, HashSet<GridTile> tilesToIgnore)
+        {
+            ContinueResourceInform(new List<ResourceData> { resourceData }, tilesToIgnore);
+        }
+
+        public void ContinueResourceInform(List<ResourceData> resourceData, HashSet<GridTile> tilesToIgnore)
         {
             //Tell our neighbours that this resource exists.
             GridTile[] tiles = ParentTile.GetAdjacentGridTiles();
@@ -42,10 +62,7 @@ namespace Infrastructure.Grid.Entities
                 if (tile != null && tile.Entity != null)
                 {
                     ResourceConductEntity ent = tile.Entity as ResourceConductEntity;
-                    foreach (ResourceData data in resourceData)
-                    {
-                        ent?.OnNewResourceViaConnection(ParentTile, data);
-                    }
+                    ent?.OnNewResourceViaConnection_Event(resourceData, tilesToIgnore);
                 }
             }
         }
@@ -74,7 +91,22 @@ namespace Infrastructure.Grid.Entities
         public virtual void Tick(float time)
         {
             //Check if we have new resources to tell neighbours about.
+            //Here is where we will continue the resource inform process
 
+            if (ShouldContinueResourceInform)
+            {
+                ShouldContinueResourceInform = false;
+
+                ContinueResourceInform(_newResourceData, _tilesToIgnore);
+            }
+        }
+
+        private void AddNewResource(Type rType, ResourceData resourceData)
+        {
+            //If the list for this resource type doesnt exist, make it.
+            if (!CurrentResources.ContainsKey(rType)) CurrentResources.Add(rType, new List<ResourceData>());
+
+            CurrentResources[rType].Add(resourceData);
         }
     }
 

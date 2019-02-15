@@ -11,7 +11,7 @@ namespace GridSearch
         public bool HasPath = false;
         public bool Complete = false;
 
-        public void Start(Node[,] _nodes, Vector2Int start, Vector2Int target, int gridMax)
+        public bool Start(Node[,] _nodes, Vector2Int start, Vector2Int target, int gridMax)
         {
             nodeList = _nodes;
             GridMax = gridMax;
@@ -43,7 +43,7 @@ namespace GridSearch
                     //We have found a route
                     HasPath = true;
                     Complete = true;
-                    return;
+                    return HasPath;
                 }
                 //changed
                 foreach (Node neighbour in GetNeighbours(node.Position))
@@ -65,11 +65,12 @@ namespace GridSearch
                             openSet.Add(neighbour);
                     }
                 }
-
-                //Failed to find path!
-                HasPath = false;
-                Complete = true;
             }
+
+            //Failed to find path!
+            HasPath = false;
+            Complete = true;
+            return HasPath;
         }
 
         int GetDistance(Node nodeA, Node nodeB)
