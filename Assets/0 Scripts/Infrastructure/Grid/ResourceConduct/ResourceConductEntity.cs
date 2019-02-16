@@ -30,9 +30,32 @@ namespace Infrastructure.Grid.Entities
             CurrentResources = new Dictionary<Type, List<ResourceData>>();
         }
 
-        public virtual void LookForResources()
+        /// <summary>
+        /// Look for new resources on neighbours.
+        /// </summary>
+        /// <returns>If there were any new resources found.</returns>
+        public bool LookForResources(bool shouldInformNeighboursOfNewResources = true)
         {
             //We were just placed, lets look for resources on our neighbours.
+            bool anyNewResources = false;
+            foreach(GridTile tile in ParentTile.GetAdjacentGridTiles())
+            {
+                if (tile == null) continue;
+                ResourceConductEntity rEntity = tile.Entity as ResourceConductEntity;
+                if(rEntity != null)
+                {
+                    if (CompareAndGetNewResources(rEntity.CurrentResources)) anyNewResources = true;
+                }
+            }
+
+            if (anyNewResources)
+            {
+                //Inform neighbours of our new resources.
+                //Get a new list with all the resources we have.
+                //We want to send this list onwards via a resource inform.
+                if(shouldInformNeighboursOfNewResources) BeginResourceInform(GetResourcesAsList());
+            }
+            return anyNewResources;
         }
 
         public void BeginResourceInform(List<ResourceData> resourceDatas)
@@ -44,6 +67,8 @@ namespace Infrastructure.Grid.Entities
 
             foreach(GridTile tile in ParentTile.GetAdjacentGridTiles())
             {
+                if (tile == null) continue;
+
                 //If this tile has a resource conduct entity, we will inform it of the resources
                 ResourceConductEntity cEntity = tile?.Entity as ResourceConductEntity;
                 if(cEntity != null)
@@ -87,6 +112,7 @@ namespace Infrastructure.Grid.Entities
             GridTile[] tiles = ParentTile.GetAdjacentGridTiles();
             foreach (GridTile tile in tiles)
             {
+                if (tile == null) continue;
                 //Skip this tile if it was informed already from this operation queue.
                 if (tilesToIgnore.Contains(tile)) continue;
                 if (tile != null && tile.Entity != null)
@@ -143,13 +169,23 @@ namespace Infrastructure.Grid.Entities
 
         }
 
+        public override void OnEntityProduced(GridSystem grid)
+        {
+            //Perform setup tasks.
+            if (!LookForResources())
+            {
+                //If there were no new resources to get, inform about our resources.
+                BeginResourceInform(GetResourcesAsList());
+            }
+        }
+
         /// <summary>
         /// Add the resource to our resources list.
         /// </summary>
         /// <param name="rType">Type of the resource</param>
         /// <param name="resourceData">The new resource data</param>
         /// <returns>If this was a new resource and not a duplicate</returns>
-        private bool AddNewResource(Type rType, ResourceData resourceData)
+        protected bool AddNewResource(Type rType, ResourceData resourceData)
         {
             //If the list for this resource type doesnt exist, make it.
             if (!CurrentResources.ContainsKey(rType)) CurrentResources.Add(rType, new List<ResourceData>());
@@ -158,6 +194,38 @@ namespace Infrastructure.Grid.Entities
             //This was a new resource, add it and return true.
             else CurrentResources[rType].Add(resourceData);
             return true;
+        }
+
+        /// <summary>
+        /// Compares the resources given from another <see cref="ResourceConductEntity"/> and takes them for ourselves.
+        /// </summary>
+        /// <param name="listOfResource"></param>
+        /// <returns></returns>
+        private bool CompareAndGetNewResources(Dictionary<Type, List<ResourceData>> listOfResource)
+        {
+            bool anyNewResources = false;
+            if (listOfResource.Count == 0) return false;
+            //Itterate through all the Lists for each resource type.
+            foreach(KeyValuePair<Type, List<ResourceData>> resourceDataList in listOfResource)
+            {
+                //Itterate through each resource in this list and try to add it to our list.
+                foreach(ResourceData resourceData in resourceDataList.Value)
+                {
+                    //if this was a new resource anyNewResources will now be true.
+                    if (AddNewResource(resourceDataList.Key, resourceData)) anyNewResources = true;
+                }
+            }
+            return anyNewResources;
+        }
+
+        private List<ResourceData> GetResourcesAsList()
+        {
+            List<ResourceData> resouceDataToInformWith = new List<ResourceData>();
+            foreach (List<ResourceData> resourceLists in CurrentResources.Values)
+            {
+                resouceDataToInformWith.AddRange(resourceLists);
+            }
+            return resouceDataToInformWith;
         }
     }
 

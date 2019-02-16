@@ -13,15 +13,14 @@ namespace Infrastructure.Grid.Entities.Buildings
         {
             PrefabName = "Powerplant";
             Cost = 25000;
+            elecResource = new Electricity();
+            AddNewResource(typeof(Electricity), new ResourceData(elecResource, this));
         }
 
-        public override void OnEntityProduced(GridSystem grid)
+        public override void Tick(float time)
         {
-            
-        }
+            base.Tick(time);
 
-        public void Tick(float time)
-        {
             elecResource.Add(PowerIncreaseRate * time);
         }
     }

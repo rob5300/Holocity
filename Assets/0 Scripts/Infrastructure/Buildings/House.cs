@@ -25,11 +25,6 @@ namespace Infrastructure.Grid.Entities.Buildings
             Cost = 100;
         }
 
-        public override void OnEntityProduced(GridSystem grid)
-        {
-            
-        }
-
         public override void OnWorldGridTileCreated(WorldGridTile tile)
         {
             gridtile = tile;

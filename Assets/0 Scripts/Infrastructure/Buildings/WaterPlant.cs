@@ -3,7 +3,7 @@ using Infrastructure.Tick;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {
-    public class WaterPlant : ResourceConductEntity, Tickable
+    public class WaterPlant : Building, Tickable
     {
         public int PowerIncreaseRate = 15;
 
@@ -13,15 +13,13 @@ namespace Infrastructure.Grid.Entities.Buildings
         {
             PrefabName = "Waterplant";
             Cost = 10000;
+            _waterResource = new Water();
+            AddNewResource(typeof(Water), new ResourceData(_waterResource, this));
         }
 
-        public override void OnEntityProduced(GridSystem grid)
+        public override void Tick(float time)
         {
-            
-        }
-
-        public void Tick(float time)
-        {
+            base.Tick(time);
             _waterResource.Add(PowerIncreaseRate * time);
         }
     }

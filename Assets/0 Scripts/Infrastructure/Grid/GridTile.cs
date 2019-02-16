@@ -37,6 +37,10 @@ namespace Infrastructure.Grid
             Entity = ent;
         }
 
+        /// <summary>
+        /// Get adjacent grid tiles. Can return null in the array if a tile doesn't exist.
+        /// </summary>
+        /// <returns>An array of adjacent grid tiles. Index is null if it did not exist.</returns>
         public GridTile[] GetAdjacentGridTiles()
         {
             GridTile[] adjacentTiles = {
