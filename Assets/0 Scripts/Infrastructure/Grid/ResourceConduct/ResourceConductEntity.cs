@@ -83,16 +83,16 @@ namespace Infrastructure.Grid.Entities
             //We are being told about a new resource by a neighbour. We are given the resource information as well as the tiles to ignore for when we pass this on.
             //At this level we will just pass the info on and not store any.
             tilesToIgnore.Add(ParentTile);
-            for (int i = resourceData.Count - 1; i > 0; i--)
+            int newResources = 0;
+            for (int i = resourceData.Count - 1; i >= 0; i--)
             {
-                //If this was not a new resource then we need to remove it from the data list.
-                //This is soo we don't inform neighbours of a resource they should already have.
-                if(!AddNewResource(resourceData[i].resource.GetType(), resourceData[i]))
+                //If this was a new resource then we keep track.
+                if(AddNewResource(resourceData[i].resource.GetType(), resourceData[i]))
                 {
-                    resourceData.RemoveAt(i);
+                    newResources++;
                 }
             }
-            if(resourceData.Count > 1)
+            if(newResources > 0)
             {
                 //We have resources that were new, inform neighbours of these.
                 _newResourceData_continueInform = resourceData;

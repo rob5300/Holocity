@@ -12,7 +12,6 @@ namespace Infrastructure.Grid.Entities.Buildings
         public float WaterDrain = 0.3f;
         public float[] ResourceMissingTimes = { 0f, 0f };
 
-        private bool showingElectricityWarning = false;
         private float timeoutTime = 3f;
         WorldGridTile gridtile;
 
@@ -27,6 +26,11 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         public override void OnWorldGridTileCreated(WorldGridTile tile)
         {
+            base.OnWorldGridTileCreated(tile);
+
+            ElectricityWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.ElectricityWarning, tile.Model.transform);
+            WaterWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.WaterWarning, tile.Model.transform);
+
             gridtile = tile;
             tile.Model.GetComponent<MeshRenderer>().material.color = Color.grey;
             //ITS GREY NOT GRAY.
@@ -49,6 +53,9 @@ namespace Infrastructure.Grid.Entities.Buildings
 
             if (IsVacant) return;
 
+            bool startElecState = HasPower;
+            bool startWaterState = HasWaterSupply;
+
             //Request the drain amount of each resource. If the request and recieved amount doesnt match we handle that.
             #region Electricity
             float request_electricity = ElectricityDrain * time;
@@ -69,15 +76,15 @@ namespace Infrastructure.Grid.Entities.Buildings
                 //Track how long we have not had the power we requested. If its above the acceptable value we dont consider this house to have power.
                 ResourceMissingTimes[0] += time;
                 if (time > timeoutTime) HasPower = false;
-                gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue((wGrid) => { Debug.Log("House does not have power."); });
             }
             else
             {
                 //We got the power we requested.
                 ResourceMissingTimes[0] = 0;
                 HasPower = true;
-                gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue((wGrid) => { Debug.Log("House has power."); });
             }
+
+            if(startElecState != HasPower) gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(electricityWarningTask);
             #endregion
             #region Water
             float request_water = WaterDrain * time;
@@ -105,6 +112,8 @@ namespace Infrastructure.Grid.Entities.Buildings
                 ResourceMissingTimes[1] = 0;
                 HasWaterSupply = true;
             }
+
+            if (startWaterState != HasWaterSupply) gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(waterWarningTask);
             #endregion
         }
     }
