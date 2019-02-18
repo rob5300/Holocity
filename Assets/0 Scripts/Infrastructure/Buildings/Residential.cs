@@ -20,6 +20,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         /// If this building has a water supply.
         /// </summary>
         public bool HasWaterSupply = false;
+        private GridTile parent;
 
         public virtual void SetResident(Resident res)
         {

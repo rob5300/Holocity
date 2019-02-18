@@ -23,6 +23,7 @@ namespace Infrastructure.Grid
         public List<Resident> Residents;
         public EdgeGuidance edgeGuidance;
         public Sprite icon;
+        private Dictionary<Type, List<ResourceData>> GridResources;
 
         /// <summary>
         /// A list of all tickables that will be ticked by the owning city and session tick manager.
@@ -56,6 +57,7 @@ namespace Infrastructure.Grid
             TickAddQueue = new ConcurrentQueue<Tickable>();
             ToRemoveFromTickSystem = new ConcurrentQueue<Tickable>();
             Residents = new List<Resident>();
+            GridResources = new Dictionary<Type, List<ResourceData>>();
 
             WorldGrid = CreateWorldGrid(worldGridPosition);
         }
@@ -176,6 +178,33 @@ namespace Infrastructure.Grid
             }
             AverageResidentHappiness = totalhappiness / Residents.Count;
             return AverageResidentHappiness;
+        }
+
+        public List<ResourceData> GetResourceList(Type type)
+        {
+            if (GridResources.ContainsKey(type))
+            {
+                return GridResources[type];
+            }
+            return null;
+        }
+
+        public void ResetResourceTickCounters()
+        {
+            foreach(List<ResourceData> resourceList in GridResources.Values)
+            {
+                foreach(ResourceData data in resourceList)
+                {
+                    data.resource.ResetCounters();
+                }
+            }
+        }
+
+        public void AddResourceReference(ResourceData data)
+        {
+            if (!GridResources.ContainsKey(data.resource.GetType())) GridResources.Add(data.resource.GetType(), new List<ResourceData>());
+
+            GridResources[data.resource.GetType()].Add(data);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace CityResources
 {
     public class Water : Resource
     {
-        public Water()
+        public Water(int gridid) : base(gridid)
         {
             CapValue = true;
             ValueCap = 500000;

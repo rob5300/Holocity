@@ -1,9 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using BuildEnums;
-using Infrastructure.Grid;
-using Infrastructure.Grid.Entities.Buildings;
+﻿using UnityEngine;
 using Infrastructure.Grid.Entities;
 
 namespace BuildTool
@@ -69,51 +64,11 @@ namespace BuildTool
             transform.localPosition = Vector3.zero;
         }
 
-        public static void SpawnBuilding(Vector2Int position)
-        {
-            Game.CurrentSession.City.GetGrid(0).AddTileEntityToTile(position.x, position.y, GetRandomBuilding());
-            buildingNum++;
-            if (buildingNum > 3) buildingNum = 0;
-        }
-
-        private static Building GetRandomBuilding()
-        {
-            switch (buildingNum)
-            {
-                case 0:
-                    return new House();
-                case 1:
-                    return new Modern_CityBuildings();
-                case 2:
-                    return new Future_House();
-                case 3:
-                    return new Old_Church();
-                default:
-                    return new House();
-            }
-        }
-
         public static void SpawnBuilding(Vector2Int position, TileEntity ent)
         {
            Game.CurrentSession.City.GetGrid(0).AddTileEntityToTile(position.x, position.y, ent);
 
         }
 
-        public static Building GetBuilding(ModernBuildings building)
-        {
-            switch (building)
-            {
-                case ModernBuildings.House:
-                    return new House();
-                case ModernBuildings.Future_House:
-                    return new Future_House();
-                case ModernBuildings.Modern_CityBuildings:
-                    return new Modern_CityBuildings();
-                case ModernBuildings.Old_Church:
-                    return new Old_Church();
-
-                default: return new House();
-            }
-        }
     }
 }

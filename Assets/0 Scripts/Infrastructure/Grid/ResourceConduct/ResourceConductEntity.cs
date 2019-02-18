@@ -130,8 +130,6 @@ namespace Infrastructure.Grid.Entities
 
         public override void OnDestroy()
         {
-            base.OnDestroy();
-
             HashSet<GridTile> tilesToIgnore = new HashSet<GridTile>();
             tilesToIgnore.Add(ParentTile);
 
@@ -191,8 +189,12 @@ namespace Infrastructure.Grid.Entities
             if (!CurrentResources.ContainsKey(rType)) CurrentResources.Add(rType, new List<ResourceData>());
             //If this resource list already has this resource, do not add it. Return false to notify that this was not a new resource.
             if (CurrentResources[rType].Contains(resourceData)) return false;
-            //This was a new resource, add it and return true.
-            else CurrentResources[rType].Add(resourceData);
+            else
+            {
+                //This was a new resource, add it and return true.
+                ParentTile.ParentGridSystem.AddResourceReference(resourceData);
+                CurrentResources[rType].Add(resourceData);
+            }
             return true;
         }
 
