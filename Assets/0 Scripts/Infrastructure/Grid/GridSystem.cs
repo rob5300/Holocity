@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using GridSearch;
 using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Residents;
@@ -205,6 +206,20 @@ namespace Infrastructure.Grid
             if (!GridResources.ContainsKey(data.resource.GetType())) GridResources.Add(data.resource.GetType(), new List<ResourceData>());
 
             GridResources[data.resource.GetType()].Add(data);
+        }
+
+
+        public Node[,] GetNodeSet()
+        {
+            Node[,] nodeset = new Node[Width, Height];
+            for (int w = 0; w < Width; w++)
+            {
+                for (int h = 0; h < Height; h++)
+                {
+                    nodeset[w, h] = new Node(Tiles[w][h]);
+                }
+            }
+            return nodeset;
         }
     }
 }

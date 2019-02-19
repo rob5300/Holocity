@@ -7,17 +7,24 @@ namespace GridSearch
     public class GridPathSearcher
     {
         private Node[,] nodeList;
+        Vector2Int StartPoint;
+        Vector2Int Target;
         private int GridMax;
         public bool HasPath = false;
         public bool Complete = false;
 
-        public bool Start(Node[,] _nodes, Vector2Int start, Vector2Int target, int gridMax)
+        public GridPathSearcher(Node[,] nodeList, Vector2Int start, Vector2Int target, int gridMax)
         {
-            nodeList = _nodes;
+            this.nodeList = nodeList;
+            StartPoint = start;
+            Target = target;
             GridMax = gridMax;
+        }
 
-            Node startNode = nodeList[start.x, start.y];
-            Node targetNode = nodeList[target.x, target.y];
+        public bool Start()
+        {
+            Node startNode = nodeList[StartPoint.x, StartPoint.y];
+            Node targetNode = nodeList[Target.x, Target.y];
 
             List<Node> openSet = new List<Node>();
             HashSet<Node> closedSet = new HashSet<Node>();

@@ -1,4 +1,5 @@
 ﻿using CityResources;
+using GridSearch;
 using Infrastructure.Tick;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,13 @@ namespace Infrastructure.Grid.Entities
         private List<ResourceData> _newResourceData_continueInform;
 
         //Destroy check members
-        public List<Task<bool>> ResourcePathCheckTasks = new List<Task<bool>>();
+        private List<Task<bool>> resourcePathCheckTasks = new List<Task<bool>>();
+        private List<ResourceData> resourceListForConnetionCheck;
+        private HashSet<GridTile> tilesToIgnoreDestroy;
+
+        private bool _shouldContinueDestroyInform = false;
+        private List<ResourceData> _resourcesToRemove;
+        private HashSet<GridTile> _tilesToIgnoreDestroy;
 
         public ResourceConductEntity()
         {
@@ -38,11 +45,11 @@ namespace Infrastructure.Grid.Entities
         {
             //We were just placed, lets look for resources on our neighbours.
             bool anyNewResources = false;
-            foreach(GridTile tile in ParentTile.GetAdjacentGridTiles())
+            foreach (GridTile tile in ParentTile.GetAdjacentGridTiles())
             {
                 if (tile == null) continue;
                 ResourceConductEntity rEntity = tile.Entity as ResourceConductEntity;
-                if(rEntity != null)
+                if (rEntity != null)
                 {
                     if (CompareAndGetNewResources(rEntity.CurrentResources)) anyNewResources = true;
                 }
@@ -53,7 +60,7 @@ namespace Infrastructure.Grid.Entities
                 //Inform neighbours of our new resources.
                 //Get a new list with all the resources we have.
                 //We want to send this list onwards via a resource inform.
-                if(shouldInformNeighboursOfNewResources) BeginResourceInform(GetResourcesAsList());
+                if (shouldInformNeighboursOfNewResources) BeginResourceInform(GetResourcesAsList());
             }
             return anyNewResources;
         }
@@ -65,13 +72,13 @@ namespace Infrastructure.Grid.Entities
             HashSet<GridTile> tilesToIgnore = new HashSet<GridTile>();
             tilesToIgnore.Add(ParentTile);
 
-            foreach(GridTile tile in ParentTile.GetAdjacentGridTiles())
+            foreach (GridTile tile in ParentTile.GetAdjacentGridTiles())
             {
                 if (tile == null) continue;
 
                 //If this tile has a resource conduct entity, we will inform it of the resources
                 ResourceConductEntity cEntity = tile?.Entity as ResourceConductEntity;
-                if(cEntity != null)
+                if (cEntity != null)
                 {
                     cEntity.OnNewResourceViaConnection_Event(resourceDatas, tilesToIgnore);
                 }
@@ -87,12 +94,12 @@ namespace Infrastructure.Grid.Entities
             for (int i = resourceData.Count - 1; i >= 0; i--)
             {
                 //If this was a new resource then we keep track.
-                if(AddNewResource(resourceData[i].resource.GetType(), resourceData[i]))
+                if (AddNewResource(resourceData[i].resource.GetType(), resourceData[i]))
                 {
                     newResources++;
                 }
             }
-            if(newResources > 0)
+            if (newResources > 0)
             {
                 //We have resources that were new, inform neighbours of these.
                 _newResourceData_continueInform = resourceData;
@@ -135,18 +142,66 @@ namespace Infrastructure.Grid.Entities
 
             //Inform neighbours that we were destroyed
             GridTile[] tiles = ParentTile.GetAdjacentGridTiles();
-            foreach(GridTile tile in tiles)
+            foreach (GridTile tile in tiles)
             {
-                if(tile != null && tile.Entity != null)
+                if (tile != null && tile.Entity != null)
                 {
                     ResourceConductEntity ent = tile.Entity as ResourceConductEntity;
-                    ent?.OnNeighbourDestroyed(this, tilesToIgnore);
+
+                    //Get a new node set for the grid we live on
+                    //Manually change the tile we were on to not be populated anymore.
+                    Node[,] nodeSet = ParentTile.ParentGridSystem.GetNodeSet();
+                    nodeSet[ParentTile.Position.x, ParentTile.Position.y].Populated = false;
+                    ent?.OnNeighbourDestroyed(this, nodeSet, tilesToIgnore);
                 }
             }
         }
 
-        public virtual void OnNeighbourDestroyed(TileEntity neighbour, HashSet<GridTile> tilesToIgnore)
+        public virtual void OnNeighbourDestroyed(TileEntity neighbour, Node[,] nodeSet, HashSet<GridTile> tilesToIgnore)
         {
+            //Check if we can access any of our resources still by direct connection.
+            //We shall set off a task to check for a connection for all of our resources and await the results on our tick.
+            resourcePathCheckTasks.Clear();
+            resourceListForConnetionCheck = GetResourcesAsList();
+            tilesToIgnore.Add(ParentTile);
+            tilesToIgnoreDestroy = tilesToIgnore;
+
+            foreach (ResourceData resource in resourceListForConnetionCheck)
+            {
+                Func<bool> newFunc = () => { return new GridPathSearcher(nodeSet, ParentTile.Position, resource.entityOrigin.ParentTile.Position, ParentTile.ParentGridSystem.Width).Start(); };
+                resourcePathCheckTasks.Add(Task.Run(newFunc));
+            }
+        }
+
+        public virtual void BeginInformNoConnectionResource(List<ResourceData> resourceToRemove)
+        {
+            foreach (GridTile tile in ParentTile.GetAdjacentGridTiles())
+            {
+                if (tile == null) continue;
+
+                //If this tile has a resource conduct entity, we will inform it of the resources to remove.
+                ResourceConductEntity cEntity = tile?.Entity as ResourceConductEntity;
+                if (cEntity != null)
+                {
+                    cEntity.ResourceLostConnection_Event(resourceToRemove, tilesToIgnoreDestroy);
+                }
+            }
+        }
+
+        public virtual void ResourceLostConnection_Event(List<ResourceData> resourcesToRemove, HashSet<GridTile> tilesToIgnore)
+        {
+            //We are being informed that resources need to be removed due to a loss of connection.
+            tilesToIgnore.Add(ParentTile);
+
+            foreach(ResourceData resource in resourcesToRemove)
+            {
+                if (CurrentResources[resource.resource.GetType()].Contains(resource))
+                {
+                    CurrentResources[resource.resource.GetType()].Remove(resource);
+                }
+            }
+
+            //Setup to continue the inform next tick
 
         }
 
@@ -164,7 +219,24 @@ namespace Infrastructure.Grid.Entities
                 _tilesToIgnore_continueInform = null;
             }
 
+            //Resource path result checking.
+            if(resourcePathCheckTasks.Count > 0)
+            {
+                List<ResourceData> resourcesToRemove = new List<ResourceData>();
 
+                for (int i = 0; i < resourcePathCheckTasks.Count; i++)
+                {
+                    if (resourcePathCheckTasks[i].IsCompleted)
+                    {
+                        if (!resourcePathCheckTasks[i].Result)
+                        {
+                            //This resource path check failed to get a route. Add this to the list to inform with.
+                            resourcesToRemove.Add(resourceListForConnetionCheck[i]);
+                        }
+                    }
+                }
+                if(resourcesToRemove.Count != 0) BeginInformNoConnectionResource(resourcesToRemove);
+            }
         }
 
         public override void OnEntityProduced(GridSystem grid)

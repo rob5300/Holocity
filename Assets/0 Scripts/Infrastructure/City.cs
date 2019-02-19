@@ -37,7 +37,7 @@ namespace Infrastructure {
             owner = owner != string.Empty ? owner : "Mayor";
             ParentSession = sess;
             Residents = new List<Resident>(10);
-            ResidentialDemand = 10;
+            ResidentialDemand = 20;
             ResidentialBuildings = new List<Residential>(10);
             VacantResidentialBuildings = new List<Residential>(10);
         }
