@@ -75,7 +75,7 @@ namespace Infrastructure.Grid.Entities.Buildings
             {
                 //Track how long we have not had the power we requested. If its above the acceptable value we dont consider this house to have power.
                 ResourceMissingTimes[0] += time;
-                if (time > timeoutTime) HasPower = false;
+                if (ResourceMissingTimes[0] > timeoutTime) HasPower = false;
             }
             else
             {
@@ -104,7 +104,7 @@ namespace Infrastructure.Grid.Entities.Buildings
             {
                 //Track how long we have not had the water we requested. If its above the acceptable value we dont consider this house to have water.
                 ResourceMissingTimes[1] += time;
-                if (time > timeoutTime) HasWaterSupply = false;
+                if (ResourceMissingTimes[1] > timeoutTime) HasWaterSupply = false;
             }
             else
             {

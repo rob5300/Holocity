@@ -28,8 +28,8 @@ namespace Infrastructure.Grid.Entities
         private HashSet<GridTile> tilesToIgnoreDestroy;
 
         private bool _shouldContinueDestroyInform = false;
-        private List<ResourceData> _resourcesToRemove;
-        private HashSet<GridTile> _tilesToIgnoreDestroy;
+        private List<ResourceData> _resourcesToRemove_inform;
+        private HashSet<GridTile> _tilesToIgnore_destroyInform;
 
         public ResourceConductEntity()
         {
@@ -65,6 +65,7 @@ namespace Infrastructure.Grid.Entities
             return anyNewResources;
         }
 
+        #region Resource Informining Methods.
         public void BeginResourceInform(List<ResourceData> resourceDatas)
         {
             //We are the first object to start this process.
@@ -129,12 +130,9 @@ namespace Infrastructure.Grid.Entities
                 }
             }
         }
+        #endregion
 
-        public virtual void OnLostResourceConnection_Event(List<ResourceData> resourcesLost, HashSet<GridTile> tilesToIgnore)
-        {
-
-        }
-
+        #region Resource Lost & Neighbour Destroyed Methods.
         public override void OnDestroy()
         {
             HashSet<GridTile> tilesToIgnore = new HashSet<GridTile>();
@@ -188,6 +186,23 @@ namespace Infrastructure.Grid.Entities
             }
         }
 
+        public virtual void ContinueNoConnectionResourceInform(List<ResourceData> resourcesToRemove, HashSet<GridTile> tilesToIgnore)
+        {
+            //Tell our neighbours that these resource has no connection anymore.
+            GridTile[] tiles = ParentTile.GetAdjacentGridTiles();
+            foreach (GridTile tile in tiles)
+            {
+                if (tile == null) continue;
+                //Skip this tile if it was informed already from this operation queue.
+                if (tilesToIgnore.Contains(tile)) continue;
+                if (tile != null && tile.Entity != null)
+                {
+                    ResourceConductEntity ent = tile.Entity as ResourceConductEntity;
+                    ent?.ResourceLostConnection_Event(resourcesToRemove, tilesToIgnore);
+                }
+            }
+        }
+
         public virtual void ResourceLostConnection_Event(List<ResourceData> resourcesToRemove, HashSet<GridTile> tilesToIgnore)
         {
             //We are being informed that resources need to be removed due to a loss of connection.
@@ -201,15 +216,17 @@ namespace Infrastructure.Grid.Entities
                 }
             }
 
-            //Setup to continue the inform next tick
-
+            //Setup to continue the destroy connection inform next tick
+            _resourcesToRemove_inform = resourcesToRemove;
+            _tilesToIgnore_destroyInform = tilesToIgnore;
+            _shouldContinueDestroyInform = true;
         }
+        #endregion
 
         public virtual void Tick(float time)
         {
             //Check if we have new resources to tell neighbours about.
             //Here is where we will continue the resource inform process
-
             if (_shouldContinueResourceInform)
             {
                 _shouldContinueResourceInform = false;
@@ -219,12 +236,13 @@ namespace Infrastructure.Grid.Entities
                 _tilesToIgnore_continueInform = null;
             }
 
-            //Resource path result checking.
+            //Check if we have any tasks running that are checking for resource connections.
+            //If any are complete then we can take the results and act on them.
             if(resourcePathCheckTasks.Count > 0)
             {
                 List<ResourceData> resourcesToRemove = new List<ResourceData>();
 
-                for (int i = 0; i < resourcePathCheckTasks.Count; i++)
+                for (int i = resourcePathCheckTasks.Count - 1; i <= 0; i--)
                 {
                     if (resourcePathCheckTasks[i].IsCompleted)
                     {
@@ -232,10 +250,23 @@ namespace Infrastructure.Grid.Entities
                         {
                             //This resource path check failed to get a route. Add this to the list to inform with.
                             resourcesToRemove.Add(resourceListForConnetionCheck[i]);
+                            //Remove the resourse from ourselves
+                            CurrentResources[resourceListForConnetionCheck[i].resource.GetType()].Remove(resourceListForConnetionCheck[i]);
                         }
+                        //Task completed, remove it from the list
+                        resourcePathCheckTasks.RemoveAt(i);
                     }
                 }
                 if(resourcesToRemove.Count != 0) BeginInformNoConnectionResource(resourcesToRemove);
+            }
+
+            //Check if we should continue to inform about a resource to remove from a destruction
+            if (_shouldContinueDestroyInform)
+            {
+                _shouldContinueDestroyInform = false;
+                ContinueNoConnectionResourceInform(_resourcesToRemove_inform, _tilesToIgnore_destroyInform);
+                _resourcesToRemove_inform = null;
+                _tilesToIgnore_destroyInform = null;
             }
         }
 

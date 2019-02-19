@@ -61,7 +61,9 @@ public class BuildToolUI : MonoBehaviour {
 
     void DestroyPressed(GameObject go)
     {
-        Debug.Log("destroy");
+        Vector2Int pos = transform.parent.GetComponent<WorldGridTile>().Position;
+        transform.parent.GetComponent<WorldGridTile>().ParentGrid.GridSystem.DestroyTileEntity(pos);
+        ToggleUI();
     }
 
     void BuildingPressed(GameObject go)
