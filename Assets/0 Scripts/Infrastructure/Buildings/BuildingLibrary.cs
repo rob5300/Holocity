@@ -26,7 +26,7 @@ public static class BuildingLibrary
                 if (o is Building)
                 {
                     Building b = (Building)o;
-                    ModernBuildings.Add(new BuildingMap(b.GetModel(), typee, b.Name, b.Cost));
+                    ModernBuildings.Add(new BuildingMap(b.GetModel(), typee, b.category, b.Name, b.Cost));
                 }
             }
             catch (Exception e)
@@ -42,9 +42,25 @@ public static class BuildingLibrary
 #endif
     }
 
-    public static List<BuildingMap> GetListForTimePeriod()
+    public static List<BuildingMap> GetListForTimePeriod(BuildingCategory category)
     {
-        return ModernBuildings;
+
+        List<BuildingMap> map = new List<BuildingMap>(); //this will get the time period list
+
+        if(category == BuildingCategory.All)
+        {
+            return ModernBuildings;
+        }
+        else
+        {
+            foreach(BuildingMap buildingMap in ModernBuildings)
+            {
+                if (buildingMap.Category == category)
+                    map.Add(buildingMap);
+            }
+
+            return map;
+        }
     }
 }
 
@@ -52,13 +68,15 @@ public struct BuildingMap
 {
     public GameObject Model;
     public Type BuildingType;
+    public BuildingCategory Category;
     public string Name;
     public uint Cost;
 
-    public BuildingMap(GameObject model, Type buildingType, string name, uint cost)
+    public BuildingMap(GameObject model, Type buildingType, BuildingCategory category, string name, uint cost)
     {
         Model = model;
         BuildingType = buildingType;
+        Category = category;
         Name = name;
         Cost = cost;
     }

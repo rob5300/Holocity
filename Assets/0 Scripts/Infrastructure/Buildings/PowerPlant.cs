@@ -13,6 +13,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         {
             PrefabName = "Powerplant";
             Cost = 25000;
+            category = BuildingCategory.Resource;
         }
 
         public override void OnEntityProduced(GridSystem grid)

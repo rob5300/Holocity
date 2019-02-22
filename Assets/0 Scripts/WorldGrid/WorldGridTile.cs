@@ -3,7 +3,6 @@ using System;
 using Infrastructure.Grid;
 using Infrastructure.Grid.Entities.Buildings;
 using HoloToolkit.Unity.InputModule;
-using BuildTool;
 using Infrastructure.Grid.Entities;
 
 [SelectionBase]
@@ -16,6 +15,7 @@ public class WorldGridTile : MonoBehaviour {
     public Vector2Int Position;
     public GameObject TileBorder;
     public GameObject Model;
+
 
     public event Action OnInteract;
     public event Action OnTileDestroy;
@@ -44,8 +44,7 @@ public class WorldGridTile : MonoBehaviour {
 
         //Add Gesture Components to Buildings
         Model.AddComponent<MoveGesture>();
-       // Model.AddComponent<WorldTileMoveGestureHandler>();
-        Model.AddComponent<WorldTileRotateGestureHandler>();
+        Model.AddComponent<RotateGesture>();
         Model.AddComponent<FocusHighlighter>();
 
         //Set the layer mask.
@@ -62,8 +61,8 @@ public class WorldGridTile : MonoBehaviour {
         Model.transform.localPosition = Vector3.zero;
 
         //Add Gesture Components to Buildings
-        Model.AddComponent<WorldTileMoveGestureHandler>();
-        Model.AddComponent<WorldTileRotateGestureHandler>();
+        Model.AddComponent<MoveGesture>();
+        Model.AddComponent<RotateGesture>();
         Model.AddComponent<FocusHighlighter>();
 
         //Set the layer mask.
@@ -92,26 +91,24 @@ public class WorldGridTile : MonoBehaviour {
         return false;
     }
 
-    public void RotateBuilding(Transform buildingTransform)
+    public void SnapRotation(Transform target)
     {
-        //will change this to buildingTransform.forward
-        float dotF = Vector3.Dot(buildingTransform.forward, buildingTransform.parent.forward);
-        float dotR = Vector3.Dot(buildingTransform.forward, buildingTransform.parent.right);
+        float dotF = Vector3.Dot(target.forward, target.parent.forward);
+        float dotR = Vector3.Dot(target.forward, target.parent.right);
         Vector3 dir;
-        
+
 
         if (Mathf.Abs(dotF) > Mathf.Abs(dotR))
         {
-            dir = (buildingTransform.parent.forward * Mathf.Round(dotF));
-            buildingTransform.rotation = Quaternion.LookRotation(dir);
-        
+            dir = (target.parent.forward * Mathf.Round(dotF));
+            target.rotation = Quaternion.LookRotation(dir);
+
         }
-        else if(Mathf.Abs(dotF) < Mathf.Abs(dotR))
+        else if (Mathf.Abs(dotF) < Mathf.Abs(dotR))
         {
-            dir = (buildingTransform.parent.right * Mathf.Round(dotR));
-            buildingTransform.rotation = Quaternion.LookRotation(dir);
+            dir = (target.parent.right * Mathf.Round(dotR));
+            target.rotation = Quaternion.LookRotation(dir);
         }
-        
     }
 }
 

@@ -2,13 +2,17 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ResourcesUI : MonoBehaviour
 {
     public float UpdateDelay = 0.25f;
     public ResourceDataInfo[] ResourceDataObjects;
-    public Text GridHappinessText;
-    public Text FundsText;
+    public TextMeshPro GridHappinessText;
+    public TextMeshPro FundsText;
+    public Toggle move;
+    public Toggle rotate;
+    public Color ToggleColor;
 
     private Electricity _electricity;
     private Water _water;
@@ -24,6 +28,7 @@ public class ResourcesUI : MonoBehaviour
         _electricity = Game.CurrentSession.City.GetResource<Electricity>();
         _water = Game.CurrentSession.City.GetResource<Water>();
         camera = GameObject.Find("MixedRealityCamera").GetComponent<Camera>();
+        SwitchMode(GesturesManager.Instance.IsNavigating);
     }
 
     public void Update()
@@ -47,8 +52,26 @@ public class ResourcesUI : MonoBehaviour
         //Update the happiness value in the UI
         float happiness = WorldGrid.GridSystem.AverageResidentHappiness;
         GridHappinessText.text = happiness.ToString();
+        
+    }
+
+    public void SwitchMode(bool navigate)
+    {
+        if (navigate)
+        {
+          
+            rotate.image.color = ToggleColor;
+            move.image.color = Color.white;
+        }
+        else
+        {
+            rotate.image.color = Color.white;
+            move.image.color = ToggleColor;
+        }
+        GesturesManager.Instance.SwitchMode(navigate);
     }
 }
+
 
 [System.Serializable]
 public class ResourceDataInfo

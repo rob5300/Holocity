@@ -56,7 +56,6 @@ public class WorldGridMoveButton : MonoBehaviour ,IManipulationHandler
 
     public void OnManipulationStarted(ManipulationEventData eventData)
     {
-		Debug.Log("Move button Start");
         transform.SetParent(null);
 
         InputManager.Instance.PushModalInputHandler(gameObject);
@@ -69,7 +68,6 @@ public class WorldGridMoveButton : MonoBehaviour ,IManipulationHandler
 
     public void OnManipulationUpdated(ManipulationEventData eventData)
     {
-		Debug.Log("Move button Update");
         transform.position = _startPosition + eventData.CumulativeDelta;
         GridParent.GridContainer.transform.position = _gridStartPosition + eventData.CumulativeDelta;
         eventData.Use();

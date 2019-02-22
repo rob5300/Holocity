@@ -7,6 +7,8 @@ using System;
 
 public class HandDetection : MonoBehaviour{
     
+    public GameObject HandPrefab;
+
     private struct Hand
     {
         public GameObject obj;
@@ -28,15 +30,15 @@ public class HandDetection : MonoBehaviour{
         InteractionManager.InteractionSourceUpdated += SourceUpdated;
     }
     
-    public Vector3 GetHandPos(uint id)
+    public Vector3 GetHandPos()
     {
         Vector3 handPos = Vector3.zero;
 
-        if (true)//handOne.obj )//&& handOne.isPressed)// && handOne.ID == id)
+        if (handOne.obj && handOne.isPressed)
         {
             handPos = handOne.pos;
         }
-        else if (handTwo.obj && handTwo.isPressed && handTwo.ID == id)
+        else if (handTwo.obj && handTwo.isPressed)
         {
             handPos = handTwo.pos;
         }
@@ -48,8 +50,13 @@ public class HandDetection : MonoBehaviour{
     {
         if (obj.state.source.kind.ToString() != "Hand") return;
 
+        InteractionSource  source = obj.state.source;
+        
+
         if (handOne.obj == null)
         {
+            handOne.obj = Instantiate(HandPrefab);
+            handOne.obj.GetComponent<HandObject.Hand>().handDetection = this;
             handOne.obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             handOne.obj.transform.localScale = scale;
             handOne.ID = obj.state.source.id;
@@ -59,6 +66,9 @@ public class HandDetection : MonoBehaviour{
         }
         else if (handTwo.obj == null)
         {
+            handTwo.obj = Instantiate(HandPrefab);
+            handTwo.obj.GetComponent<HandObject.Hand>().handDetection = this;
+
             handTwo.obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             handTwo.obj.transform.localScale = scale;
             handTwo.ID = obj.state.source.id;
@@ -91,7 +101,7 @@ public class HandDetection : MonoBehaviour{
             if (obj.state.sourcePose.TryGetPosition(out handOne.pos))
                 handOne.obj.transform.position = handOne.pos;
 
-            handOne.isPressed = obj.state.selectPressed;
+            handOne.isPressed = obj.state.anyPressed;
         }
 
         if (handTwo.obj && handTwo.ID == obj.state.source.id)
@@ -99,9 +109,16 @@ public class HandDetection : MonoBehaviour{
             if (obj.state.sourcePose.TryGetPosition(out handTwo.pos))
                 handTwo.obj.transform.position = handTwo.pos;
 
-            handTwo.isPressed = obj.state.selectPressed;
+            handTwo.isPressed = obj.state.anyPressed;
         }
     }
 
-    
+    #region Bimanual Gestures
+    public void OpenMainMenu(GameObject go)
+    {
+        if(go == handOne.obj)
+           UIManager.Instance.SwitchState(UIManager.MenuState.MainMenu);
+    }
+
+    #endregion
 }

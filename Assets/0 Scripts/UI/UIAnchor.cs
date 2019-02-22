@@ -13,9 +13,12 @@ public class UIAnchor : MonoBehaviour {
 	void Start () {
         if (AnchorObject == null) AnchorObject = Camera.main.transform;
         transform.rotation = Quaternion.Euler(0, AnchorObject.rotation.eulerAngles.y, 0);
-	}
+    }
 
 	void Update () {
+
+        
+
         if (_rotating) Rotate();
         else Check();
 

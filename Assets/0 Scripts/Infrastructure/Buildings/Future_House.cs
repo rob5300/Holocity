@@ -10,8 +10,10 @@ namespace Infrastructure.Grid.Entities.Buildings
     {
         public Future_House()
         {
+            Name = "Future House";
             PrefabName = "Future House";
             Cost = 250;
+            category = BuildingCategory.Residential;
         }
     }
 }

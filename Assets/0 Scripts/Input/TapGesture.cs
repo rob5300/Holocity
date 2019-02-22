@@ -1,40 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BuildTool;
 using HoloToolkit.Unity.InputModule;
 
 public class TapGesture : MonoBehaviour, IInputClickHandler {
-
-
-    public BuildToolUI buildToolUI;
-
-    GazeManager gazeManager;
+    
     float timeofuse = -999;
-
-	void Start () {
-        gazeManager = GetComponent<GazeManager>();
-	}
 
     public void OnInputClicked(InputClickedEventData eventData)
     {
-        if(timeofuse + 0.1 > Time.time) return;
+        if(timeofuse + 0.5f > Time.time) return;
 
         timeofuse = Time.time;
 
+        AudioManager.Instance.PlaySound("Tap Sound");
         eventData.Use();
 
-        if (gazeManager.HitObject && gazeManager.HitObject.GetComponent<FocusHighlighter>())
+        if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponent<FocusHighlighter>())
         {
-           WorldGridTile tile = gazeManager.HitObject.transform.parent.GetComponent<WorldGridTile>();
-
-           //Tools.SpawnBuilding(tile.Position);
-
-            buildToolUI.MoveUI(tile);
-
+           WorldGridTile tile = GazeManager.Instance.HitObject.transform.parent.GetComponent<WorldGridTile>();
+           UIManager.Instance.MoveToTile(tile);
         }
-        else
+        else if(!GazeManager.Instance.HitObject &&UIManager.Instance.menuState != UIManager.MenuState.Off)
         {
+           UIManager.Instance.SwitchState(UIManager.MenuState.Off);
             //turn off UI if player clicks away.
         }
     }

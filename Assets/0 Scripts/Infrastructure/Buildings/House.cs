@@ -20,6 +20,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         public House()
         {
             Name = "House";
+            category = BuildingCategory.Residential;
             PrefabName = "Basic House";
             Cost = 100;
         }
