@@ -2069,7 +2069,7 @@ MonoBehaviour:
   FundsText: {fileID: 114440588774142024}
   move: {fileID: 114824649533027230}
   rotate: {fileID: 114447217703100170}
-  ToggleColor: {r: 0, g: 0.7764706, b: 0.83137256, a: 0}
+  ToggleColor: {r: 0, g: 0.7764706, b: 0.83137256, a: 1}
 --- !u!114 &114886781494091882
 MonoBehaviour:
   m_ObjectHideFlags: 1
