@@ -242,7 +242,7 @@ namespace Infrastructure.Grid.Entities
             {
                 List<ResourceData> resourcesToRemove = new List<ResourceData>();
 
-                for (int i = resourcePathCheckTasks.Count - 1; i <= 0; i--)
+                for (int i = resourcePathCheckTasks.Count - 1; i >= 0; i--)
                 {
                     if (resourcePathCheckTasks[i].IsCompleted)
                     {
@@ -255,6 +255,7 @@ namespace Infrastructure.Grid.Entities
                         }
                         //Task completed, remove it from the list
                         resourcePathCheckTasks.RemoveAt(i);
+                        if (resourcePathCheckTasks.Count == 0) break;
                     }
                 }
                 if(resourcesToRemove.Count != 0) BeginInformNoConnectionResource(resourcesToRemove);
