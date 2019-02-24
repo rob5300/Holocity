@@ -4,7 +4,7 @@ namespace CityResources
 {
     public class Electricity : Resource
     {
-        public Electricity()
+        public Electricity(int gridid) : base(gridid)
         {
             CapValue = true;
             ValueCap = 30000;

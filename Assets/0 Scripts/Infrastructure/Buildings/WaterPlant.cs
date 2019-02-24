@@ -8,6 +8,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         public int PowerIncreaseRate = 15;
 
         private Water _waterResource;
+        private ResourceData waterData;
 
         public WaterPlant()
         {
@@ -18,12 +19,25 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         public override void OnEntityProduced(GridSystem grid)
         {
-            _waterResource = grid.ParentCity.GetResource<Water>();
+            _waterResource = new Water(ParentTile.ParentGridSystem.Id);
+            waterData = new ResourceData(_waterResource, this);
+            AddNewResource(typeof(Water), waterData);
+
+            //We need to call base to distribute our resource AFTER we make ours.
+            base.OnEntityProduced(grid);
         }
 
-        public void Tick(float time)
+        public override void Tick(float time)
         {
+            base.Tick(time);
             _waterResource.Add(PowerIncreaseRate * time);
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            waterData.Destroy();
         }
     }
 }

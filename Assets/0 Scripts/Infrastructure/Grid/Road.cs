@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Grid.Entities
 {
-    public class Road : TileEntity
+    public class Road : ResourceConductEntity
     {
         private static bool _cachedPrefabs = false;
         private static GameObject[] RoadPrefabs;
@@ -134,12 +134,7 @@ namespace Infrastructure.Grid.Entities
             ApplyModelRotation();
 
             //Tell any adjacent road tiles to check and update their models.
-            GridTile[] adjacentTiles = {
-                ParentTile.ParentGridSystem.GetTile(ParentTile.Position + new Vector2Int(0, 1)),
-                ParentTile.ParentGridSystem.GetTile(ParentTile.Position + new Vector2Int(1, 0)),
-                ParentTile.ParentGridSystem.GetTile(ParentTile.Position + new Vector2Int(0, -1)),
-                ParentTile.ParentGridSystem.GetTile(ParentTile.Position + new Vector2Int(-1, 0))
-            };
+            GridTile[] adjacentTiles = ParentTile.GetAdjacentGridTiles();
 
             foreach(GridTile adjtile in adjacentTiles)
             {

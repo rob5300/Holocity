@@ -53,6 +53,8 @@ namespace Infrastructure.Tick
         /// List of referneces to the queues that all existing grid systems hold. These queues hold new tickables waiting to be added to the master TickTargets list.
         /// </summary>
         private List<ConcurrentQueue<Tickable>> GridNewTickableQueues;
+
+        private List<ConcurrentQueue<Tickable>> GridToRemoveTickableQueues;
         #endregion
 
         /// <summary>
@@ -68,6 +70,7 @@ namespace Infrastructure.Tick
 
             TickTargets = new List<Tickable>();
             GridNewTickableQueues = new List<ConcurrentQueue<Tickable>>();
+            GridToRemoveTickableQueues = new List<ConcurrentQueue<Tickable>>();
             SessionActionsQueue = new ConcurrentQueue<SessionAction>();
             NewGridSystems = new ConcurrentQueue<GridSystem>();
             IncomingTickableQueue = new ConcurrentQueue<Tickable>();
@@ -180,7 +183,11 @@ namespace Infrastructure.Tick
             for (int i = 0; i < NewGridSystems.Count; i++)
             {
                 GridSystem newGrid;
-                while (NewGridSystems.TryDequeue(out newGrid)) GridNewTickableQueues.Add(newGrid.TickAddQueue);
+                while (NewGridSystems.TryDequeue(out newGrid))
+                {
+                    GridNewTickableQueues.Add(newGrid.TickAddQueue);
+                    GridToRemoveTickableQueues.Add(newGrid.ToRemoveFromTickSystem);
+                }
             }
         }
 
@@ -210,6 +217,18 @@ namespace Infrastructure.Tick
                 {
                     Tickable newTickable;
                     while (GridNewTickableQueues[i].TryDequeue(out newTickable)) TickTargets.Add(newTickable);
+                }
+            }
+        }
+
+        private void TryDequeingRemoveTickables()
+        {
+            for (int i = 0; i < GridToRemoveTickableQueues.Count; i++)
+            {
+                for (int j = 0; j < GridToRemoveTickableQueues[i].Count; j++)
+                {
+                    Tickable tickableToRemove;
+                    while (GridToRemoveTickableQueues[i].TryDequeue(out tickableToRemove)) TickTargets.Remove(tickableToRemove);
                 }
             }
         }

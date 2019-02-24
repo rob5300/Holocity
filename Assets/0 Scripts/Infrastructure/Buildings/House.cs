@@ -1,6 +1,7 @@
 ﻿using CityResources;
 using Infrastructure.Residents;
 using Infrastructure.Tick;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Infrastructure.Grid.Entities.Buildings
@@ -11,10 +12,9 @@ namespace Infrastructure.Grid.Entities.Buildings
         public float WaterDrain = 0.3f;
         public float[] ResourceMissingTimes = { 0f, 0f };
 
-        private Electricity _elec;
-        private Water _water;
+        private float timeoutTime = 3f;
         WorldGridTile gridtile;
-        //Hoping this helps with garbage soo i can still use a lambda xD
+
         private WorldGridTaskManager.WorldGridTask setResTask;
 
         public House()
@@ -25,14 +25,13 @@ namespace Infrastructure.Grid.Entities.Buildings
             Cost = 100;
         }
 
-        public override void OnEntityProduced(GridSystem grid)
-        {
-            _elec = grid.ParentCity.GetResource<Electricity>();
-            _water = grid.ParentCity.GetResource<Water>();
-        }
-
         public override void OnWorldGridTileCreated(WorldGridTile tile)
         {
+            base.OnWorldGridTileCreated(tile);
+
+            ElectricityWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.ElectricityWarning, tile.Model.transform);
+            WaterWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.WaterWarning, tile.Model.transform);
+
             gridtile = tile;
             tile.Model.GetComponent<MeshRenderer>().material.color = Color.grey;
             //ITS GREY NOT GRAY.
@@ -43,28 +42,41 @@ namespace Infrastructure.Grid.Entities.Buildings
             //Must call base on this to actually set the resident.
             base.SetResident(res);
 
-            //This is to set the material of this house to be green.
-            //We are using a delegate to do this as this is executed on the tick thread and thus isnt allowed by unity.
-            //There is a component called WorldGridTaskManager to execute a Queue of delegates on each worldgrid for these tasks,
-            //Therefore this will happen on the main thread safley and we can keep the threads going.
+            //Define a delegate with some thing to do on the Unity thread.
             setResTask = (wGrid) => { gridtile.Model.GetComponent<MeshRenderer>().material.color = Color.green; };
-            //This is where we queue the delegate. This is not thread safe currently but should work sometimes.
+            //This is where we queue the delegate. This is thread safe now!
             gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(setResTask);
         }
 
-        public void Tick(float time)
+        public override void Tick(float time)
         {
+            base.Tick(time);
+
             if (IsVacant) return;
+
+            bool startElecState = HasPower;
+            bool startWaterState = HasWaterSupply;
 
             //Request the drain amount of each resource. If the request and recieved amount doesnt match we handle that.
             #region Electricity
             float request_electricity = ElectricityDrain * time;
-            float recieved_electricity = _elec.Recieve(request_electricity);
+            float recieved_electricity = 0;
+
+            if (CurrentResources.ContainsKey(typeof(Electricity)))
+            {
+                List<ResourceData> electricity = CurrentResources[typeof(Electricity)];
+                foreach (ResourceData rData in electricity)
+                {
+                    recieved_electricity = rData.resource.Recieve(request_electricity);
+                    if (request_electricity == recieved_electricity) break;
+                } 
+            }
+
             if (recieved_electricity != request_electricity)
             {
                 //Track how long we have not had the power we requested. If its above the acceptable value we dont consider this house to have power.
                 ResourceMissingTimes[0] += time;
-                if (time > _elec.TimeoutTime) HasPower = false;
+                if (ResourceMissingTimes[0] > timeoutTime) HasPower = false;
             }
             else
             {
@@ -72,20 +84,37 @@ namespace Infrastructure.Grid.Entities.Buildings
                 ResourceMissingTimes[0] = 0;
                 HasPower = true;
             }
+
+            if(startElecState != HasPower) gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(electricityWarningTask);
             #endregion
             #region Water
             float request_water = WaterDrain * time;
-            float recieved_water = _water.Recieve(request_water);
-            if(recieved_water != request_water)
+            float recieved_water = 0;
+
+            if (CurrentResources.ContainsKey(typeof(Water)))
             {
+                List<ResourceData> water = CurrentResources[typeof(Water)];
+                foreach (ResourceData rData in water)
+                {
+                    recieved_water = rData.resource.Recieve(request_water);
+                    if (request_water == recieved_water) break;
+                } 
+            }
+
+            if (recieved_water != request_water)
+            {
+                //Track how long we have not had the water we requested. If its above the acceptable value we dont consider this house to have water.
                 ResourceMissingTimes[1] += time;
-                if (time > _water.TimeoutTime) HasWaterSupply = false;
+                if (ResourceMissingTimes[1] > timeoutTime) HasWaterSupply = false;
             }
             else
             {
-                HasWaterSupply = true;
+                //We got the power we requested.
                 ResourceMissingTimes[1] = 0;
+                HasWaterSupply = true;
             }
+
+            if (startWaterState != HasWaterSupply) gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(waterWarningTask);
             #endregion
         }
     }

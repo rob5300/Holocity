@@ -125,6 +125,9 @@ namespace HoloToolkit.Unity.Buttons
                 lastTimePressed = Time.time;
             }
 
+            //STOP THE MILLION NULL REFS
+            if (currentDatum == null && Profile == null) return;
+
             currentDatum = Profile.ButtonStates[(int)newState];
                         
             // If we're not using smooth states, just set them now

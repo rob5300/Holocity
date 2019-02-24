@@ -20,6 +20,16 @@ namespace Infrastructure.Grid.Entities.Buildings
         /// If this building has a water supply.
         /// </summary>
         public bool HasWaterSupply = false;
+        private GridTile parent;
+
+        protected WorldGridTaskManager.WorldGridTask electricityWarningTask;
+        protected WorldGridTaskManager.WorldGridTask waterWarningTask;
+
+        public Residential()
+        {
+            electricityWarningTask = (grid) => { ElectricityWarning.SetActive(!HasPower); };
+            waterWarningTask = (grid) => { WaterWarning.SetActive(!HasWaterSupply); };
+        }
 
         public virtual void SetResident(Resident res)
         {

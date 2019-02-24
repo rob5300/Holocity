@@ -12,17 +12,24 @@ namespace Infrastructure.Grid.Entities.Buildings
         All
     }
 
-
-
-    public abstract class Building : TileEntity
+    public abstract class Building : ResourceConductEntity
     {
         public string Name;
         public BuildingCategory category;
+
+        protected GameObject ElectricityWarning;
+        protected GameObject WaterWarning;
+
+        private WorldGridTaskManager.WorldGridTask setResTask;
 
         public Building()
         {
             ResourcesFolderPath = "Buildings/";
         }
-        
+
+        public override void OnWorldGridTileCreated(WorldGridTile tile)
+        {
+            base.OnWorldGridTileCreated(tile);
+        }
     }
 }

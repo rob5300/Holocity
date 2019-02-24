@@ -18,7 +18,6 @@ namespace Infrastructure {
         public int FillLimitPerUpdate = 1;
 
         private List<Resident> Residents;
-        protected Dictionary<Type, Resource> Resources = new Dictionary<Type, Resource>();
         protected List<GridSystem> CityGrids = new List<GridSystem>();
         public float TotalHappinessAverage = 0;
         public TimePeriod CurrentTimePeriod = TimePeriod.Modern;
@@ -38,7 +37,7 @@ namespace Infrastructure {
             owner = owner != string.Empty ? owner : "Mayor";
             ParentSession = sess;
             Residents = new List<Resident>(10);
-            ResidentialDemand = 10;
+            ResidentialDemand = 20;
             ResidentialBuildings = new List<Residential>(10);
             VacantResidentialBuildings = new List<Residential>(10);
         }
@@ -70,11 +69,6 @@ namespace Infrastructure {
             TotalHappinessAverage = totalAverage / CityGrids.Count + 1;
         }
 
-        public T GetResource<T>() where T : Resource {
-            if (!Resources.ContainsKey(typeof(T))) Resources.Add(typeof(T), Activator.CreateInstance<T>());
-            return (T)Resources[typeof(T)];
-        }
-
         public bool CreateGrid(int width, int height, Vector3 worldGridPosition)
         {
             GridSystem newGrid = new GridSystem(width, height, CityGrids.Count, this, worldGridPosition);
@@ -93,9 +87,9 @@ namespace Infrastructure {
 
         private void ResetResourceTickCounters(Session s, float time)
         {
-            foreach(Resource r in Resources.Values)
+            foreach(GridSystem grid in CityGrids)
             {
-                r.ResetCounters();
+                grid.ResetResourceTickCounters();
             }
         }
         
