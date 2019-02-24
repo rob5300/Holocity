@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: BackgroundMat
+  m_Name: Background2Mat
   m_Shader: {fileID: 4800000, guid: bc4405a8b55294d48acaf32f808d677e, type: 3}
   m_ShaderKeywords: _BORDER_LIGHT_USES_HOVER_COLOR _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP
     _INNER_GLOW _RIM_LIGHT
@@ -120,7 +120,7 @@ Material:
     m_Colors:
     - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
     - _ClippingPlaneBorderColor: {r: 1, g: 0.19999996, b: 0, a: 1}
-    - _Color: {r: 0.3301887, g: 0.3301887, b: 0.3301887, a: 1}
+    - _Color: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
@@ -128,5 +128,5 @@ Material:
     - _EnvironmentColorZ: {r: 0, g: 0, b: 1, a: 1}
     - _HoverColorOpaqueOverride: {r: 1, g: 1, b: 1, a: 1}
     - _HoverColorOverride: {r: 1, g: 1, b: 1, a: 1}
-    - _InnerGlowColor: {r: 0.8584906, g: 0.8584906, b: 0.8584906, a: 0.99215686}
-    - _RimColor: {r: 0.084905684, g: 0.084905684, b: 0.084905684, a: 1}
+    - _InnerGlowColor: {r: 0, g: 0.381494, b: 0.38679248, a: 0.99215686}
+    - _RimColor: {r: 0, g: 0.03660419, b: 0.03773582, a: 1}

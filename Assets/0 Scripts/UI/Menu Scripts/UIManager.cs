@@ -30,7 +30,8 @@ public class UIManager : MonoBehaviour {
         BuildingSelect,
     }
 
-    
+    public Action<int> BuildingsGenerated = delegate { };
+    public Action<bool> StateChanged = delegate { };
     public MenuState menuState = MenuState.MainMenu;
     float iconSize = 0.0391f;
 
@@ -226,6 +227,8 @@ public class UIManager : MonoBehaviour {
             
             buildingButton.GetComponent<CompoundButton>().OnButtonClicked += BuildingPressed;
         }
+
+        BuildingsGenerated(Buildings.Count);
     }
     void TextButtonPressed(GameObject go)
     {
@@ -280,10 +283,11 @@ public class UIManager : MonoBehaviour {
     public void SwitchState(MenuState newState)
     {
         menuState = newState;
-
+        
         if (menuState != MenuState.BuildingSelect)
             DestroyBuildingButtons();
 
+        StateChanged((MenuState.Off == menuState));
         animator.SetInteger("MenuState", (int)menuState);
     }
 

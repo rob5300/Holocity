@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-Shader "Custom/StencilHoloLens"
+Shader "Custom/StencilShader"
 {
 	Properties
 	{
@@ -77,16 +77,7 @@ Shader "Custom/StencilHoloLens"
 		{
 			Pass
 			{
-				Tags{ "RenderType" = "Transparent" "Queue" = "Geometry" "LightMode" = "ForwardBase" "PerformanceChecks" = "False" }
-				
-	
-			 Stencil {
-				 Ref 2
-				Comp always
-				Pass replace
-				}
-
-				
+				Tags{ "RenderType" = "Opaque" "LightMode" = "ForwardBase" "PerformanceChecks" = "False" "Queue" = "Geometry+1"}
 				LOD 100
 				Blend[_SrcBlend][_DstBlend]
 				BlendOp[_BlendOp]
@@ -95,6 +86,12 @@ Shader "Custom/StencilHoloLens"
 				Cull[_CullMode]
 				ColorMask[_ColorWriteMask]
 
+			Stencil {
+				Ref 2
+				Comp equal
+				Pass keep
+				ZFail decrWrap
+			}
 				CGPROGRAM
 
 				#pragma target 5.0
@@ -175,9 +172,9 @@ Shader "Custom/StencilHoloLens"
 	#if defined(LIGHTMAP_ON)
 					float2 lightMapUV : TEXCOORD1;
 	#endif
-					fixed3 normal : NORMAL;
+					half3 normal : NORMAL;
 	#if defined(_NORMAL_MAP)
-					fixed4 tangent : TANGENT;
+					half4 tangent : TANGENT;
 	#endif
 					UNITY_VERTEX_INPUT_INSTANCE_ID
 				};
@@ -205,52 +202,52 @@ Shader "Custom/StencilHoloLens"
 	#endif
 	#if defined(_NORMAL)
 	#if defined(_NORMAL_MAP)
-					fixed3 tangentX : TEXCOORD4;
-					fixed3 tangentY : TEXCOORD5;
-					fixed3 tangentZ : TEXCOORD6;
+					half3 tangentX : TEXCOORD4;
+					half3 tangentY : TEXCOORD5;
+					half3 tangentZ : TEXCOORD6;
 	#else
-					fixed3 worldNormal : TEXCOORD4;
+					half3 worldNormal : TEXCOORD4;
 	#endif
 	#endif
 					UNITY_VERTEX_OUTPUT_STEREO
 				};
 
-				fixed4 _Color;
+				half4 _Color;
 				sampler2D _MainTex;
-				fixed4 _MainTex_ST;
+				half4 _MainTex_ST;
 
 	#if defined(_ALPHA_CLIP)
-				fixed _Cutoff;
+				half _Cutoff;
 	#endif
 
-				fixed _Metallic;
-				fixed _Smoothness;
+				half _Metallic;
+				half _Smoothness;
 
 	#if defined(_NORMAL_MAP)
 				sampler2D _NormalMap;
 	#endif
 
 	#if defined(_EMISSION)
-				fixed4 _EmissiveColor;
+				half4 _EmissiveColor;
 	#endif
 
 	#if defined(_DIRECTIONAL_LIGHT)
-				fixed4 _LightColor0;
+				half4 _LightColor0;
 	#endif
 
 	#if defined(_REFRACTION)
-				fixed _RefractiveIndex;
+				half _RefractiveIndex;
 	#endif
 
 	#if defined(_RIM_LIGHT)
-				fixed3 _RimColor;
-				fixed _RimPower;
+				half3 _RimColor;
+				half _RimPower;
 	#endif
 
 	#if defined(_CLIPPING_PLANE)
 				float4 _ClipPlane;
-				fixed _ClippingPlaneBorderWidth;
-				fixed3 _ClippingPlaneBorderColor;
+				half _ClippingPlaneBorderWidth;
+				half3 _ClippingPlaneBorderColor;
 	#endif
 
 	#if defined(_NEAR_PLANE_FADE)
@@ -261,53 +258,53 @@ Shader "Custom/StencilHoloLens"
 	#if defined(_HOVER_LIGHT)
 				float3 _HoverPosition;
 				float _HoverRadius;
-				fixed4 _HoverColor;
+				half4 _HoverColor;
 	#if defined(_HOVER_COLOR_OVERRIDE)
-				fixed3 _HoverColorOverride;
+				half3 _HoverColorOverride;
 	#endif
 	#if defined(_HOVER_COLOR_OPAQUE_OVERRIDE)
-				fixed3 _HoverColorOpaqueOverride;
+				half3 _HoverColorOpaqueOverride;
 	#endif
 	#endif
 
 	#if defined(_ROUND_CORNERS)
-				fixed _RoundCornerRadius;
-				fixed _RoundCornerMargin;
+				half _RoundCornerRadius;
+				half _RoundCornerMargin;
 	#endif
 
 	#if defined(_BORDER_LIGHT)
-				fixed _BorderWidth;
-				fixed _BorderMinValue;
+				half _BorderWidth;
+				half _BorderMinValue;
 	#endif
 
 	#if defined(_ROUND_CORNERS) || defined(_BORDER_LIGHT)
-				fixed _EdgeSmoothingValue;
+				half _EdgeSmoothingValue;
 	#endif
 
 	#if defined(_INNER_GLOW)
-				fixed4 _InnerGlowColor;
+				half4 _InnerGlowColor;
 	#endif
 
 	#if defined(_ENVIRONMENT_COLORING)
-				fixed _EnvironmentColorThreshold;
-				fixed _EnvironmentColorIntensity;
-				fixed3 _EnvironmentColorX;
-				fixed3 _EnvironmentColorY;
-				fixed3 _EnvironmentColorZ;
+				half _EnvironmentColorThreshold;
+				half _EnvironmentColorIntensity;
+				half3 _EnvironmentColorX;
+				half3 _EnvironmentColorY;
+				half3 _EnvironmentColorZ;
 	#endif
 
 	#if defined(_SPECULAR_HIGHLIGHTS)
-				static const fixed _Shininess = 800.0;
+				static const half _Shininess = 800.0;
 	#endif
 
 	#if defined(_FRESNEL)
-				static const fixed _FresnelPower = 4.0;
-				static const fixed _FresnelPowerInverse = 1.0 / _FresnelPower;
+				static const half _FresnelPower = 4.0;
+				static const half _FresnelPowerInverse = 1.0 / _FresnelPower;
 	#endif
 
 	#if defined(_BORDER_LIGHT)
-				static const fixed _BorderPower = 10.0;
-				static const fixed _InverseBorderPower = 1.0 / _BorderPower;
+				static const half _BorderPower = 10.0;
+				static const half _InverseBorderPower = 1.0 / _BorderPower;
 	#endif
 
 	#if defined(_CLIPPING_PLANE)
@@ -319,9 +316,9 @@ Shader "Custom/StencilHoloLens"
 	#endif
 
 	#if defined(_ROUND_CORNERS)
-				inline fixed RoundCorners(fixed2 position, fixed2 cornerCircleDistance, fixed cornerCircleRadius)
+				inline half RoundCorners(half2 position, half2 cornerCircleDistance, half cornerCircleRadius)
 				{
-					fixed distance = length(max(abs(position) - cornerCircleDistance, 0.0)) - cornerCircleRadius;
+					half distance = length(max(abs(position) - cornerCircleDistance, 0.0)) - cornerCircleRadius;
 
 	#if defined(_TRANSPARENT)
 					return smoothstep(1.0, 0.0, distance / _EdgeSmoothingValue);
@@ -419,15 +416,15 @@ Shader "Custom/StencilHoloLens"
 	#endif
 
 	#if defined(_NORMAL)
-					fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);
+					half3 worldNormal = UnityObjectToWorldNormal(v.normal);
 
 	#if defined(_NORMAL_MAP)
-					fixed3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);
-					fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
-					fixed3 worldBitangent = cross(worldNormal, worldTangent) * tangentSign;
-					o.tangentX = fixed3(worldTangent.x, worldBitangent.x, worldNormal.x);
-					o.tangentY = fixed3(worldTangent.y, worldBitangent.y, worldNormal.y);
-					o.tangentZ = fixed3(worldTangent.z, worldBitangent.z, worldNormal.z);
+					half3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);
+					half tangentSign = v.tangent.w * unity_WorldTransformParams.w;
+					half3 worldBitangent = cross(worldNormal, worldTangent) * tangentSign;
+					o.tangentX = half3(worldTangent.x, worldBitangent.x, worldNormal.x);
+					o.tangentY = half3(worldTangent.y, worldBitangent.y, worldNormal.y);
+					o.tangentZ = half3(worldTangent.z, worldBitangent.z, worldNormal.z);
 	#else
 					o.worldNormal = worldNormal;
 	#endif
@@ -439,16 +436,13 @@ Shader "Custom/StencilHoloLens"
 	#if !defined(_ALPHA_CLIP) && !defined(_TRANSPARENT)
 				[earlydepthstencil]
 	#endif
-				fixed4 frag(v2f i) : SV_Target
+				half4 frag(v2f i) : SV_Target
 				{
-					//Stencil
-					
-
 					// Texturing.
 	#if defined(_DISABLE_ALBEDO_MAP)
-					fixed4 albedo = fixed4(1.0, 1.0, 1.0, 1.0);
+					half4 albedo = half4(1.0, 1.0, 1.0, 1.0);
 	#else
-					fixed4 albedo = tex2D(_MainTex, i.uv);
+					half4 albedo = tex2D(_MainTex, i.uv);
 	#endif
 
 	#ifdef LIGHTMAP_ON
@@ -467,7 +461,7 @@ Shader "Custom/StencilHoloLens"
 	#if defined(_CLIPPING_PLANE)
 					float planeDistance = PointVsPlane(i.worldPosition.xyz, _ClipPlane);
 	#if defined(_CLIPPING_PLANE_BORDER)
-					fixed3 planeBorderColor = lerp(_ClippingPlaneBorderColor, fixed3(0.0, 0.0, 0.0), planeDistance / _ClippingPlaneBorderWidth);
+					half3 planeBorderColor = lerp(_ClippingPlaneBorderColor, half3(0.0, 0.0, 0.0), planeDistance / _ClippingPlaneBorderWidth);
 					albedo.rgb += step(planeDistance, _ClippingPlaneBorderWidth) * planeBorderColor;
 	#endif
 	#if defined(_ALPHA_CLIP)
@@ -478,24 +472,24 @@ Shader "Custom/StencilHoloLens"
 	#endif
 
 	#if defined(_ROUND_CORNERS) || defined(_BORDER_LIGHT) || defined(_INNER_GLOW)
-					fixed2 distanceToEdge;
+					half2 distanceToEdge;
 					distanceToEdge.x = abs(i.uv.x - 0.5) * 2.0;
 					distanceToEdge.y = abs(i.uv.y - 0.5) * 2.0;
 	#endif
 
 					// Rounded corner clipping.
 	#if defined(_ROUND_CORNERS)
-					fixed cornerCircleRadius = (_RoundCornerRadius - _RoundCornerMargin) * i.scale.z;
-					fixed2 roundCornerPosition = distanceToEdge * 0.5 * i.scale.xy;
-					fixed2 cornerCircleDistance = (i.scale.xy * 0.5) - cornerCircleRadius - _RoundCornerMargin * i.scale.xy;
-					fixed roundCornerClip = RoundCorners(roundCornerPosition, cornerCircleDistance, cornerCircleRadius);
+					half cornerCircleRadius = (_RoundCornerRadius - _RoundCornerMargin) * i.scale.z;
+					half2 roundCornerPosition = distanceToEdge * 0.5 * i.scale.xy;
+					half2 cornerCircleDistance = (i.scale.xy * 0.5) - cornerCircleRadius - _RoundCornerMargin * i.scale.xy;
+					half roundCornerClip = RoundCorners(roundCornerPosition, cornerCircleDistance, cornerCircleRadius);
 	#endif
 
 					albedo *= _Color;
 
 					// Hover light.
 	#if defined(_HOVER_LIGHT)
-					fixed pointToHover = (1.0 - saturate(length(_HoverPosition - i.worldPosition.xyz) / _HoverRadius)) * _HoverColor.a;
+					half pointToHover = (1.0 - saturate(length(_HoverPosition - i.worldPosition.xyz) / _HoverRadius)) * _HoverColor.a;
 	#if defined(_HOVER_COLOR_OVERRIDE)
 					_HoverColor.rgb = _HoverColorOverride.rgb;
 	#endif
@@ -503,7 +497,7 @@ Shader "Custom/StencilHoloLens"
 	#if defined(_HOVER_COLOR_OPAQUE_OVERRIDE)
 					_HoverColor.rgb = lerp(_HoverColorOpaqueOverride, _HoverColor.rgb, albedo.a);
 	#endif
-					fixed baseBlend = 1.0 + (albedo.a - 1.0) * saturate(pointToHover / (pointToHover + albedo.a));
+					half baseBlend = 1.0 + (albedo.a - 1.0) * saturate(pointToHover / (pointToHover + albedo.a));
 					albedo.rgb += -(1.0 - baseBlend) * albedo.rgb + _HoverColor.rgb * max(pointToHover, 1.0 - baseBlend);
 					albedo.a = (albedo.a + pointToHover);
 	#else
@@ -513,15 +507,15 @@ Shader "Custom/StencilHoloLens"
 
 					// Border light.
 	#if defined(_BORDER_LIGHT)
-					fixed3 borderColor = albedo.rgb * _BorderPower;
+					half3 borderColor = albedo.rgb * _BorderPower;
 	#if defined(_HOVER_LIGHT)
 	#if defined(_BORDER_LIGHT_USES_HOVER_COLOR)
 					borderColor *= _HoverColor.rgb;
 	#endif
 	#else
-					fixed pointToHover = 1.0;
+					half pointToHover = 1.0;
 	#endif
-					fixed borderValue;
+					half borderValue;
 	#if defined(_ROUND_CORNERS)
 					borderValue = 1.0 - RoundCorners(roundCornerPosition, cornerCircleDistance, cornerCircleRadius * (1.0 - (_BorderWidth * 2.0)));
 	#else
@@ -547,15 +541,15 @@ Shader "Custom/StencilHoloLens"
 	#endif
 
 	#if defined(_NORMAL)
-					fixed3 worldViewDir = normalize(UnityWorldSpaceViewDir(i.worldPosition.xyz));
+					half3 worldViewDir = normalize(UnityWorldSpaceViewDir(i.worldPosition.xyz));
 	#if defined(_REFLECTIONS) || defined(_ENVIRONMENT_COLORING)
-					fixed3 incident = -worldViewDir;
+					half3 incident = -worldViewDir;
 	#endif
-					fixed3 worldNormal;
+					half3 worldNormal;
 
 					// Normal calculation.
 	#if defined(_NORMAL_MAP)
-					fixed3 tangentNormal = UnpackNormal(tex2D(_NormalMap, i.uv));
+					half3 tangentNormal = UnpackNormal(tex2D(_NormalMap, i.uv));
 					worldNormal.x = dot(i.tangentX, tangentNormal);
 					worldNormal.y = dot(i.tangentY, tangentNormal);
 					worldNormal.z = dot(i.tangentZ, tangentNormal);
@@ -567,41 +561,41 @@ Shader "Custom/StencilHoloLens"
 
 					// Blinn phong lighting.
 	#if defined(_DIRECTIONAL_LIGHT)
-					fixed diffuse = max(0.0, dot(worldNormal, _WorldSpaceLightPos0));
+					half diffuse = max(0.0, dot(worldNormal, _WorldSpaceLightPos0));
 
 	#if defined(_SPECULAR_HIGHLIGHTS)
-					fixed halfVector = max(0.0, dot(worldNormal, normalize(_WorldSpaceLightPos0 + worldViewDir)));
-					fixed specular = saturate(pow(halfVector, _Shininess * pow(_Smoothness, 4)) * _Smoothness);
+					half halfVector = max(0.0, dot(worldNormal, normalize(_WorldSpaceLightPos0 + worldViewDir)));
+					half specular = saturate(pow(halfVector, _Shininess * pow(_Smoothness, 4)) * _Smoothness);
 	#else
-					fixed specular = 0.0;
+					half specular = 0.0;
 	#endif
 	#endif
 
 					// Image based lighting (attempt to mimic the Standard shader).
 	#if defined(_REFLECTIONS)
-					fixed3 worldReflection = reflect(incident, worldNormal);
-					fixed4 iblData = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, worldReflection, (1.0 - _Smoothness) * UNITY_SPECCUBE_LOD_STEPS);
-					fixed3 ibl = DecodeHDR(iblData, unity_SpecCube0_HDR);
+					half3 worldReflection = reflect(incident, worldNormal);
+					half4 iblData = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0, worldReflection, (1.0 - _Smoothness) * UNITY_SPECCUBE_LOD_STEPS);
+					half3 ibl = DecodeHDR(iblData, unity_SpecCube0_HDR);
 	#if defined(_REFRACTION)
-					fixed4 refractColor = UNITY_SAMPLE_TEXCUBE(unity_SpecCube0, refract(incident, worldNormal, _RefractiveIndex));
+					half4 refractColor = UNITY_SAMPLE_TEXCUBE(unity_SpecCube0, refract(incident, worldNormal, _RefractiveIndex));
 					ibl *= DecodeHDR(refractColor, unity_SpecCube0_HDR);
 	#endif 
 	#endif
 
 					// Fresnel lighting.
 	#if defined(_FRESNEL)
-					fixed fresnel = 1.0 - saturate(dot(worldViewDir, worldNormal));
+					half fresnel = 1.0 - saturate(dot(worldViewDir, worldNormal));
 	#if defined(_RIM_LIGHT)
-					fixed3 fresnelColor = _RimColor * pow(fresnel, _RimPower);
+					half3 fresnelColor = _RimColor * pow(fresnel, _RimPower);
 	#else
-					fixed3 fresnelColor = unity_AmbientSky.rgb * _FresnelPowerInverse * pow(fresnel, _FresnelPower);
+					half3 fresnelColor = unity_AmbientSky.rgb * _FresnelPowerInverse * pow(fresnel, _FresnelPower);
 	#endif
 	#endif
 					// Final lighting mix.
-					fixed4 output = albedo;
+					half4 output = albedo;
 
 	#if defined(_REFLECTIONS) || defined(_DIRECTIONAL_LIGHT)
-					fixed minProperty = min(_Smoothness, _Metallic);
+					half minProperty = min(_Smoothness, _Metallic);
 	#endif
 
 	#if defined(_REFLECTIONS)
@@ -628,15 +622,15 @@ Shader "Custom/StencilHoloLens"
 
 					// Inner glow.
 	#if defined(_INNER_GLOW)
-					fixed2 uvGlow = (i.uv - fixed2(0.5, 0.5)) * (_InnerGlowColor.a * 2.0);
+					half2 uvGlow = (i.uv - half2(0.5, 0.5)) * (_InnerGlowColor.a * 2.0);
 					uvGlow = uvGlow * uvGlow;
 					uvGlow = uvGlow * uvGlow;
-					output.rgb += lerp(fixed3(0.0, 0.0, 0.0), _InnerGlowColor.rgb, uvGlow.x + uvGlow.y);
+					output.rgb += lerp(half3(0.0, 0.0, 0.0), _InnerGlowColor.rgb, uvGlow.x + uvGlow.y);
 	#endif
 
 					// Environment coloring.
 	#if defined(_ENVIRONMENT_COLORING)
-					fixed3 environmentColor = incident.x * incident.x * _EnvironmentColorX +
+					half3 environmentColor = incident.x * incident.x * _EnvironmentColorX +
 											  incident.y * incident.y * _EnvironmentColorY +
 											  incident.z * incident.z * _EnvironmentColorZ;
 					output.rgb += environmentColor * max(0.0, dot(incident, worldNormal) + _EnvironmentColorThreshold) * _EnvironmentColorIntensity;
@@ -647,7 +641,7 @@ Shader "Custom/StencilHoloLens"
 					output *= i.worldPosition.w;
 	#endif
 
-					return half4(output);
+					return output;
 				}
 
 				ENDCG

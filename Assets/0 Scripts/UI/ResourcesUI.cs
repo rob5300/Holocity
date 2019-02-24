@@ -25,6 +25,7 @@ public class ResourcesUI : MonoBehaviour
 
     public void Start()
     {
+        UIManager.Instance.StateChanged += ToggleUI;
         _electricity = Game.CurrentSession.City.GetResource<Electricity>();
         _water = Game.CurrentSession.City.GetResource<Water>();
         camera = GameObject.Find("MixedRealityCamera").GetComponent<Camera>();
@@ -69,6 +70,11 @@ public class ResourcesUI : MonoBehaviour
             move.image.color = ToggleColor;
         }
         GesturesManager.Instance.SwitchMode(navigate);
+    }
+
+    void ToggleUI(bool check)
+    {
+        gameObject.SetActive(check);
     }
 }
 
