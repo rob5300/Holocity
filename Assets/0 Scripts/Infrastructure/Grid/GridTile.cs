@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Grid.Entities;
+using Infrastructure.Tick;
 using UnityEngine;
 
 namespace Infrastructure.Grid
@@ -22,6 +23,11 @@ namespace Infrastructure.Grid
             Entity.OnEntityProduced(grid);
         }
 
+        public void DestroyEntity()
+        {
+            Entity = null;
+        }
+
         /// <summary>
         /// Sets the tile entity and doesn't call the placed event. Do not use for other situations.
         /// </summary>
@@ -29,6 +35,21 @@ namespace Infrastructure.Grid
         public void SetEntityFromSwap(TileEntity ent)
         {
             Entity = ent;
+        }
+
+        /// <summary>
+        /// Get adjacent grid tiles. Can return null in the array if a tile doesn't exist.
+        /// </summary>
+        /// <returns>An array of adjacent grid tiles. Index is null if it did not exist.</returns>
+        public GridTile[] GetAdjacentGridTiles()
+        {
+            GridTile[] adjacentTiles = {
+                ParentGridSystem.GetTile(Position + new Vector2Int(0, 1)),
+                ParentGridSystem.GetTile(Position + new Vector2Int(1, 0)),
+                ParentGridSystem.GetTile(Position + new Vector2Int(0, -1)),
+                ParentGridSystem.GetTile(Position + new Vector2Int(-1, 0))
+            };
+            return adjacentTiles;
         }
     }
 }

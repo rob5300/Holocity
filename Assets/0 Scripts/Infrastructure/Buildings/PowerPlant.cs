@@ -8,6 +8,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         public int PowerIncreaseRate = 5;
 
         private Electricity elecResource;
+        private ResourceData elecData;
 
         public PowerPlant()
         {
@@ -18,12 +19,27 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         public override void OnEntityProduced(GridSystem grid)
         {
-            elecResource = grid.ParentCity.GetResource<Electricity>();
+            elecResource = new Electricity(ParentTile.ParentGridSystem.Id);
+            elecData = new ResourceData(elecResource, this);
+            elecData.id = 555;
+            AddNewResource(typeof(Electricity), elecData);
+
+            //We need to call base to distribute our resource AFTER we make ours.
+            base.OnEntityProduced(grid);
         }
 
-        public void Tick(float time)
+        public override void Tick(float time)
         {
+            base.Tick(time);
+
             elecResource.Add(PowerIncreaseRate * time);
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            elecData.Destroy();
         }
     }
 }

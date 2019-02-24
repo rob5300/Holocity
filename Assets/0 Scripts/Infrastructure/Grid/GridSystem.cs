@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using GridSearch;
 using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Residents;
@@ -23,13 +24,14 @@ namespace Infrastructure.Grid
         public List<Resident> Residents;
         public EdgeGuidance edgeGuidance;
         public Sprite icon;
+        private Dictionary<Type, List<ResourceData>> GridResources;
 
         /// <summary>
         /// A list of all tickables that will be ticked by the owning city and session tick manager.
         /// </summary>
         public ConcurrentQueue<Tickable> TickAddQueue;
         /// <summary>
-        /// YET TO IMPLEMENT
+        /// A list of tickables to be removed from the tick system.
         /// </summary>
         public ConcurrentQueue<Tickable> ToRemoveFromTickSystem;
         public event Action<Residential> OnNewResidentialBuilding;
@@ -54,7 +56,9 @@ namespace Infrastructure.Grid
             }
 
             TickAddQueue = new ConcurrentQueue<Tickable>();
+            ToRemoveFromTickSystem = new ConcurrentQueue<Tickable>();
             Residents = new List<Resident>();
+            GridResources = new Dictionary<Type, List<ResourceData>>();
 
             WorldGrid = CreateWorldGrid(worldGridPosition);
         }
@@ -150,6 +154,16 @@ namespace Infrastructure.Grid
             return true;
         }
 
+        public void DestroyTileEntity(Vector2Int position)
+        {
+            GridTile tile =  GetTile(position);
+            if (tile.Entity != null) tile.Entity.OnDestroy();
+            Tickable eTick = tile.Entity as Tickable;
+            if(eTick != null) ToRemoveFromTickSystem.Enqueue(eTick);
+            WorldGrid.GetTile(position).RemoveModel();
+            tile.DestroyEntity();
+        }
+
         private void AddTileEntityToWorldGrid(TileEntity tileEnt, int x, int y)
         {
             WorldGrid.GetTile(x,y).AddModelToTile(tileEnt);
@@ -165,6 +179,47 @@ namespace Infrastructure.Grid
             }
             AverageResidentHappiness = totalhappiness / Residents.Count;
             return AverageResidentHappiness;
+        }
+
+        public List<ResourceData> GetResourceList(Type type)
+        {
+            if (GridResources.ContainsKey(type))
+            {
+                return GridResources[type];
+            }
+            return null;
+        }
+
+        public void ResetResourceTickCounters()
+        {
+            foreach(List<ResourceData> resourceList in GridResources.Values)
+            {
+                foreach(ResourceData data in resourceList)
+                {
+                    data.resource.ResetCounters();
+                }
+            }
+        }
+
+        public void AddResourceReference(ResourceData data)
+        {
+            if (!GridResources.ContainsKey(data.resource.GetType())) GridResources.Add(data.resource.GetType(), new List<ResourceData>());
+
+            GridResources[data.resource.GetType()].Add(data);
+        }
+
+
+        public Node[,] GetNodeSet()
+        {
+            Node[,] nodeset = new Node[Width, Height];
+            for (int w = 0; w < Width; w++)
+            {
+                for (int h = 0; h < Height; h++)
+                {
+                    nodeset[w, h] = new Node(Tiles[w][h]);
+                }
+            }
+            return nodeset;
         }
     }
 }

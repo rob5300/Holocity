@@ -8,10 +8,13 @@ namespace CityResources
 {
     public class Resource
     {
-        public Resource()
+        public int GridID;
+
+        public Resource(int gridID)
         {
             CapValue = false;
             Value = 0;
+            GridID = gridID;
         }
 
         public float Value { get; private set; }
@@ -61,6 +64,11 @@ namespace CityResources
             AddedThisTick = 0;
             RecievedLastTick = RecievedThisTick;
             RecievedThisTick = 0;
+        }
+
+        public void AddFromMerge(float amount)
+        {
+            Value += amount;
         }
     }
 }

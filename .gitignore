@@ -6,6 +6,7 @@
 Assets/AssetStoreTools*
 [Aa]sset[Bb]undle/
 [Aa]sset[Bb]undles/
+Packages/manifest.json
 
 # Visual Studio cache directory
 .vs/
