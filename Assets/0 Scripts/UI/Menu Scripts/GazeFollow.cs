@@ -8,7 +8,7 @@ public class GazeFollow : MonoBehaviour {
     public float AngleThreshold;
     public Billboard billboard;
 
-    private Vector3 offset = new Vector3(0, -0.1631f, 1.5f);
+    private Vector3 offset = new Vector3(0, 0, 1.5f);
     private bool _rotating = false;
     private float _time;
 

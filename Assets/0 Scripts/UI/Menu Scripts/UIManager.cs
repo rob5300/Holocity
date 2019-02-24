@@ -179,7 +179,7 @@ public class UIManager : MonoBehaviour {
     }
     void DestroyTile(GameObject go)
     {
-
+        Game.CurrentSession.City.GetGrid(targetTile.ParentGrid.Id).DestroyTileEntity(targetTile.Position);
     }
 
     #endregion
@@ -193,7 +193,16 @@ public class UIManager : MonoBehaviour {
         gridID = targetTile.ParentGrid.Id;
         Vector2Int pos = targetTile.Position;
 
-        Game.CurrentSession.City.GetGrid(gridID).AddTileEntityToTile(pos.x, pos.y, Activator.CreateInstance(Buildings[go.GetComponent<BuildingButton>().index].BuildingType) as TileEntity);
+        TileEntity tileEnt = Activator.CreateInstance(Buildings[go.GetComponent<BuildingButton>().index].BuildingType) as TileEntity;
+
+        if (targetTile.Model)
+        {
+            targetTile.UpdateModel(tileEnt.GetModel());
+        }
+        else
+        {
+           Game.CurrentSession.City.GetGrid(gridID).AddTileEntityToTile(pos.x, pos.y, tileEnt);
+        }
         //Take money
         Game.CurrentSession.TakeFunds(Buildings[go.GetComponent<BuildingButton>().index].Cost);
         SwitchState(MenuState.Off);
@@ -276,7 +285,17 @@ public class UIManager : MonoBehaviour {
         }
         
         targetTile = tile;
-        transform.position = tile.transform.position;
+
+        if (targetTile.Model)
+        {
+            Vector3 pos = tile.transform.position;
+            pos.y += targetTile.Model.GetComponent<MeshRenderer>().bounds.size.y;
+            transform.position = pos;
+        }
+        else
+        {
+            transform.position = tile.transform.position;
+        }
         SwitchState(MenuState.BuildMenu);
         
     }

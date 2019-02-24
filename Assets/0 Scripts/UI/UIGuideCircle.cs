@@ -99,20 +99,19 @@ public class UIGuideCircle : MonoBehaviour {
         targetGuide.SetActive(true);
     }
 
-    /*
-    public void RemoveTarget(Transform pos)
+   
+    public void RemoveTarget(Transform targetTransform)
     {
-        foreach (UITarget target in targets)
+        foreach (UITarget target in Targets)
         {
-            if (target.targetTransform = pos)
+            if (target.targetTransform == targetTransform)
             {
-                targets.Remove(target);
+                Targets.Remove(target);
+                Destroy(target.guideTransform.gameObject);
                 return;
             }
         }
     }
-
-    */
 
 }
 
