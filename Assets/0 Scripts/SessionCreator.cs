@@ -18,8 +18,6 @@ public class SessionCreator : MonoBehaviour {
 
         //Give the player some money
         Game.CurrentSession.AddFunds(90123);
-
-        Debug.Log(BuildingLibrary.ModernBuildings.Count);
     }
 
     public void CreateDefaultGrid()

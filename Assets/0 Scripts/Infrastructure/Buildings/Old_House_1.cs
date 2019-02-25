@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {
-    public class Future_House : House
+    public class Old_House_1 : House
     {
-        public Future_House()
+        public Old_House_1()
         {
-            Name = "Future House";
-            PrefabName = "Future House";
+            Name = "Old House";
+            PrefabName = "Old House 1";
             Cost = 250;
             category = BuildingCategory.Residential;
         }

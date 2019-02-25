@@ -12,6 +12,7 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         public WaterPlant()
         {
+            Name = "Water Plant";
             PrefabName = "Waterplant";
             Cost = 10000;
             category = BuildingCategory.Resource;

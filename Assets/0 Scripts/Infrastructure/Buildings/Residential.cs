@@ -13,10 +13,6 @@ namespace Infrastructure.Grid.Entities.Buildings
         /// </summary>
         public bool HasPower = false;
         /// <summary>
-        /// How long without the full amount of a requested resource before the resource type is no longer present.
-        /// </summary>
-        private float AcceptableLossTime = 1f;
-        /// <summary>
         /// If this building has a water supply.
         /// </summary>
         public bool HasWaterSupply = false;

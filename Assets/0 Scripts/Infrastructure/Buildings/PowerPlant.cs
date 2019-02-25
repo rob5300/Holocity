@@ -12,7 +12,8 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         public PowerPlant()
         {
-            PrefabName = "Powerplant";
+            Name = "Powerplant";
+            PrefabName = "Powerplant Future";
             Cost = 25000;
             category = BuildingCategory.Resource;
         }

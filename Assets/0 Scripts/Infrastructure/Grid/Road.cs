@@ -150,7 +150,7 @@ namespace Infrastructure.Grid.Entities
         {
             //We need to apply any rotations to the model depending on what was calculated earlier
             Vector3 newRot = new Vector3(0, _yRotationToApply);
-            worldTile.Model.transform.eulerAngles = newRot;
+            worldTile.Model.transform.eulerAngles += newRot;
             _yRotationToApply = 0;
         }
 

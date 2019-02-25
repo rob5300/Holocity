@@ -22,7 +22,6 @@ public class GazeFollow : MonoBehaviour {
 
     void Update()
     {
-        Debug.Log(UIManager.Instance.menuState);
         if (UIManager.Instance.menuState != UIManager.MenuState.MainMenu)
         {
             childTransform.localPosition = Vector3.zero;

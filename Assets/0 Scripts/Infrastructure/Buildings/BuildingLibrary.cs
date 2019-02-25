@@ -12,7 +12,9 @@ public static class BuildingLibrary
             typeof(Old_Church),
             typeof(PowerPlant),
             typeof(WaterPlant),
-            typeof(Future_House)
+            typeof(Future_House),
+            typeof(Old_House_1),
+            typeof(Shop)
             };
     public static List<BuildingMap> ModernBuildings = new List<BuildingMap>();
 
@@ -32,7 +34,7 @@ public static class BuildingLibrary
             catch (Exception e)
             {
 #if UNITY_EDITOR
-                Debug.LogError("BUILDINGLIBRARY FAILED WAAAAA!!!");
+                Debug.LogError("BUILDINGLIBRARY FAILED!");
 #endif
             }
 

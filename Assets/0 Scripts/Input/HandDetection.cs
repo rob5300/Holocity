@@ -52,12 +52,13 @@ public class HandDetection : MonoBehaviour{
 
         InteractionSource  source = obj.state.source;
         
-
+        //Rob: I am destroying the mesh renderers for the hands spheres.
         if (handOne.obj == null)
         {
             handOne.obj = Instantiate(HandPrefab);
             handOne.obj.GetComponent<HandObject.Hand>().handDetection = this;
             handOne.obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            Destroy(handOne.obj.GetComponent<MeshRenderer>());
             handOne.obj.transform.localScale = scale;
             handOne.ID = obj.state.source.id;
 
@@ -70,6 +71,7 @@ public class HandDetection : MonoBehaviour{
             handTwo.obj.GetComponent<HandObject.Hand>().handDetection = this;
 
             handTwo.obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            Destroy(handTwo.obj.GetComponent<MeshRenderer>());
             handTwo.obj.transform.localScale = scale;
             handTwo.ID = obj.state.source.id;
 
