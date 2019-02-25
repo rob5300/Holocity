@@ -22,30 +22,24 @@ namespace Infrastructure.Grid.Entities
         [NonSerialized]
         private GameObject _tilePrefab;
 
-        public virtual void OnEntityProduced(GridSystem grid)
-        {
-
-        }
+        public virtual void OnEntityProduced(GridSystem grid) { }
 
         public virtual bool QueryPlace(Grid.GridTile tile)
         {
             return true;
         }
 
-        public virtual void OnWorldGridTileCreated(WorldGridTile tile)
-        {
+        public virtual void OnWorldGridTileCreated(WorldGridTile tile) { }
 
-        }
+        public virtual void OnInteract() { }
 
-        public virtual void OnInteract()
-        {
+        public virtual void OnDestroy() { }
 
-        }
+        public virtual void OnMoveStart() { }
 
-        public virtual void OnDestroy()
-        {
+        public virtual void OnMoveCancelled() { }
 
-        }
+        public virtual void OnMoveComplete() { }
 
         public virtual GameObject GetModel()
         {

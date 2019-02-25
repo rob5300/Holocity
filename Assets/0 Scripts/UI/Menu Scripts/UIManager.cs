@@ -227,6 +227,7 @@ public class UIManager : MonoBehaviour {
             BuildingButton buildingButton = go.GetComponentInChildren<BuildingButton>();
             
             GameObject model = Instantiate(Buildings[i].Model, buildingButton.modelParent.transform);
+            model.transform.localPosition = Vector3.zero;
             buildingButton.ScaleModel(iconSize);
 
             buildingButton.index = i;

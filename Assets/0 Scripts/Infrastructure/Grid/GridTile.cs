@@ -35,6 +35,7 @@ namespace Infrastructure.Grid
         public void SetEntityFromSwap(TileEntity ent)
         {
             Entity = ent;
+            if(Entity != null) Entity.ParentTile = this;
         }
 
         /// <summary>

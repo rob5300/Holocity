@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using HoloToolkit.Unity.InputModule;
+using Infrastructure.Grid.Entities;
+using Infrastructure.Grid;
 
 public class MoveGesture : MonoBehaviour, IManipulationHandler
 {
@@ -13,6 +15,8 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
     private FocusHighlighter _currentFocus;
     private GesturesManager _gesturesManager;
 
+    private GridTile gridTile;
+
 
     void Start()
     {
@@ -20,14 +24,9 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
         _handDetection = FindObjectOfType<HandDetection>();
         _cameraTransform = Camera.main.transform;
         _gesturesManager = Camera.main.GetComponent<GesturesManager>();
+
+        gridTile = GetComponentInParent<WorldGridTile>().GridTileCounterpart;
     }
-    
-    //void Update()
-    //{
-    //    MoveBuilding();
-    //}
-
-
 
     void IManipulationHandler.OnManipulationStarted(ManipulationEventData eventData)
     {
@@ -41,7 +40,10 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
         _startRotation = transform.rotation.y;
         transform.position = _startPosition;
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-        
+
+        //Call the move start event on the tile entity
+        gridTile?.Entity?.OnMoveStart();
+
         eventData.Use();
     }
 
@@ -63,13 +65,29 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
 
     void IManipulationHandler.OnManipulationCompleted(ManipulationEventData eventData)
     {
+        TileEntity entity = gridTile.Entity;
+        Vector2Int oldPosition = entity.ParentTile.Position;
+
         SwapBuilding();
+
+        //Call the move start event on the tile entity
+        if (oldPosition != entity.ParentTile.Position) entity.OnMoveComplete();
+        else entity.OnMoveCancelled();
+
         eventData.Use();
     }
 
     void IManipulationHandler.OnManipulationCanceled(ManipulationEventData eventData)
     {
+        TileEntity entity = gridTile.Entity;
+        Vector2Int oldPosition = entity.ParentTile.Position;
+
         SwapBuilding();
+
+        //Call the move start event on the tile entity
+        if (oldPosition != entity.ParentTile.Position) entity.OnMoveComplete();
+        else entity.OnMoveCancelled();
+
         eventData.Use();
     }
 

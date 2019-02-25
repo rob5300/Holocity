@@ -31,6 +31,9 @@ namespace Infrastructure.Grid.Entities
         private List<ResourceData> _resourcesToRemove_inform;
         private HashSet<GridTile> _tilesToIgnore_destroyInform;
 
+        //Moving data
+        public GridTile[] PreMoveNeighbours;
+
         public ResourceConductEntity()
         {
             NewResources = new List<ResourceData>();
@@ -135,12 +138,36 @@ namespace Infrastructure.Grid.Entities
         #region Resource Lost & Neighbour Destroyed Methods.
         public override void OnDestroy()
         {
+            NotifyNeighboursOfChange(ParentTile.GetAdjacentGridTiles());
+        }
+
+        public override void OnMoveStart()
+        {
+            PreMoveNeighbours = ParentTile.GetAdjacentGridTiles();
+        }
+
+        public override void OnMoveCancelled()
+        {
+            PreMoveNeighbours = null;
+        }
+
+        public override void OnMoveComplete()
+        {
+            //Notify pre move neighbours that we were destroyed as it is functionally the same.
+            NotifyNeighboursOfChange(PreMoveNeighbours);
+            //Remove all of our resources and re aquire as if we have been placed new.
+            CurrentResources.Clear();
+            //Look for resources in our new position
+            ResourceSetup();
+        }
+
+        public virtual void NotifyNeighboursOfChange(GridTile[] neighboursToNofify)
+        {
             HashSet<GridTile> tilesToIgnore = new HashSet<GridTile>();
             tilesToIgnore.Add(ParentTile);
 
             //Inform neighbours that we were destroyed
-            GridTile[] tiles = ParentTile.GetAdjacentGridTiles();
-            foreach (GridTile tile in tiles)
+            foreach (GridTile tile in neighboursToNofify)
             {
                 if (tile != null && tile.Entity != null)
                 {
@@ -150,12 +177,12 @@ namespace Infrastructure.Grid.Entities
                     //Manually change the tile we were on to not be populated anymore.
                     Node[,] nodeSet = ParentTile.ParentGridSystem.GetNodeSet();
                     nodeSet[ParentTile.Position.x, ParentTile.Position.y].Populated = false;
-                    ent?.OnNeighbourDestroyed(this, nodeSet, tilesToIgnore);
+                    ent?.OnNeighbourChanged(this, nodeSet, tilesToIgnore);
                 }
             }
         }
 
-        public virtual void OnNeighbourDestroyed(TileEntity neighbour, Node[,] nodeSet, HashSet<GridTile> tilesToIgnore)
+        public virtual void OnNeighbourChanged(TileEntity neighbour, Node[,] nodeSet, HashSet<GridTile> tilesToIgnore)
         {
             //Check if we can access any of our resources still by direct connection.
             //We shall set off a task to check for a connection for all of our resources and await the results on our tick.
@@ -221,6 +248,7 @@ namespace Infrastructure.Grid.Entities
             _tilesToIgnore_destroyInform = tilesToIgnore;
             _shouldContinueDestroyInform = true;
         }
+
         #endregion
 
         public virtual void Tick(float time)
@@ -272,6 +300,11 @@ namespace Infrastructure.Grid.Entities
         }
 
         public override void OnEntityProduced(GridSystem grid)
+        {
+            ResourceSetup();
+        }
+
+        public virtual void ResourceSetup()
         {
             //Perform setup tasks.
             if (!LookForResources())

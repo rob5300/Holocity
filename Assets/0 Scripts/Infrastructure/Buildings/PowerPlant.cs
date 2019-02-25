@@ -25,7 +25,7 @@ namespace Infrastructure.Grid.Entities.Buildings
             elecData.id = 555;
             AddNewResource(typeof(Electricity), elecData);
 
-            //We need to call base to distribute our resource AFTER we make ours.
+            //Must be called after soo the resources exist.
             base.OnEntityProduced(grid);
         }
 
