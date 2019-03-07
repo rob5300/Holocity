@@ -57,8 +57,6 @@ public class HandDetection : MonoBehaviour{
         {
             handOne.obj = Instantiate(HandPrefab);
             handOne.obj.GetComponent<HandObject.Hand>().handDetection = this;
-            handOne.obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            Destroy(handOne.obj.GetComponent<MeshRenderer>());
             handOne.obj.transform.localScale = scale;
             handOne.ID = obj.state.source.id;
 
@@ -69,9 +67,6 @@ public class HandDetection : MonoBehaviour{
         {
             handTwo.obj = Instantiate(HandPrefab);
             handTwo.obj.GetComponent<HandObject.Hand>().handDetection = this;
-
-            handTwo.obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            Destroy(handTwo.obj.GetComponent<MeshRenderer>());
             handTwo.obj.transform.localScale = scale;
             handTwo.ID = obj.state.source.id;
 

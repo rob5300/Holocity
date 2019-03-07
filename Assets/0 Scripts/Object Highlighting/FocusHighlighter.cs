@@ -16,7 +16,7 @@ public class FocusHighlighter : MonoBehaviour, IFocusable {
     public void Start()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
-        _originalColor = _meshRenderer.material.color;
+        _originalColor = Color.white;
       //  _material = _meshRenderer.material;
       //  _meshRenderer.material.shader = Shader.Find("Outlined/Uniform");
 

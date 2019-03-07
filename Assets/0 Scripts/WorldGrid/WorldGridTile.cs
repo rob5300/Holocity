@@ -48,6 +48,8 @@ public class WorldGridTile : MonoBehaviour {
         //Set the layer mask.
         Model.layer = LayerMask.NameToLayer("Hologram");
 
+        Model.GetComponent<MeshRenderer>().material.color = Color.white;
+
         //Tell the Tile entity that this tile exists now.
         tileEnt.OnWorldGridTileCreated(this);
     }

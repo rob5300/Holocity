@@ -43,7 +43,7 @@ namespace Infrastructure.Grid.Entities.Buildings
             base.SetResident(res);
 
             //Define a delegate with some thing to do on the Unity thread.
-            setResTask = (wGrid) => { gridtile.Model.GetComponent<MeshRenderer>().material.color = Color.green; };
+            //setResTask = (wGrid) => { gridtile.Model.GetComponent<MeshRenderer>().material.color = Color.green; };
             //This is where we queue the delegate. This is thread safe now!
             gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(setResTask);
         }

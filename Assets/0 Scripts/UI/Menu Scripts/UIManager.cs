@@ -228,6 +228,7 @@ public class UIManager : MonoBehaviour {
             
             GameObject model = Instantiate(Buildings[i].Model, buildingButton.modelParent.transform);
             model.transform.localPosition = Vector3.zero;
+           // model.GetComponent<MeshRenderer>().material.shader = Shader.Find("Custom/StencilShader");
             buildingButton.ScaleModel(iconSize);
 
             buildingButton.index = i;
