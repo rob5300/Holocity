@@ -7,10 +7,6 @@ public static class Game {
 
     public static string PlayerName = "Player";
 
-    static Game(){
-        //Initalize Game Data
-    }
-
     /// <summary>
     /// Set the current session to be the provided instance.
     /// </summary>

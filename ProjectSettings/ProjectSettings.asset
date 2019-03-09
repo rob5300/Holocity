@@ -616,14 +616,14 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: TemplateLightweight
+  metroPackageName: Holocity
   metroPackageVersion: 1.0.1.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
   metroCertificateIssuer: DefaultCompany
   metroCertificateNotAfter: 000ab7ea087ed501
-  metroApplicationDescription: Template_Lightweight
+  metroApplicationDescription: A City Simulation Game
   wsaImages: {}
   metroTileShortName: SimcityHololens
   metroTileShowName: 0
@@ -719,12 +719,13 @@ PlayerSettings:
     daydream:
       daydreamIconForeground: {fileID: 0}
       daydreamIconBackground: {fileID: 0}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    UNet: 1
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 3
-  cloudProjectId: 
-  projectName: 
-  organizationId: 
+  cloudProjectId: ff2251cd-d9df-46bc-9daf-38c03946ea2f
+  projectName: HoloCity
+  organizationId: rob5300
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

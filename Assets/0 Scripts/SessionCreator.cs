@@ -9,15 +9,8 @@ public class SessionCreator : MonoBehaviour {
     public int width;
     public int height;
 
-	void Start () {
-#if UNITY_EDITOR
-        if (!Application.isPlaying) return;
-#endif
+	public void StartNewGame () {
         Game.SetSession(new Session());
-        Debug.Log("New session created and set: " + Game.CurrentSession.Name);
-
-        //Give the player some money
-        Game.CurrentSession.AddFunds(90123);
     }
 
     public void CreateDefaultGrid()

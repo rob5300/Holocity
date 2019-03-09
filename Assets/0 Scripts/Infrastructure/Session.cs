@@ -1,10 +1,12 @@
 ﻿using Infrastructure;
 using Infrastructure.Tick;
+using Settings;
 using System;
 using System.Threading;
 
 public class Session {
 
+    public GameSettings Settings { get; }
     public City City { get; private set; }
     public uint Funds { get; private set; }
     public readonly string CurrencySymbol;
@@ -24,7 +26,7 @@ public class Session {
         City = new City(Game.PlayerName, this);
         Version = Convert.ToDouble(UnityEngine.Application.version);
         Cache = new AssetCache();
-        Funds = 0;
+        Funds = GameSettings.StartingMoney;
 
         //Create a new thread for the tick manager.
         _thread = new Thread(new ThreadStart(ThreadStart));
