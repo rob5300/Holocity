@@ -36,6 +36,8 @@ namespace Infrastructure.Residents
         public string SecondName { get; protected set; }
         public Residential Home;
         public Happiness Happiness { get; protected set; }
+        public bool ShouldBeRemoved { get; set; }
+        public bool Homeless = true;
 
         private Session sess;
 

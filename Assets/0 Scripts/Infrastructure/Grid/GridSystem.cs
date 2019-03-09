@@ -24,24 +24,20 @@ namespace Infrastructure.Grid
         public List<Resident> Residents;
         public EdgeGuidance edgeGuidance;
         public Sprite icon;
-        private Dictionary<Type, List<ResourceData>> GridResources;
 
-        /// <summary>
-        /// A list of all tickables that will be ticked by the owning city and session tick manager.
-        /// </summary>
-        public ConcurrentQueue<Tickable> TickAddQueue;
-        /// <summary>
-        /// A list of tickables to be removed from the tick system.
-        /// </summary>
-        public ConcurrentQueue<Tickable> ToRemoveFromTickSystem;
         public event Action<Residential> OnNewResidentialBuilding;
 
-        internal GridSystem(int width, int height, int id, City parentCity, Vector3 worldGridPosition)
+        private Dictionary<Type, List<ResourceData>> _gridResources;
+        private TickManager _tickManager;
+        
+
+        internal GridSystem(int width, int height, int id, City parentCity, TickManager tickMan, Vector3 worldGridPosition)
         {
             Id = id;
             ParentCity = parentCity;
             Width = width;
             Height = height;
+            _tickManager = tickMan;
 
             Tiles = new GridTile[Width][];
 
@@ -55,10 +51,8 @@ namespace Infrastructure.Grid
                 }
             }
 
-            TickAddQueue = new ConcurrentQueue<Tickable>();
-            ToRemoveFromTickSystem = new ConcurrentQueue<Tickable>();
             Residents = new List<Resident>();
-            GridResources = new Dictionary<Type, List<ResourceData>>();
+            _gridResources = new Dictionary<Type, List<ResourceData>>();
 
             WorldGrid = CreateWorldGrid(worldGridPosition);
         }
@@ -105,7 +99,7 @@ namespace Infrastructure.Grid
             //We check if this is Tickable, if soo we add this to the tick manager in our session.
             if(tileEnt is Tickable)
             {
-                TickAddQueue.Enqueue((Tickable)tileEnt);
+                _tickManager.IncomingTickableQueue.Enqueue((Tickable)tileEnt);
             }
             if(tileEnt is Residential)
             {
@@ -159,7 +153,7 @@ namespace Infrastructure.Grid
             GridTile tile =  GetTile(position);
             if (tile.Entity != null) tile.Entity.OnDestroy();
             Tickable eTick = tile.Entity as Tickable;
-            if(eTick != null) ToRemoveFromTickSystem.Enqueue(eTick);
+            if (eTick != null) eTick.ShouldBeRemoved = true;
             WorldGrid.GetTile(position).RemoveModel();
             tile.DestroyEntity();
         }
@@ -183,16 +177,16 @@ namespace Infrastructure.Grid
 
         public List<ResourceData> GetResourceList(Type type)
         {
-            if (GridResources.ContainsKey(type))
+            if (_gridResources.ContainsKey(type))
             {
-                return GridResources[type];
+                return _gridResources[type];
             }
             return null;
         }
 
         public void ResetResourceTickCounters()
         {
-            foreach(List<ResourceData> resourceList in GridResources.Values)
+            foreach(List<ResourceData> resourceList in _gridResources.Values)
             {
                 foreach(ResourceData data in resourceList)
                 {
@@ -203,9 +197,9 @@ namespace Infrastructure.Grid
 
         public void AddResourceReference(ResourceData data)
         {
-            if (!GridResources.ContainsKey(data.resource.GetType())) GridResources.Add(data.resource.GetType(), new List<ResourceData>());
+            if (!_gridResources.ContainsKey(data.resource.GetType())) _gridResources.Add(data.resource.GetType(), new List<ResourceData>());
 
-            GridResources[data.resource.GetType()].Add(data);
+            _gridResources[data.resource.GetType()].Add(data);
         }
 
 

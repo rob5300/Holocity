@@ -13,5 +13,9 @@ namespace Infrastructure.Tick
         /// </summary>
         /// <param name="time">Time delay in seconds for ticks.</param>
         void Tick(float time);
+        /// <summary>
+        /// If this tickable should be removed when it is next ticked.
+        /// </summary>
+        bool ShouldBeRemoved { get; set; }
     }
 }

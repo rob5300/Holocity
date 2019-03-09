@@ -16,6 +16,7 @@ namespace Infrastructure.Grid.Entities
         public bool CanConduct = true;
         public List<ResourceData> NewResources;
         public Dictionary<Type, List<ResourceData>> CurrentResources;
+        public bool ShouldBeRemoved { get; set; }
 
         //New resource informing members
         private bool _shouldContinueResourceInform = false;

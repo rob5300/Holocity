@@ -21,7 +21,8 @@ public class Session {
 
     public Session(string name, DateTime dateTime)
     {
-        Name = name != string.Empty ? name : System.DateTime.Now.ToShortTimeString() + ":" + System.DateTime.Now.ToShortDateString();
+        DateTime now = System.DateTime.Now;
+        Name = name != string.Empty ? name : now.ToShortTimeString() + ":" + now.ToShortDateString();
         CreationDateTime = dateTime;
         City = new City(Game.PlayerName, this);
         Version = Convert.ToDouble(UnityEngine.Application.version);
@@ -30,9 +31,6 @@ public class Session {
 
         //Create a new thread for the tick manager.
         _thread = new Thread(new ThreadStart(ThreadStart));
-#if UNITY_EDITOR
-        UnityEngine.Debug.Log("Thread ID: " + _thread.Name);
-#endif
         _thread.Start();
     }
 

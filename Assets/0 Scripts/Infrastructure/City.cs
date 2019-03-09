@@ -5,6 +5,8 @@ using UnityEngine;
 using System;
 using Infrastructure.Residents;
 using Infrastructure.Grid.Entities.Buildings;
+using Settings;
+using Settings.Adjustment;
 
 namespace Infrastructure {
     public enum TimePeriod { Modern, Future, Past }
@@ -22,13 +24,12 @@ namespace Infrastructure {
         public float TotalHappinessAverage = 0;
         public TimePeriod CurrentTimePeriod = TimePeriod.Modern;
 
-        private List<Residential> ResidentialBuildings;
-        private List<Residential> VacantResidentialBuildings;
+        private List<Residential> _residentialBuildings;
+        private List<Residential> _vacantResidentialBuildings;
+        private List<Resident> _homelessResidents;
 
-        /// <summary>
-        /// The demand for residents to move in. If there is avaliable housing found or a new house built, this will reduce to fill the buildings.
-        /// </summary>
-        public int ResidentialDemand { get; private set; }
+        private AdjustableInt ResidentialDemand;
+        private AdjustableFloat ResidentialIncreaseRate;
 
         private float _residentUpdateTime;
 
@@ -36,10 +37,17 @@ namespace Infrastructure {
         {
             owner = owner != string.Empty ? owner : "Mayor";
             ParentSession = sess;
-            Residents = new List<Resident>(10);
-            ResidentialDemand = 20;
-            ResidentialBuildings = new List<Residential>(10);
-            VacantResidentialBuildings = new List<Residential>(10);
+
+            //Starting Residential Demand
+            ResidentialDemand = ParentSession.Settings.ResidentialDemand;
+            ResidentialDemand.SetValue(GameSettings.StartingResidentialDemand);
+            ResidentialIncreaseRate = ParentSession.Settings.ResidentialDemandIncreaseRate;
+            ResidentialIncreaseRate.SetValue(0.1f);
+
+            Residents = new List<Resident>(Mathf.CeilToInt(ResidentialDemand.GetRawValue()));
+            _homelessResidents = new List<Resident>();
+            _residentialBuildings = new List<Residential>(Mathf.CeilToInt(ResidentialDemand.GetRawValue()));
+            _vacantResidentialBuildings = new List<Residential>(Mathf.CeilToInt(ResidentialDemand.GetRawValue()));
         }
 
         /// <summary>
@@ -47,17 +55,45 @@ namespace Infrastructure {
         /// </summary>
         public void PostSetup()
         {
-            ParentSession.TickManager.PostTick += ResetResourceTickCounters;
-            ParentSession.TickManager.PreTick += ResidentVacancyUpdate;
-            ParentSession.TickManager.LowPriorityTick += ResidentHappinessUpdate;
+            ParentSession.TickManager.PostTick += ResetResourceTickCounters_Event;
+            ParentSession.TickManager.PreTick += ResidentVacancyUpdate_Event;
+            ParentSession.TickManager.LowPriorityTick += ResidentHappinessUpdate_Event;
         }
+
+        public bool CreateGrid(int width, int height, Vector3 worldGridPosition)
+        {
+            GridSystem newGrid = new GridSystem(width, height, CityGrids.Count, this, ParentSession.TickManager, worldGridPosition);
+            CityGrids.Add(newGrid);
+            newGrid.OnNewResidentialBuilding += NewResidential_Event;
+            return true;
+        }
+
+        public void ProcessHomelessResident(Resident res)
+        {
+            _homelessResidents.Add(res);
+        }
+
+        public void ProcessResidentialAsVacant(Residential residentialNowVacant)
+        {
+            if (_residentialBuildings.Contains(residentialNowVacant))
+            {
+                _residentialBuildings.Remove(residentialNowVacant);
+            }
+        }
+
+        private void RecalculateFillLimit()
+        {
+            FillLimitPerUpdate = Mathf.CeilToInt(_residentialBuildings.Count * 0.1f);
+        }
+
+        #region Event Handlers
 
         /// <summary>
         /// Update the happiness average on each grid system and the total city wide level.
         /// </summary>
         /// <param name="s"></param>
         /// <param name="tickTime"></param>
-        private void ResidentHappinessUpdate(Session s, float tickTime)
+        private void ResidentHappinessUpdate_Event(Session s, float tickTime)
         {
             float totalAverage = 0;
             //Update the happiness totals for each grid.
@@ -69,23 +105,13 @@ namespace Infrastructure {
             TotalHappinessAverage = totalAverage / CityGrids.Count + 1;
         }
 
-        public bool CreateGrid(int width, int height, Vector3 worldGridPosition)
-        {
-            GridSystem newGrid = new GridSystem(width, height, CityGrids.Count, this, worldGridPosition);
-            CityGrids.Add(newGrid);
-            //We add a command in the queue to add the new grid systems Tickable queue to the Tick system.
-            ParentSession.TickManager.NewGridSystems.Enqueue(newGrid);
-            newGrid.OnNewResidentialBuilding += NewResidential;
-            return true;
-        }
-
         public GridSystem GetGrid(int id)
         {
             if (CityGrids.Count > id) return CityGrids[id];
             return null;
         }
 
-        private void ResetResourceTickCounters(Session s, float time)
+        private void ResetResourceTickCounters_Event(Session s, float time)
         {
             foreach(GridSystem grid in CityGrids)
             {
@@ -93,48 +119,48 @@ namespace Infrastructure {
             }
         }
         
-        private void NewResidential(Residential res)
+        private void NewResidential_Event(Residential res)
         {
-            if (!ResidentialBuildings.Contains(res))
+            if (!_residentialBuildings.Contains(res))
             {
                 //If the building is Vacant, we put it in the vacant buildings list.
                 //We need to sort everything now at the expense of memory.
                 //Cant afford to check all buildings each time or use LINQ ;(.
-                if (res.IsVacant)   VacantResidentialBuildings.Add(res);
-                else                ResidentialBuildings.Add(res);
+                if (res.IsVacant)   _vacantResidentialBuildings.Add(res);
+                else                _residentialBuildings.Add(res);
             }
         }
 
         /// <summary>
         /// Checks if there is any avaliable residential properties to move residents into
         /// </summary>
-        private void ResidentVacancyUpdate(Session s, float time)
+        private void ResidentVacancyUpdate_Event(Session s, float time)
         {
-            if (VacantResidentialBuildings.Count == 0) return;
+            if (_vacantResidentialBuildings.Count == 0) return;
             _residentUpdateTime += time;
             //If we have waited 0.1 seconds run.
             if(_residentUpdateTime > 0.25)
             {
-                if(VacantResidentialBuildings.Count > 0 && ResidentialDemand > 0)
+                if(_vacantResidentialBuildings.Count > 0 && ResidentialDemand.GetValue() > 0)
                 {
                     time = 0;
-                    for (int i = VacantResidentialBuildings.Count - 1; i >= 0; i--)
+                    for (int i = _vacantResidentialBuildings.Count - 1; i >= 0; i--)
                     {
                         //Go through the vacant buildings and add the residents to them.
-                        VacantResidentialBuildings[i].SetResident(new Resident());
+                        _vacantResidentialBuildings[i].SetResident(new Resident());
                         //Enqueue the new resident in the tick manager as low priority.
-                        ParentSession.TickManager.LowPriorityIncomingQueue.Enqueue(VacantResidentialBuildings[i].Resident);
-                        VacantResidentialBuildings.RemoveAt(i);
+                        ParentSession.TickManager.LowPriorityIncomingQueue.Enqueue(_vacantResidentialBuildings[i].Resident);
+                        _vacantResidentialBuildings.RemoveAt(i);
                         ResidentialDemand--;
 
                         //Check if we should increase the fill limit incase the vacant bulding amount has increased to make the fill rate very slow
-                        if(FillLimitPerUpdate < Mathf.CeilToInt(ResidentialBuildings.Count * 0.5f))
+                        if(FillLimitPerUpdate < Mathf.CeilToInt(_residentialBuildings.Count * 0.5f))
                         {
                             RecalculateFillLimit();
                         }
 
                         //If the demand is now empty or if the fill limit was reached, stop.
-                        if (ResidentialDemand < 1 || i+1 > FillLimitPerUpdate) return;
+                        if (ResidentialDemand.GetValue() < 1 || i+1 > FillLimitPerUpdate) return;
                     }
                 }
                 else
@@ -145,9 +171,7 @@ namespace Infrastructure {
             }
         }
 
-        private void RecalculateFillLimit()
-        {
-            FillLimitPerUpdate = Mathf.CeilToInt(ResidentialBuildings.Count * 0.1f);
-        }
+
+        #endregion
     }
 }

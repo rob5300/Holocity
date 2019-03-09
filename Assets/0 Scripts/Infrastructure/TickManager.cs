@@ -19,7 +19,6 @@ namespace Infrastructure.Tick
         public event SessionAction PostTick;
         public event SessionAction LowPriorityTick;
         public ConcurrentQueue<SessionAction> SessionActionsQueue;
-        public ConcurrentQueue<GridSystem> NewGridSystems;
         public ConcurrentQueue<Tickable> IncomingTickableQueue;
         public ConcurrentQueue<Tickable> LowPriorityIncomingQueue;
         public delegate void SessionAction(Session s, float tickTime);
@@ -49,12 +48,6 @@ namespace Infrastructure.Tick
         /// List of all LowPriority tickable objects. This List is ticked at a lower rate.
         /// </summary>
         private List<Tickable> LowPriorityTickTargets;
-        /// <summary>
-        /// List of referneces to the queues that all existing grid systems hold. These queues hold new tickables waiting to be added to the master TickTargets list.
-        /// </summary>
-        private List<ConcurrentQueue<Tickable>> GridNewTickableQueues;
-
-        private List<ConcurrentQueue<Tickable>> GridToRemoveTickableQueues;
         #endregion
 
         /// <summary>
@@ -69,10 +62,7 @@ namespace Infrastructure.Tick
             _session = TargetCity.ParentSession;
 
             TickTargets = new List<Tickable>();
-            GridNewTickableQueues = new List<ConcurrentQueue<Tickable>>();
-            GridToRemoveTickableQueues = new List<ConcurrentQueue<Tickable>>();
             SessionActionsQueue = new ConcurrentQueue<SessionAction>();
-            NewGridSystems = new ConcurrentQueue<GridSystem>();
             IncomingTickableQueue = new ConcurrentQueue<Tickable>();
 
             LowPriorityIncomingQueue = new ConcurrentQueue<Tickable>();
@@ -131,16 +121,11 @@ namespace Infrastructure.Tick
                 //Check if there are any new tickables in the queue.
                 TryDequingNewTickables();
 
-                //Check if there are any new grids
-                TryDequeingNewGrids();
-
-                //Test to see if there are any new tickable targets to get from grid systems.
-                TryDequeingNewTargets();
-
                 //Execute all ticks
-                for (int i = 0; i < TickTargets.Count; i++)
+                for (int i = TickTargets.Count - 1; i >= 0; i--)
                 {
-                    TickTargets[i].Tick(ticktimeinseconds);
+                    if (TickTargets[i].ShouldBeRemoved) TickTargets.RemoveAt(i);
+                    else TickTargets[i].Tick(ticktimeinseconds);
                 }
 
                 #region Low Priority
@@ -150,9 +135,10 @@ namespace Infrastructure.Tick
                 if (_lowPriorityTicksPassed >= _lowPriorityRate)
                 {
                     //Tick all low priority objects
-                    for (int i = 0; i < LowPriorityTickTargets.Count; i++)
+                    for (int i = LowPriorityTickTargets.Count - 1; i >= 0; i--)
                     {
-                        LowPriorityTickTargets[i].Tick(ticktimeinseconds * _lowPriorityRate);
+                        if (LowPriorityTickTargets[i].ShouldBeRemoved) LowPriorityTickTargets.RemoveAt(i);
+                        else LowPriorityTickTargets[i].Tick(ticktimeinseconds * _lowPriorityRate);
                     }
                     //Invoke event
                     LowPriorityTick?.Invoke(_session, ticktimeinseconds * _lowPriorityRate);
@@ -178,19 +164,6 @@ namespace Infrastructure.Tick
             return true;
         }
 
-        private void TryDequeingNewGrids()
-        {
-            for (int i = 0; i < NewGridSystems.Count; i++)
-            {
-                GridSystem newGrid;
-                while (NewGridSystems.TryDequeue(out newGrid))
-                {
-                    GridNewTickableQueues.Add(newGrid.TickAddQueue);
-                    GridToRemoveTickableQueues.Add(newGrid.ToRemoveFromTickSystem);
-                }
-            }
-        }
-
         private void TryDequingNewTickables()
         {
             for (int i = 0; i < IncomingTickableQueue.Count; i++)
@@ -203,33 +176,6 @@ namespace Infrastructure.Tick
             {
                 Tickable newTickable;
                 while (LowPriorityIncomingQueue.TryDequeue(out newTickable)) LowPriorityTickTargets.Add(newTickable);
-            }
-        }
-
-        /// <summary>
-        /// Try to dequeue any new targets in the grid systems queues. If there are any we add them to the master list.
-        /// </summary>
-        private void TryDequeingNewTargets()
-        {
-            for (int i = 0; i < GridNewTickableQueues.Count; i++)
-            {
-                for (int j = 0; j < GridNewTickableQueues[i].Count; j++)
-                {
-                    Tickable newTickable;
-                    while (GridNewTickableQueues[i].TryDequeue(out newTickable)) TickTargets.Add(newTickable);
-                }
-            }
-        }
-
-        private void TryDequeingRemoveTickables()
-        {
-            for (int i = 0; i < GridToRemoveTickableQueues.Count; i++)
-            {
-                for (int j = 0; j < GridToRemoveTickableQueues[i].Count; j++)
-                {
-                    Tickable tickableToRemove;
-                    while (GridToRemoveTickableQueues[i].TryDequeue(out tickableToRemove)) TickTargets.Remove(tickableToRemove);
-                }
             }
         }
     }
