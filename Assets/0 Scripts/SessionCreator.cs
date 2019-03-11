@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Grid;
 using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
+using System;
 using UnityEngine;
 
 public class SessionCreator : MonoBehaviour {
@@ -9,11 +10,34 @@ public class SessionCreator : MonoBehaviour {
     public int width;
     public int height;
 
-	public void StartNewGame () {
-        Game.SetSession(new Session());
+    private bool _sessionReady = false;
+    private Action<Session> _sessionReadyDel;
+
+    public void Awake()
+    {
+        //A thread safe way for us to know when the session is ready.
+        _sessionReadyDel = (sess) => { _sessionReady = true; };
     }
 
-    public void CreateDefaultGrid()
+    public void StartNewGame () {
+        Game.SetSession(new Session());
+        //We subscribe to know when the session is ready.
+        //We must do this as we make a new tick manager and this is not in this thread.
+        Game.CurrentSession.OnSessionReady += _sessionReadyDel;
+    }
+
+    public void Update()
+    {
+        //We know the session is ready, now we can make our grid.
+        if (_sessionReady)
+        {
+            _sessionReady = false;
+            CreateDefaultGrid();
+            Game.CurrentSession.OnSessionReady -= _sessionReadyDel;
+        }
+    }
+
+    private void CreateDefaultGrid()
     {
         Game.CurrentSession.City.CreateGrid(width, height, (Camera.main.transform.forward * 1.5f) - new Vector3(0, 0.3f));
 

@@ -18,7 +18,7 @@ namespace Settings.Adjustment
         public AdjustableValue(ValueAdjuster<T> adjuster)
         {
             Adjuster = adjuster;
-            Adjuster.SetAdjustableValue(this);
+            Adjuster.SetParentAdjustableValue(this);
         }
 
         /// <summary>
@@ -27,11 +27,8 @@ namespace Settings.Adjustment
         /// <returns></returns>
         public virtual T GetValue()
         {
-            if (_isDirty)
-            {
-                _cachedAdjustedValue = Adjuster.AdjustValue(_value);
-                _isDirty = false;
-            }
+            _cachedAdjustedValue = Adjuster.AdjustValue(_value);
+            //_isDirty = false;
             return _cachedAdjustedValue;
         }
 
@@ -62,6 +59,16 @@ namespace Settings.Adjustment
         {
         }
 
+        public void Add(float value)
+        {
+            _value += value;
+        }
+
+        public void Add(int value)
+        {
+            Add((float)value);
+        }
+
         public static AdjustableFloat operator ++(AdjustableFloat value)
         {
             value._value++;
@@ -90,6 +97,16 @@ namespace Settings.Adjustment
     {
         public AdjustableInt(ValueAdjuster<int> adjuster) : base(adjuster)
         {
+        }
+
+        public void Add(int value)
+        {
+            _value += value;
+        }
+
+        public void Add(float value)
+        {
+            Add((int)value);
         }
 
         public static AdjustableInt operator ++(AdjustableInt value)

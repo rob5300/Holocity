@@ -10,9 +10,10 @@ namespace Settings.Adjustment
     {
         public abstract T AdjustValue(T value);
 
-        public virtual void SetAdjustableValue(AdjustableValue<T> val)
+        public virtual void SetParentAdjustableValue(AdjustableValue<T> val)
         {
 
         }
+
     }
 }

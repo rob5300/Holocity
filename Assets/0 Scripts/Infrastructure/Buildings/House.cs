@@ -16,7 +16,7 @@ namespace Infrastructure.Grid.Entities.Buildings
         private float timeoutTime = 3f;
         WorldGridTile gridtile;
 
-        private WorldGridTaskManager.WorldGridTask setResTask;
+        //private WorldGridTaskManager.WorldGridTask setResTask;
 
         public House()
         {
@@ -46,7 +46,7 @@ namespace Infrastructure.Grid.Entities.Buildings
             //Define a delegate with some thing to do on the Unity thread.
             //setResTask = (wGrid) => { gridtile.Model.GetComponent<MeshRenderer>().material.color = Color.green; };
             //This is where we queue the delegate. This is thread safe now!
-            gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(setResTask);
+            //gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(setResTask);
         }
 
         public override void Tick(float time)

@@ -16,6 +16,8 @@ public class Session {
     public string Name;
     public DateTime CreationDateTime;
 
+    public event Action<Session> OnSessionReady;
+
     private const uint _fundsCap = 1000000;
     private Thread _thread;
 
@@ -24,6 +26,7 @@ public class Session {
         DateTime now = System.DateTime.Now;
         Name = name != string.Empty ? name : now.ToShortTimeString() + ":" + now.ToShortDateString();
         CreationDateTime = dateTime;
+        Settings = new GameSettings();
         City = new City(Game.PlayerName, this);
         Version = Convert.ToDouble(UnityEngine.Application.version);
         Cache = new AssetCache();
@@ -44,6 +47,7 @@ public class Session {
         TickManager = new TickManager(City);
         TickManager.Start();
         City.PostSetup();
+        OnSessionReady?.Invoke(this);
     }
 
     /// <summary>

@@ -125,7 +125,6 @@ public class UIManager : MonoBehaviour {
         {
             case "new":
                 sessionCreator.StartNewGame();
-                sessionCreator.CreateDefaultGrid();
                 break; 
             case "quit":
                 Application.Quit();
