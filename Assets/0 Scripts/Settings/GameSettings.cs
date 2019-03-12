@@ -8,6 +8,7 @@ namespace Settings {
         public const uint StartingMoney = 50000;
         public const int StartingResidentialDemand = 20;
         public const float StartingResidentialDemandIncreaseRate = 0.05f;
+        public const float ResidentTimeWithLowHappiness = 20f;
         #endregion
 
         /// <summary>
@@ -15,10 +16,12 @@ namespace Settings {
         /// </summary>
         public int ResidentialDemand = StartingResidentialDemand;
         public AdjustableFloat ResidentialDemandIncreaseRate = new AdjustableFloat(new ThresholdAdjusterFloat(ThresholdCheckMode.Larger, ThresholdAdjustmentMode.Multiply , 0.5f, 0.15f));
+        //public AdjustableFloat ResidentTimeWithLowHappiness = new AdjustableFloat(new ThresholdAdjusterFloat(ThresholdCheckMode.Larger, ThresholdAdjustmentMode.Multiply, 0.5f, 0.15f));
 
         public GameSettings()
         {
             ResidentialDemandIncreaseRate.SetValue(StartingResidentialDemandIncreaseRate);
+            //ResidentTimeWithLowHappiness.SetValue(StartResidentTimeWithLowHappiness);
         }
     }
 }

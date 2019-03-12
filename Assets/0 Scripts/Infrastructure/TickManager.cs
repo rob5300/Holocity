@@ -164,6 +164,14 @@ namespace Infrastructure.Tick
             return true;
         }
 
+        public void Stop()
+        {
+            _timer.Stop();
+            PreTick = null;
+            PostTick = null;
+            LowPriorityTick = null;
+        }
+
         private void TryDequingNewTickables()
         {
             for (int i = 0; i < IncomingTickableQueue.Count; i++)

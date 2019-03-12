@@ -72,4 +72,12 @@ public class Session {
         else Funds -= amount;
         return true;
     }
+
+    /// <summary>
+    /// Unload the session
+    /// </summary>
+    public void Unload()
+    {
+
+    }
 }
