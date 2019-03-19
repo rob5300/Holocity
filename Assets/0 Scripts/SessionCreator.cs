@@ -2,6 +2,7 @@
 using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SessionCreator : MonoBehaviour {
@@ -11,6 +12,8 @@ public class SessionCreator : MonoBehaviour {
     public int height;
 
     private bool _sessionReady = false;
+    private List<GridInfo> gridInfo = new List<GridInfo>();
+
     private Action<Session> _sessionReadyDel;
 
     public void Awake()
@@ -26,13 +29,27 @@ public class SessionCreator : MonoBehaviour {
         Game.CurrentSession.OnSessionReady += _sessionReadyDel;
     }
 
+    public void StartGame(List<GridInfo> info)
+    {
+        gridInfo = info ?? null;
+        Game.SetSession(new Session());
+        //We subscribe to know when the session is ready.
+        //We must do this as we make a new tick manager and this is not in this thread.
+        Game.CurrentSession.OnSessionReady += _sessionReadyDel;
+    }
+
+
     public void Update()
     {
         //We know the session is ready, now we can make our grid.
         if (_sessionReady)
         {
             _sessionReady = false;
-            CreateDefaultGrid();
+
+            if (gridInfo.Count > 0) LoadGrids();
+            else CreateDefaultGrid();
+
+
             Game.CurrentSession.OnSessionReady -= _sessionReadyDel;
         }
     }
@@ -48,6 +65,31 @@ public class SessionCreator : MonoBehaviour {
         grid.AddTileEntityToTile(1, 0, new Flat1());
         grid.AddTileEntityToTile(2, 0, new Flat2());
         grid.AddTileEntityToTile(1, 1, new Future_House());   
+    }
+
+    public void LoadGrids()
+    {
+        if (gridInfo.Count == 0) return;
+
+        List<BuildingMap> buildingMap = BuildingLibrary.GetListForTimePeriod(BuildingCategory.All);
+
+        for (int i =0; i < gridInfo.Count; i++)
+        {
+            Game.CurrentSession.City.CreateGrid(gridInfo[i].width, gridInfo[i].height, gridInfo[i].worldPos);
+            GridSystem grid = Game.CurrentSession.City.GetGrid(i);
+
+            for(int j = 0; j < gridInfo[i].gridEntities.Count; j++)
+            {
+                int x = gridInfo[i].gridEntities[j].x;
+                int y = gridInfo[i].gridEntities[j].y;
+                int index = gridInfo[i].gridEntities[j].z;
+                
+                TileEntity tileEnt = Activator.CreateInstance(buildingMap[index].BuildingType) as TileEntity;
+                
+                grid.AddTileEntityToTile(x,y,tileEnt);
+            }
+
+        }
     }
 
 }

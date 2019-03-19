@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿
+
+using UnityEngine;
 using Infrastructure.Grid.Entities;
 
 namespace BuildTool

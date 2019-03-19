@@ -37,6 +37,8 @@ public class WorldGridTile : MonoBehaviour {
     {
         TileBorder.SetActive(false);
         Model = Instantiate(tileEnt.GetModel(), transform);
+
+        
         //Reset the position of the model to 0.
         Model.transform.localPosition = Vector3.zero;
 
@@ -49,7 +51,6 @@ public class WorldGridTile : MonoBehaviour {
         Model.layer = LayerMask.NameToLayer("Hologram");
 
         Model.GetComponent<MeshRenderer>().material.color = Color.white;
-
         //Tell the Tile entity that this tile exists now.
         tileEnt.OnWorldGridTileCreated(this);
     }

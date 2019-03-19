@@ -65,6 +65,32 @@ namespace Infrastructure.Grid
         //    return ob;
         //}
 
+
+        public List<Vector3Int> GetTilesForSaving()
+        {
+            List<Vector3Int> tiles = new List<Vector3Int>();
+
+            for (int i =0; i < Width; i++)
+            {
+                for(int j = 0; j < Height; j++)
+                {
+                    GridTile tile = GetTile(new Vector2Int(i, j));
+
+                    if (tile.Entity != null)
+                    {
+                        int index = BuildingLibrary.SetupModernBuildings.FindIndex(x => x == tile.Entity.GetType());
+                        Vector3Int ent = new Vector3Int(tile.Position.x, tile.Position.y, index);
+                        tiles.Add(ent);
+
+                    }
+
+                }
+
+            }
+
+            return tiles;
+            
+        }
         public GridTile GetTile(Vector2Int position)
         {
             //Make sure the given position is inbounds of the array, if not we return null.

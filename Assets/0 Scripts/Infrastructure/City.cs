@@ -90,6 +90,11 @@ namespace Infrastructure {
             return null;
         }
 
+        public List<GridSystem> GetGrids()
+        {
+            return CityGrids;
+        }
+
         #region Event Handlers
 
         /// <summary>

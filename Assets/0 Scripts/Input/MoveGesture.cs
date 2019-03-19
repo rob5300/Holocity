@@ -5,7 +5,7 @@ using Infrastructure.Grid;
 
 public class MoveGesture : MonoBehaviour, IManipulationHandler
 {
-    public float offset = 0.15f;
+    public float offset = 0.1f;
     private WorldGridTile _tileParent;
     private Vector3 _startPosition;
     private float _startRotation;
@@ -33,10 +33,10 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
         if (_gesturesManager.IsNavigating) return;
 
         InputManager.Instance.PushModalInputHandler(gameObject);
-                
-        _startPosition = _handDetection.GetHandPos();
-        _startPosition += _cameraTransform.forward * offset;
 
+        _startPosition = transform.position;
+        _startPosition += Vector3.up * offset;
+        
         _startRotation = transform.rotation.y;
         transform.position = _startPosition;
         gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");

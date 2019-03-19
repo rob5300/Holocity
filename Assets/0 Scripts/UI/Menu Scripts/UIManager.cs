@@ -7,6 +7,8 @@ using Infrastructure.Grid.Entities.Buildings;
 using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour {
+    // option menu
+    // test bimanual gestures.
 
     public static UIManager Instance;
     private void Awake()
@@ -82,27 +84,6 @@ public class UIManager : MonoBehaviour {
             textButton.OnButtonClicked += TextButtonPressed;
         }
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            SwitchState(MenuState.Off);
-        }
-        else if (Input.GetKeyDown(KeyCode.B))
-        {
-            SwitchState(MenuState.BuildMenu);
-        }
-        else if(Input.GetKeyDown(KeyCode.C))
-        {
-            SwitchState(MenuState.BuildingSelect);
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            SwitchState(MenuState.MainMenu);
-        }
-    }
-
 
     #region Main Menu
     void MainMenuButtonPressed(GameObject go)
@@ -203,6 +184,8 @@ public class UIManager : MonoBehaviour {
         {
            Game.CurrentSession.City.GetGrid(gridID).AddTileEntityToTile(pos.x, pos.y, tileEnt);
         }
+
+
         //Take money
         Game.CurrentSession.TakeFunds(Buildings[go.GetComponent<BuildingButton>().index].Cost);
         SwitchState(MenuState.Off);
@@ -280,6 +263,7 @@ public class UIManager : MonoBehaviour {
     #region Menu Control
     public void MoveToTile(WorldGridTile tile)
     {
+        // move the menu up if surrounding tiles have things on them.. or scale it up,.
         if (targetTile == tile && menuState != MenuState.Off)
         {
             SwitchState(MenuState.Off);

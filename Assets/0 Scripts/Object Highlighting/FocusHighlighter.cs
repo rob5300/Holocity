@@ -16,12 +16,16 @@ public class FocusHighlighter : MonoBehaviour, IFocusable {
     public void Start()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
-        _originalColor = Color.white;
-      //  _material = _meshRenderer.material;
-      //  _meshRenderer.material.shader = Shader.Find("Outlined/Uniform");
+        _originalColor = (_meshRenderer.material.color == Color.gray) ? Color.white : _meshRenderer.material.color;
+        _meshRenderer.material.color = _originalColor;
+        //_meshRenderer.material.GetColor();
 
-      //  _material.SetColor("_OutlineColor", _focusColour);
-       // _material.SetFloat("_OutlineWidth", 0);
+
+        //  _material = _meshRenderer.material;
+        //  _meshRenderer.material.shader = Shader.Find("Outlined/Uniform");
+
+        //  _material.SetColor("_OutlineColor", _focusColour);
+        // _material.SetFloat("_OutlineWidth", 0);
         //Don't need this since you've got the requirecomponent
         if (_meshRenderer == null) Destroy(this);
     }
@@ -36,7 +40,7 @@ public class FocusHighlighter : MonoBehaviour, IFocusable {
 
     void IFocusable.OnFocusExit()
     {
-        ResetColour();
+      ResetColour();
         RemoveOutline();
     }
 

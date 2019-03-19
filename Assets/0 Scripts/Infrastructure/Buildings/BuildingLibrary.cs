@@ -49,7 +49,7 @@ public static class BuildingLibrary
     public static List<BuildingMap> GetListForTimePeriod(BuildingCategory category)
     {
 
-        List<BuildingMap> map = new List<BuildingMap>(); //this will get the time period list
+      
 
         if(category == BuildingCategory.All)
         {
@@ -57,7 +57,11 @@ public static class BuildingLibrary
         }
         else
         {
-            foreach(BuildingMap buildingMap in ModernBuildings)
+
+            List<BuildingMap> map = new List<BuildingMap>(); //this will get the time period list
+
+
+            foreach (BuildingMap buildingMap in ModernBuildings)
             {
                 if (buildingMap.Category == category)
                     map.Add(buildingMap);
