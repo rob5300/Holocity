@@ -76,6 +76,7 @@ namespace Infrastructure {
             if (_residentialBuildings.Contains(residentialNowVacant))
             {
                 _residentialBuildings.Remove(residentialNowVacant);
+                _vacantResidentialBuildings.Add(residentialNowVacant);
             }
         }
 
@@ -160,6 +161,8 @@ namespace Infrastructure {
                         _vacantResidentialBuildings[i].SetResident(new Resident());
                         //Enqueue the new resident in the tick manager as low priority.
                         ParentSession.TickManager.LowPriorityIncomingQueue.Enqueue(_vacantResidentialBuildings[i].Resident);
+                        //Add the residentia building to the list as it is now holding a resident.
+                        _residentialBuildings.Add(_vacantResidentialBuildings[i]);
                         _vacantResidentialBuildings.RemoveAt(i);
                         ParentSession.Settings.ResidentialDemand--;
 

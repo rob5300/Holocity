@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Tick;
+using Settings;
 
 namespace Infrastructure.Residents
 {
@@ -40,6 +41,8 @@ namespace Infrastructure.Residents
         public bool Homeless = true;
 
         private Session sess;
+        private float _timeWithLowHappiness = 0;
+        private float _timeOffset;
 
         public Resident()
         {
@@ -47,15 +50,27 @@ namespace Infrastructure.Residents
             SecondName = GetRandomSecondName();
             Happiness = new Happiness(this);
             sess = Game.CurrentSession;
+            _timeOffset = (float)(new System.Random().NextDouble() * 10 - 5);
         }
 
         public void Tick(float time)
         {
             sess.AddFunds(1);
-            if(Happiness.Level < 0.2)
+            if (Happiness.Level <= 0.2f)
             {
-                
+                _timeWithLowHappiness += time;
+                if (_timeWithLowHappiness > GameSettings.ResidentTimeWithLowHappiness + _timeOffset)
+                {
+                    //The resident will move out.
+                    MoveOut();
+                }
             }
+            else _timeWithLowHappiness = 0;
+        }
+
+        protected void MoveOut()
+        {
+            Home.RemoveResident(this);
         }
     }
 }

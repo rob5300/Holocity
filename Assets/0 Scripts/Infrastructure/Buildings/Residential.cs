@@ -50,7 +50,9 @@ namespace Infrastructure.Grid.Entities.Buildings
             if(Resident == res)
             {
                 ParentTile.ParentGridSystem.ParentCity.ProcessHomelessResident(Resident);
+                ParentTile.ParentGridSystem.ParentCity.ProcessResidentialAsVacant(this);
                 Resident = null;
+                ParentTile.ParentGridSystem.QueueTaskOnWorldGrid((w) => { UnityEngine.Debug.Log("Resident moved out from " + Name); });
             }
         }
     }

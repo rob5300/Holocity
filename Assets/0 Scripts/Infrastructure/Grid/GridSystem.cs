@@ -241,5 +241,10 @@ namespace Infrastructure.Grid
             }
             return nodeset;
         }
+
+        public void QueueTaskOnWorldGrid(WorldGridTaskManager.WorldGridTask task)
+        {
+            WorldGrid.TaskManager.WorldGridTasks.Enqueue(task);
+        }
     }
 }

@@ -3,7 +3,7 @@
     public class Happiness
     {
         #region Static Members
-        public static float BaseHappiness { get { return 0.2f; } }
+        public static float BaseHappiness { get { return 0.19f; } }
 
         /// <summary>
         /// Should electricity be evaluated for happiness?
