@@ -17,7 +17,8 @@ public class RotateGesture : MonoBehaviour, INavigationHandler {
     
     void INavigationHandler.OnNavigationStarted(NavigationEventData eventData)
     {
-        if (!_gesturesManager.IsNavigating) return;
+        //We also check now if the entity is allowed to be rotated
+        if (!_gesturesManager.IsNavigating || !_tileParent.GridTileCounterpart.Entity.AllowRotation) return;
 
         InputManager.Instance.PushModalInputHandler(gameObject);
         _startRotation = transform.rotation;

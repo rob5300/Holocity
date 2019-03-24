@@ -11,7 +11,6 @@ namespace Infrastructure.Grid.Entities.Buildings
         public float ElectricityDrain = 1;
         public float WaterDrain = 0.3f;
         public float[] ResourceMissingTimes = { 0f, 0f };
-        public bool ShouldBeRemoved { get; set; }
 
         private float timeoutTime = 3f;
         WorldGridTile gridtile;

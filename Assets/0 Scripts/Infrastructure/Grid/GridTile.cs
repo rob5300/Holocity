@@ -8,7 +8,13 @@ namespace Infrastructure.Grid
     {
         public GridSystem ParentGridSystem;
         public Vector2Int Position { get; private set; }
-        public TileEntity Entity { get; private set;  }
+        public TileEntity Entity { get; private set; }
+        public TileEntity MultiTileOccupier { get; set; }
+        public bool Occipied {
+            get {
+                return (Entity != null || MultiTileOccupier != null);
+            }
+        }
 
         public GridTile(Vector2Int position, GridSystem system)
         {
@@ -38,19 +44,5 @@ namespace Infrastructure.Grid
             if(Entity != null) Entity.ParentTile = this;
         }
 
-        /// <summary>
-        /// Get adjacent grid tiles. Can return null in the array if a tile doesn't exist.
-        /// </summary>
-        /// <returns>An array of adjacent grid tiles. Index is null if it did not exist.</returns>
-        public GridTile[] GetAdjacentGridTiles()
-        {
-            GridTile[] adjacentTiles = {
-                ParentGridSystem.GetTile(Position + new Vector2Int(0, 1)),
-                ParentGridSystem.GetTile(Position + new Vector2Int(1, 0)),
-                ParentGridSystem.GetTile(Position + new Vector2Int(0, -1)),
-                ParentGridSystem.GetTile(Position + new Vector2Int(-1, 0))
-            };
-            return adjacentTiles;
-        }
     }
 }

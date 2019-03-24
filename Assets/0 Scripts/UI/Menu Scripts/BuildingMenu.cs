@@ -72,14 +72,13 @@ public class BuildingMenu : MonoBehaviour {
         {
             targetTile.UpdateModel(tileEnt.GetModel());
         }
-        else
+        else if (targetTile.ParentGrid.GridSystem.QueryPlaceByType(Buildings[go.GetComponent<BuildingButton>().index].BuildingType, pos))
         {
             Game.CurrentSession.City.GetGrid(gridID).AddTileEntityToTile(pos.x, pos.y, tileEnt);
+            //Take money
+            Game.CurrentSession.TakeFunds(Buildings[go.GetComponent<BuildingButton>().index].Cost);
         }
-
-
-        //Take money
-        Game.CurrentSession.TakeFunds(Buildings[go.GetComponent<BuildingButton>().index].Cost);
+        
         DestroyBuildingButtons();
         UIManager.Instance.SwitchState(UIManager.MenuState.Off);
     }
