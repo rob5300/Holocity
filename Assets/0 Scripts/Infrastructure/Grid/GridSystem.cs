@@ -22,7 +22,6 @@ namespace Infrastructure.Grid
         public GridTile[][] Tiles;
         public float AverageResidentHappiness = 0;
         public List<Resident> Residents;
-        public EdgeGuidance edgeGuidance;
         public Sprite icon;
 
         public event Action<Residential> OnNewResidentialBuilding;

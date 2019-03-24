@@ -66,7 +66,7 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
     void IManipulationHandler.OnManipulationCompleted(ManipulationEventData eventData)
     {
         TileEntity entity = gridTile.Entity;
-        Vector2Int oldPosition = entity.ParentTile.Position;
+        Vector2Int oldPosition =  (entity == null) ? gridTile.Position : entity.ParentTile.Position;
 
         SwapBuilding();
 
@@ -80,7 +80,7 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
     void IManipulationHandler.OnManipulationCanceled(ManipulationEventData eventData)
     {
         TileEntity entity = gridTile.Entity;
-        Vector2Int oldPosition = entity.ParentTile.Position;
+        Vector2Int oldPosition = (entity == null) ? gridTile.Position : entity.ParentTile.Position;
 
         SwapBuilding();
 
