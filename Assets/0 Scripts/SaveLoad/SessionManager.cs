@@ -1,18 +1,24 @@
-﻿using System.Collections;
+﻿ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.IO;
 using UnityEngine;
 using System.Text;
-using Newtonsoft.Json;
 using Infrastructure.Grid;
+using System.Reflection;
+using System;
+using Infrastructure.Grid.Entities.Buildings;
+using Infrastructure.Residents;
 
 [Serializable]
 public class SaveData
 {
+    public List<GridInfo> gridInfo;
 
-    public List<GridInfo> gridInfo = new List<GridInfo>();
-    public List<>
+    public SaveData(List<GridInfo> GridInfo)
+    {
+        gridInfo = GridInfo;
+    }
 }
 
 [Serializable]
@@ -24,15 +30,34 @@ public class GridInfo
     
     //x,y = pos; z = index
     public List<Vector3Int> gridEntities = new List<Vector3Int>();
+    public List<ResidentInfo> residentInfo = new List<ResidentInfo>();
 
-    public GridInfo(int Width, int Height, Vector3 WorldPos, List<Vector3Int> GridEntities)
+    public GridInfo(int Width, int Height, Vector3 WorldPos, List<Vector3Int> GridEntities, List<ResidentInfo> ResidentInfo)
     {
         width = Width;
         height = Height;
         worldPos = WorldPos;
         gridEntities = GridEntities;
+        residentInfo = ResidentInfo;
     }
 }
+
+[Serializable]
+public class ResidentInfo
+{
+    public string FirstName;
+    public string SecondName; 
+    public Residential Home;
+    public bool ShouldBeRemoved; 
+    public bool Homeless = true;
+
+    public ResidentInfo()
+    {
+
+    }
+}
+
+
 
 public class SessionManager : MonoBehaviour {
 
@@ -54,23 +79,44 @@ public class SessionManager : MonoBehaviour {
 
     public SaveData CreateSaveFile()
     {
-        SaveData saveData = new SaveData();
         List<GridSystem> grids = Game.CurrentSession.City.GetGrids();
-
         List<GridInfo> gridInfo = new List<GridInfo>();
-
-        foreach(GridSystem grid in grids)
+        
+        foreach (GridSystem grid in grids)
         {
-            //loop for each tile entity;
-            GridInfo gridInfos = new GridInfo(grid.Width, grid.Height, grid.Position, grid.GetTilesForSaving());
+            List<ResidentInfo> residentInfo = new List<ResidentInfo>();
+            foreach(Resident res in grid.Residents)
+            {
+                residentInfo.Add(CopyResidentWithReflection(res));
+            }
+
+
+            GridInfo gridInfos = new GridInfo(grid.Width, grid.Height, grid.Position, grid.GetTilesForSaving(), residentInfo);
 
             gridInfo.Add(gridInfos);
         }
 
-        saveData.gridInfo = gridInfo;
+        SaveData saveData = new SaveData(gridInfo);
 
         return saveData;
     }
+
+    private ResidentInfo CopyResidentWithReflection(Resident residentToCopy)
+    {
+        ResidentInfo info = new ResidentInfo();
+
+        Type residentType = typeof(Resident);
+        PropertyInfo[] residentProperties = residentType.GetProperties(BindingFlags.Public);
+        FieldInfo[] residentFields = residentType.GetFields(BindingFlags.Public | BindingFlags.Instance);
+
+        foreach(FieldInfo field in residentFields)
+        {
+            object value = field.GetValue(residentToCopy);
+            field.SetValue(info, value);
+        }
+        
+        return info;
+    } 
 
     public bool OverwriteGame(string saveName, SaveData saveData)
     {
@@ -90,7 +136,7 @@ public class SessionManager : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.B))
         {
-            LoadGame(SaveFolder + defaultName + 0 + defaultType);
+            LoadGame(SaveFolder + defaultName + 1 + defaultType);
         }
     }
 
@@ -101,7 +147,7 @@ public class SessionManager : MonoBehaviour {
         SaveData saveData = CreateSaveFile();
 
         int i = 0;
-        while (File.Exists(Application.dataPath + defaultName + i + defaultType)) i++;
+        while (File.Exists(SaveFolder + defaultName + i + defaultType)) i++;
 
         string path = SaveFolder + defaultName + i + defaultType;
 
@@ -111,7 +157,7 @@ public class SessionManager : MonoBehaviour {
 
         return true;
     }
-    
+
     public bool LoadGame(string saveName)
     {
         if (!File.Exists(saveName)) return false;

@@ -7,16 +7,14 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: ButtonMat
-  m_Shader: {fileID: 4800000, guid: aa6004ab24d2bc94c9557ff0727793b5, type: 3}
-  m_ShaderKeywords: _ALPHABLEND_ON _BORDER_LIGHT_USES_HOVER_COLOR _DIRECTIONAL_LIGHT
-    _DISABLE_ALBEDO_MAP _INNER_GLOW _METALLIC_TEXTURE_ALBEDO_CHANNEL_A _NORMALMAP
-    _RIM_LIGHT
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: _BORDER_LIGHT_USES_HOVER_COLOR _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP
+    _INNER_GLOW _METALLIC_TEXTURE_ALBEDO_CHANNEL_A _NORMALMAP _RIM_LIGHT _SPECULARHIGHLIGHTS_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -79,7 +77,7 @@ Material:
     - _Cutoff: 0.632
     - _DetailNormalMapScale: 1
     - _DirectionalLight: 1
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _EdgeSmoothingValue: 0.002
     - _EnableEmission: 0
     - _EnableHoverColorOpaqueOverride: 0
@@ -97,7 +95,7 @@ Material:
     - _HoverLightOpaque: 0
     - _InnerGlow: 1
     - _Metallic: 0.23
-    - _Mode: 2
+    - _Mode: 0
     - _NearPlaneFade: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -114,15 +112,15 @@ Material:
     - _Smoothness: 0.13
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 0
-    - _SrcBlend: 5
+    - _SrcBlend: 1
     - _StencilRef: 0
     - _UVSec: 0
     - _ZTest: 4
-    - _ZWrite: 0
+    - _ZWrite: 1
     m_Colors:
     - _ClipPlane: {r: 0, g: 1, b: 0, a: 0}
     - _ClippingPlaneBorderColor: {r: 1, g: 0.19999996, b: 0, a: 1}
-    - _Color: {r: 0.5377358, g: 0.5377358, b: 0.5377358, a: 1}
+    - _Color: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 0.23584908, g: 0.23584908, b: 0.23584908, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}

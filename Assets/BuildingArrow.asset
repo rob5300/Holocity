@@ -9,48 +9,48 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fa22bce62b991ca4b9aadff296ae1e8b, type: 3}
-  m_Name: BuildingButtonProfile
+  m_Name: BuildingArrow
   m_EditorClassIdentifier: 
   ColorPropertyName: _Color
   ValuePropertyName: 
-  SmoothStateChanges: 1
-  StickyPressedEvents: 1
-  StickyPressedTime: 0.05
+  SmoothStateChanges: 0
+  StickyPressedEvents: 0
+  StickyPressedTime: 0.15
   AnimationSpeed: 1
   ButtonStates:
   - Name: Pressed
     ActiveState: 0
-    StateColor: {r: 0, g: 0.6193533, b: 0.6698113, a: 1}
+    StateColor: {r: 1, g: 1, b: 1, a: 1}
     StateValue: 0
     Offset: {x: 0, y: 0, z: 0}
-    Scale: {x: 1.1, y: 1.1, z: 1.1}
+    Scale: {x: 0, y: 0, z: 0}
   - Name: Targeted
     ActiveState: 1
-    StateColor: {r: 0.41176474, g: 0.43137258, b: 0.43137258, a: 1}
+    StateColor: {r: 1, g: 1, b: 1, a: 1}
     StateValue: 0
     Offset: {x: 0, y: 0, z: 0}
-    Scale: {x: 1.15, y: 1.15, z: 1.15}
+    Scale: {x: 0, y: 0, z: 0}
   - Name: Interactive
     ActiveState: 2
-    StateColor: {r: 0.41176474, g: 0.43137258, b: 0.43137258, a: 1}
+    StateColor: {r: 1, g: 1, b: 1, a: 1}
     StateValue: 0
     Offset: {x: 0, y: 0, z: 0}
-    Scale: {x: 1, y: 1, z: 1}
+    Scale: {x: 0, y: 0, z: 0}
   - Name: ObservationTargeted
     ActiveState: 3
-    StateColor: {r: 0.41176474, g: 0.43137258, b: 0.43137258, a: 1}
+    StateColor: {r: 1, g: 1, b: 1, a: 1}
     StateValue: 0
     Offset: {x: 0, y: 0, z: 0}
-    Scale: {x: 1.15, y: 1.15, z: 1.15}
+    Scale: {x: 0, y: 0, z: 0}
   - Name: Observation
     ActiveState: 4
-    StateColor: {r: 0.41176474, g: 0.43137258, b: 0.43137258, a: 1}
+    StateColor: {r: 1, g: 1, b: 1, a: 1}
     StateValue: 0
     Offset: {x: 0, y: 0, z: 0}
-    Scale: {x: 1, y: 1, z: 1}
+    Scale: {x: 0, y: 0, z: 0}
   - Name: Disabled
     ActiveState: 5
-    StateColor: {r: 0.5058824, g: 0.5137255, b: 0.49411768, a: 0.46666667}
+    StateColor: {r: 1, g: 1, b: 1, a: 1}
     StateValue: 0
     Offset: {x: 0, y: 0, z: 0}
-    Scale: {x: 1, y: 0.1, z: 1}
+    Scale: {x: 0, y: 0, z: 0}

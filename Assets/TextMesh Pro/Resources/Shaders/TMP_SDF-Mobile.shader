@@ -60,19 +60,6 @@ SubShader {
 	}
 
 
-	Stencil
-	{
-		Ref 2
-		Comp equal
-		Pass keep
-		ZFail decrWrap
-		/*Ref [_Stencil]
-		Comp [_StencilComp]
-		Pass [_StencilOp] 
-		ReadMask [_StencilReadMask]
-		WriteMask [_StencilWriteMask]*/
-	}
-
 	Cull [_CullMode]
 	ZWrite Off
 	Lighting Off

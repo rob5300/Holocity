@@ -87,6 +87,8 @@ public class SessionCreator : MonoBehaviour {
                 TileEntity tileEnt = Activator.CreateInstance(buildingMap[index].BuildingType) as TileEntity;
                 
                 grid.AddTileEntityToTile(x,y,tileEnt);
+
+                
             }
 
         }
