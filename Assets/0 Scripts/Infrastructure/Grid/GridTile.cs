@@ -8,7 +8,13 @@ namespace Infrastructure.Grid
     {
         public GridSystem ParentGridSystem;
         public Vector2Int Position { get; private set; }
-        public TileEntity Entity { get; private set;  }
+        public TileEntity Entity { get; private set; }
+        public TileEntity MultiTileOccupier { get; set; }
+        public bool Occipied {
+            get {
+                return (Entity != null || MultiTileOccupier != null);
+            }
+        }
 
         public GridTile(Vector2Int position, GridSystem system)
         {

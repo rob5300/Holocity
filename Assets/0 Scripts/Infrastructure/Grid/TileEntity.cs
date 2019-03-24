@@ -6,7 +6,14 @@ namespace Infrastructure.Grid.Entities
 {
     public class TileEntity
     {
+        /// <summary>
+        /// Can this entity be moved?
+        /// </summary>
         public bool CanBeMoved = true;
+        /// <summary>
+        /// Can this entity be rotated?
+        /// </summary>
+        public bool AllowRotation = true;
         public GridTile ParentTile;
         public uint Cost = 0;
 
@@ -24,7 +31,7 @@ namespace Infrastructure.Grid.Entities
 
         public virtual void OnEntityProduced(GridSystem grid) { }
 
-        public virtual bool QueryPlace(Grid.GridTile tile)
+        public virtual bool QueryPlace(GridTile tile, WorldGrid grid)
         {
             return true;
         }
@@ -52,6 +59,30 @@ namespace Infrastructure.Grid.Entities
 #endif
             }
             return _tilePrefab;
+        }
+
+        /// <summary>
+        /// Occupy other tiles that this entity will overlap over.
+        /// </summary>
+        /// <param name="requiredTiles"></param>
+        protected void OccupyTiles(bool[,] requiredTiles)
+        {
+            for (int x = 0; x < 3; x++)
+            {
+                for (int y = 0; y < 3; y++)
+                {
+                    //Skip relative 0,0 as that is us already.
+                    if (x - 1 == 0 && y - 1 == 0) continue;
+                    //If this tile offset should be occupied.
+                    if (requiredTiles[x, y])
+                    {
+                        Vector2Int checkPosOffset = new Vector2Int(x - 1, y - 1);
+                        GridTile tile = ParentTile.ParentGridSystem.GetTile(ParentTile.Position + checkPosOffset);
+                        tile.MultiTileOccupier = this;
+                        ParentTile.ParentGridSystem.WorldGrid.GetTile(ParentTile.Position + checkPosOffset).TileBorder.SetActive(false);
+                    }
+                }
+            }
         }
     }
 }

@@ -30,7 +30,8 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
 
     void IManipulationHandler.OnManipulationStarted(ManipulationEventData eventData)
     {
-        if (_gesturesManager.IsNavigating) return;
+        //We now also check if the entity is allowed to be moved.
+        if (_gesturesManager.IsNavigating || !_tileParent.GridTileCounterpart.Entity.CanBeMoved) return;
 
         InputManager.Instance.PushModalInputHandler(gameObject);
 

@@ -123,16 +123,16 @@ namespace Infrastructure.Grid
             tile.SetEntity(this, tileEnt);
             AddTileEntityToWorldGrid(tileEnt, x, y);
             //We check if this is Tickable, if soo we add this to the tick manager in our session.
-            if(tileEnt is Tickable)
+            if (tileEnt is Tickable)
             {
                 _tickManager.IncomingTickableQueue.Enqueue((Tickable)tileEnt);
             }
-            if(tileEnt is Residential)
+            if (tileEnt is Residential)
             {
                 //We call the event to let the city know that we have a new residential building.
                 OnNewResidentialBuilding?.Invoke((Residential)tileEnt);
             }
-            return true;
+            return true; 
         }
 
         /// <summary>
@@ -184,6 +184,37 @@ namespace Infrastructure.Grid
             tile.DestroyEntity();
         }
 
+        /// <summary>
+        /// Query if this type can be placed in this position.
+        /// </summary>
+        /// <param name="type">Type of the tile entity</param>
+        /// <param name="TargetPosition">Target tile position</param>
+        /// <returns>If the placement can take place</returns>
+        public bool QueryPlaceByType(Type type, Vector2Int TargetPosition)
+        {
+            //Try to get the TileEntityMeta attribute
+            TileEntityMetaAttribute meta = Attribute.GetCustomAttribute(type, typeof(TileEntityMetaAttribute)) as TileEntityMetaAttribute;
+            if(meta != null)
+            {
+                bool[,] requiredTiles = meta.RequiredTiles;
+                for (int x = 0; x < 3; x++)
+                {
+                    for (int y = 0; y < 3; y++)
+                    {
+                        //If this tile offset should be occupied.
+                        if (requiredTiles[x, y])
+                        {
+                            Vector2Int checkPosOffset = new Vector2Int(x - 1, y - 1);
+                            //If this tile is occupied, return false.
+                            if (GetTile(TargetPosition + checkPosOffset).Occipied) return false;
+                        }
+                    }
+                }
+            }
+            //We can place as no checked positions were occupied.
+            return true;
+        }
+
         private void AddTileEntityToWorldGrid(TileEntity tileEnt, int x, int y)
         {
             WorldGrid.GetTile(x,y).AddModelToTile(tileEnt);
@@ -228,7 +259,6 @@ namespace Infrastructure.Grid
             _gridResources[data.resource.GetType()].Add(data);
         }
 
-
         public Node[,] GetNodeSet()
         {
             Node[,] nodeset = new Node[Width, Height];
@@ -246,5 +276,6 @@ namespace Infrastructure.Grid
         {
             WorldGrid.TaskManager.WorldGridTasks.Enqueue(task);
         }
+
     }
 }

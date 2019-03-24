@@ -12,7 +12,7 @@ public class SaveData
 {
 
     public List<GridInfo> gridInfo = new List<GridInfo>();
-    public List<>
+    //public List<>
 }
 
 [Serializable]
