@@ -31,7 +31,13 @@ namespace GridSearch
         public Node(GridTile tile)
         {
             Position = tile.Position;
-            Populated = (tile.Entity != null && tile.Entity is ResourceConductEntity);
+            //We consider this node to be populated only if it has a resource conduct entity OR is occupied by a multi tile entity with this type.
+            Populated = (
+                (tile.Entity != null && 
+                tile.Entity is ResourceConductEntity)
+                ||
+                (tile.MultiTileOccupier != null &&
+                tile.MultiTileOccupier is ResourceConductEntity));
         }
     }
 }

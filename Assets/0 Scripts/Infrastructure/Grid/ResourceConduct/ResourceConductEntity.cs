@@ -49,10 +49,10 @@ namespace Infrastructure.Grid.Entities
         {
             //We were just placed, lets look for resources on our neighbours.
             bool anyNewResources = false;
-            foreach (GridTile tile in ParentTile.GetAdjacentGridTiles())
+            foreach (GridTile tile in GetAdjacentGridTiles())
             {
-                if (tile == null) continue;
-                ResourceConductEntity rEntity = tile.Entity as ResourceConductEntity;
+                if (tile == null || !tile.Occipied) continue;
+                ResourceConductEntity rEntity = (tile?.Entity ?? tile?.MultiTileOccupier) as ResourceConductEntity;
                 if (rEntity != null)
                 {
                     if (CompareAndGetNewResources(rEntity.CurrentResources)) anyNewResources = true;
@@ -77,16 +77,18 @@ namespace Infrastructure.Grid.Entities
             HashSet<GridTile> tilesToIgnore = new HashSet<GridTile>();
             tilesToIgnore.Add(ParentTile);
 
-            foreach (GridTile tile in ParentTile.GetAdjacentGridTiles())
+            foreach (GridTile tile in GetAdjacentGridTiles())
             {
-                if (tile == null) continue;
+                if (tile == null || !tile.Occipied) continue;
 
                 //If this tile has a resource conduct entity, we will inform it of the resources
-                ResourceConductEntity cEntity = tile?.Entity as ResourceConductEntity;
+                //We want to get the multi tile occupier instead if the entity is null
+                ResourceConductEntity cEntity = (tile?.Entity ?? tile?.MultiTileOccupier) as ResourceConductEntity;
                 if (cEntity != null)
                 {
                     cEntity.OnNewResourceViaConnection_Event(resourceDatas, tilesToIgnore);
                 }
+
             }
         }
 
@@ -121,7 +123,7 @@ namespace Infrastructure.Grid.Entities
         public void ContinueResourceInform(List<ResourceData> resourceData, HashSet<GridTile> tilesToIgnore)
         {
             //Tell our neighbours that this resource exists.
-            GridTile[] tiles = ParentTile.GetAdjacentGridTiles();
+            GridTile[] tiles = GetAdjacentGridTiles();
             foreach (GridTile tile in tiles)
             {
                 if (tile == null) continue;
@@ -139,12 +141,12 @@ namespace Infrastructure.Grid.Entities
         #region Resource Lost & Neighbour Destroyed Methods.
         public override void OnDestroy()
         {
-            NotifyNeighboursOfChange(ParentTile.GetAdjacentGridTiles());
+            NotifyNeighboursOfChange(GetAdjacentGridTiles());
         }
 
         public override void OnMoveStart()
         {
-            PreMoveNeighbours = ParentTile.GetAdjacentGridTiles();
+            PreMoveNeighbours = GetAdjacentGridTiles();
         }
 
         public override void OnMoveCancelled()
@@ -201,7 +203,7 @@ namespace Infrastructure.Grid.Entities
 
         public virtual void BeginInformNoConnectionResource(List<ResourceData> resourceToRemove)
         {
-            foreach (GridTile tile in ParentTile.GetAdjacentGridTiles())
+            foreach (GridTile tile in GetAdjacentGridTiles())
             {
                 if (tile == null) continue;
 
@@ -217,7 +219,7 @@ namespace Infrastructure.Grid.Entities
         public virtual void ContinueNoConnectionResourceInform(List<ResourceData> resourcesToRemove, HashSet<GridTile> tilesToIgnore)
         {
             //Tell our neighbours that these resource has no connection anymore.
-            GridTile[] tiles = ParentTile.GetAdjacentGridTiles();
+            GridTile[] tiles = GetAdjacentGridTiles();
             foreach (GridTile tile in tiles)
             {
                 if (tile == null) continue;

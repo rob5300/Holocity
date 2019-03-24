@@ -9,20 +9,20 @@ namespace Infrastructure.Grid.Entities
         /// Binary table of tile requirements for multi tile tileentities.
         /// [1,1] is considered the center.
         /// </summary>
-        private static bool[][,] TileLayout = {
+        private static readonly bool[][,] TileLayout = {
             //Have the 2D array be 3,3 in length and consider index 1,1 as the center.
-            //Follow this format:
-            //{ true, true, false },
-            //{ true, CENTER, false },
-            //{ false, false, false }
-
-            //2x2
+            //Note that the y index is reversed visually vs how we display grid tiles in game.
+            //Arrays are indexed and accessed via the MultiTileSize enum int values.
+    
+            //2x2:
+            //X X _
+            //X C _
+            //_ _ _
             new bool[,] {
+                { false, false, false },
                 { true, true, false },
-                { true, true, false },
-                { false, false, false }
+                { true, true, false }
             }
-            //Any others below.
         };
 
         public bool MultiTile { get; private set; }

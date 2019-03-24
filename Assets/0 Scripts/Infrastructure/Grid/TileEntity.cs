@@ -65,7 +65,7 @@ namespace Infrastructure.Grid.Entities
         /// Occupy other tiles that this entity will overlap over.
         /// </summary>
         /// <param name="requiredTiles"></param>
-        protected void OccupyTiles(bool[,] requiredTiles)
+        protected void OccupyTiles(bool[,] requiredTiles, bool occupy = true)
         {
             for (int x = 0; x < 3; x++)
             {
@@ -74,15 +74,37 @@ namespace Infrastructure.Grid.Entities
                     //Skip relative 0,0 as that is us already.
                     if (x - 1 == 0 && y - 1 == 0) continue;
                     //If this tile offset should be occupied.
-                    if (requiredTiles[x, y])
+                    if (requiredTiles[y, x])
                     {
                         Vector2Int checkPosOffset = new Vector2Int(x - 1, y - 1);
                         GridTile tile = ParentTile.ParentGridSystem.GetTile(ParentTile.Position + checkPosOffset);
-                        tile.MultiTileOccupier = this;
-                        ParentTile.ParentGridSystem.WorldGrid.GetTile(ParentTile.Position + checkPosOffset).TileBorder.SetActive(false);
+                        tile.MultiTileOccupier = occupy ? this : null;
+                        ParentTile.ParentGridSystem.WorldGrid.GetTile(ParentTile.Position + checkPosOffset).TileBorder.SetActive(!occupy);
                     }
                 }
             }
+        }
+
+        protected void UnOccupyTiles(bool[,] requiredTiles)
+        {
+            OccupyTiles(requiredTiles, false);
+        }
+
+        /// <summary>
+        /// Get adjacent grid tiles. Can return null in the array if a tile doesn't exist.
+        /// </summary>
+        /// <returns>An array of adjacent grid tiles. Index is null if it did not exist.</returns>
+        protected virtual GridTile[] GetAdjacentGridTiles()
+        {
+            GridSystem sys = ParentTile.ParentGridSystem;
+            Vector2Int position = ParentTile.Position;
+            GridTile[] adjacentTiles = {
+                sys.GetTile(position + new Vector2Int(0, 1)),
+                sys.GetTile(position + new Vector2Int(1, 0)),
+                sys.GetTile(position + new Vector2Int(0, -1)),
+                sys.GetTile(position + new Vector2Int(-1, 0))
+            };
+            return adjacentTiles;
         }
     }
 }

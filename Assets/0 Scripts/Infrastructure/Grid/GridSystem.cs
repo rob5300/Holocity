@@ -202,11 +202,12 @@ namespace Infrastructure.Grid
                     for (int y = 0; y < 3; y++)
                     {
                         //If this tile offset should be occupied.
-                        if (requiredTiles[x, y])
+                        if (requiredTiles[y, x])
                         {
                             Vector2Int checkPosOffset = new Vector2Int(x - 1, y - 1);
                             //If this tile is occupied, return false.
-                            if (GetTile(TargetPosition + checkPosOffset).Occipied) return false;
+                            GridTile tile = GetTile(TargetPosition + checkPosOffset);
+                            if (tile == null || tile.Occipied) return false;
                         }
                     }
                 }

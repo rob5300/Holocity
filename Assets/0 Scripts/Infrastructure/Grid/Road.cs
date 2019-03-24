@@ -134,7 +134,7 @@ namespace Infrastructure.Grid.Entities
             ApplyModelRotation();
 
             //Tell any adjacent road tiles to check and update their models.
-            GridTile[] adjacentTiles = ParentTile.GetAdjacentGridTiles();
+            GridTile[] adjacentTiles = GetAdjacentGridTiles();
 
             foreach(GridTile adjtile in adjacentTiles)
             {
