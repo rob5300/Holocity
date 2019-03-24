@@ -74,8 +74,10 @@ namespace Infrastructure.Grid.Entities
         {
             //We are the first object to start this process.
             //We create a new hashset of tiles to ignore and start with adding ourselves.
-            HashSet<GridTile> tilesToIgnore = new HashSet<GridTile>();
-            tilesToIgnore.Add(ParentTile);
+            HashSet<GridTile> tilesToIgnore = new HashSet<GridTile>
+            {
+                ParentTile
+            };
 
             foreach (GridTile tile in ParentTile.GetAdjacentGridTiles())
             {
@@ -164,8 +166,10 @@ namespace Infrastructure.Grid.Entities
 
         public virtual void NotifyNeighboursOfChange(GridTile[] neighboursToNofify)
         {
-            HashSet<GridTile> tilesToIgnore = new HashSet<GridTile>();
-            tilesToIgnore.Add(ParentTile);
+            HashSet<GridTile> tilesToIgnore = new HashSet<GridTile>
+            {
+                ParentTile
+            };
 
             //Inform neighbours that we were destroyed
             foreach (GridTile tile in neighboursToNofify)
@@ -173,6 +177,9 @@ namespace Infrastructure.Grid.Entities
                 if (tile != null && tile.Entity != null)
                 {
                     ResourceConductEntity ent = tile.Entity as ResourceConductEntity;
+
+                    //If somehow we have ourselves, skip this loop.
+                    if (ent == this) continue;
 
                     //Get a new node set for the grid we live on
                     //Manually change the tile we were on to not be populated anymore.
@@ -280,7 +287,8 @@ namespace Infrastructure.Grid.Entities
                             //This resource path check failed to get a route. Add this to the list to inform with.
                             resourcesToRemove.Add(resourceListForConnetionCheck[i]);
                             //Remove the resourse from ourselves
-                            CurrentResources[resourceListForConnetionCheck[i].resource.GetType()].Remove(resourceListForConnetionCheck[i]);
+                            Type t = resourceListForConnetionCheck[i].resource.GetType();
+                            if(CurrentResources.ContainsKey(t)) CurrentResources[t].Remove(resourceListForConnetionCheck[i]);
                         }
                         //Task completed, remove it from the list
                         resourcePathCheckTasks.RemoveAt(i);
