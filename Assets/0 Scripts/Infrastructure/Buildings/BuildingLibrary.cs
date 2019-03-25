@@ -17,7 +17,8 @@ public static class BuildingLibrary
             typeof(Shop),
             typeof(Flat1),
             typeof(Flat2),
-            typeof(MultiTileHouse)
+            typeof(MultiTileHouse),
+            typeof(Old_TownHall)
             };
     public static List<BuildingMap> ModernBuildings = new List<BuildingMap>();
 

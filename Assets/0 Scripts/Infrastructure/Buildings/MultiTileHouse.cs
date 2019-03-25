@@ -7,15 +7,16 @@ using UnityEngine;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {
-    [TileEntityMeta("", MultiTileSize.x2)]
+    [TileEntityMeta("Buildings/2x2House", MultiTileSize.x2)]
     public class MultiTileHouse : House
     {
         public MultiTileHouse()
         {
             PrefabName = "2x2House";
-            Cost = 1;
+            Cost = 250;
             AllowRotation = false;
             CanBeMoved = false;
+            Name = "Large House";
         }
 
         public override void OnEntityProduced(GridSystem grid)

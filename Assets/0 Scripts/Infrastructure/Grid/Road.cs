@@ -141,7 +141,6 @@ namespace Infrastructure.Grid.Entities
                 if(adjtile?.Entity is Road)
                 {
                     ((Road)adjtile.Entity).RecheckAndApplyRoadModel();
-                    Debug.Log("Sent recheck for road!");
                 }
             }
         }
