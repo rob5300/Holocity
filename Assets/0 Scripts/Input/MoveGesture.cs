@@ -72,7 +72,7 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
         SwapBuilding();
 
         //Call the move start event on the tile entity
-        if (oldPosition != entity.ParentTile.Position) entity.OnMoveComplete();
+        if (entity != null && oldPosition != entity.ParentTile.Position) entity.OnMoveComplete();
         else entity.OnMoveCancelled();
 
         eventData.Use();
