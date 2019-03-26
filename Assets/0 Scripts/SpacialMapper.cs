@@ -23,17 +23,6 @@ public class SpacialMapper : MonoBehaviour {
 
     public void Start()
     {
-        if (XRDevice.SetTrackingSpaceType(TrackingSpaceType.RoomScale))
-        {
-            // RoomScale mode was set successfully.  App can now assume that y=0 in Unity world coordinate represents the floor.
-        }
-        else
-        {
-#if UNITY_EDITOR
-            Debug.LogError("Was not able to set TrackingSpaceType to RoomScale");
-#endif
-        }
-
         surfaceObserver = new SurfaceObserver();
 
         surfaceObserver.SetVolumeAsAxisAlignedBox(Vector3.zero, new Vector3(3, 3, 3));
