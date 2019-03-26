@@ -56,7 +56,7 @@ public class SessionCreator : MonoBehaviour {
 
     private void CreateDefaultGrid()
     {
-        Game.CurrentSession.City.CreateGrid(width, height, (Camera.main.transform.forward * 1.5f) - new Vector3(0, 0.3f));
+        Game.CurrentSession.City.CreateGrid(width, height, (Camera.main.transform.forward * 1.5f) - new Vector3(0, 0.5f));
 
         GridSystem grid = Game.CurrentSession.City.GetGrid(0);
 

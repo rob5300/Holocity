@@ -1,12 +1,10 @@
-﻿ using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using System.IO;
 using UnityEngine;
 using System.Text;
 using Infrastructure.Grid;
 using System.Reflection;
-using System;
 using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Residents;
 
@@ -47,7 +45,7 @@ public class ResidentInfo
 {
     public string FirstName;
     public string SecondName; 
-    public Residential Home;
+    public Vector2Int HomePosition;
     public bool ShouldBeRemoved; 
     public bool Homeless = true;
 
@@ -112,7 +110,14 @@ public class SessionManager : MonoBehaviour {
         foreach(FieldInfo field in residentFields)
         {
             object value = field.GetValue(residentToCopy);
-            field.SetValue(info, value);
+            if (field.FieldType.IsEquivalentTo(typeof(Residential)))
+            {
+                info.HomePosition = ((Residential)value).ParentTile.Position;
+            }
+            else
+            {
+                field.SetValue(info, value);
+            }
         }
         
         return info;
