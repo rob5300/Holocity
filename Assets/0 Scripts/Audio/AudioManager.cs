@@ -36,22 +36,42 @@ public class AudioManager : MonoBehaviour
 
     public Sound[] sounds;
     private AudioSource audioSource;
-    
 
-    public void PlaySound(string name)
+    void Update()
     {
-        foreach(Sound sound in sounds)
+        if (Input.GetKeyDown(KeyCode.J))
         {
-            if(sound.name == name)
-            {
-                audioSource.clip = sound.clip;
-                break;
-            }
+            audioSource.clip = sounds[0].clip;
+            audioSource.Play();
+            Debug.Log("Played: " + audioSource.clip);
         }
 
-        if (audioSource.clip)
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            audioSource.clip = sounds[1].clip;
             audioSource.Play();
+            Debug.Log("Played: " + audioSource.clip);
+        }
     }
+
+    public void SelectSound(bool success)
+    {
+        int i = 0;
+
+        if (!success) i = 1;
+        
+
+        audioSource.clip = sounds[i].clip;
+        audioSource.pitch = sounds[i].pitch;
+        audioSource.Play();
+    }
+    public void UISound(bool success)
+    {
+        audioSource.clip = sounds[0].clip;
+        audioSource.pitch -= 0.5f;
+        audioSource.Play();
+    }
+
 
 
 }

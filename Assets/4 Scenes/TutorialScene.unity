@@ -2663,8 +2663,8 @@ GameObject:
   - component: {fileID: 744627939}
   - component: {fileID: 744627938}
   - component: {fileID: 744627937}
-  - component: {fileID: 744627940}
   - component: {fileID: 744627941}
+  - component: {fileID: 744627940}
   m_Layer: 0
   m_Name: MixedRealityCamera
   m_TagString: MainCamera
@@ -2832,7 +2832,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 7322359c3d27b2e42a26b4e955e2fffd, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -2930,10 +2930,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sounds:
-  - name: Tap Sound
+  - name: tap
     clip: {fileID: 8300000, guid: 7322359c3d27b2e42a26b4e955e2fffd, type: 3}
     volume: 0.551
     pitch: 1
+  - name: missed
+    clip: {fileID: 8300000, guid: 8cc206c276340224faae3d9dba37b9a8, type: 3}
+    volume: 0.551
+    pitch: -0.26
 --- !u!1 &751804754
 GameObject:
   m_ObjectHideFlags: 0
