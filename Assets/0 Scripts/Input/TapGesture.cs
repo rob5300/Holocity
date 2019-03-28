@@ -18,8 +18,11 @@ public class TapGesture : MonoBehaviour, IInputClickHandler {
 
         eventData.Use();
 
-
-        if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponent<CompoundButton>())
+        if (UIManager.Instance.roadTool.active)
+        {
+            UIManager.Instance.roadTool.TilePressed();
+        }
+        else if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponent<CompoundButton>())
         {
             AudioManager.Instance.UISound(true);
         }
@@ -35,6 +38,8 @@ public class TapGesture : MonoBehaviour, IInputClickHandler {
             AudioManager.Instance.SelectSound(false);
             //turn off UI if player clicks away.
         }
+        
+
     }
 
 }

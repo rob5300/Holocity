@@ -51,11 +51,13 @@ public class UIManager : MonoBehaviour {
 
     [HideInInspector]
     public WorldGridTile targetTile;
+    public RoadTool roadTool;
 
     public void Start()
     {
 
         animator = GetComponent<Animator>();
+        roadTool = GetComponent<RoadTool>();
 
         Menus = new GameObject[] { buildingMenu, mainMenu, buildMenu };
         
@@ -141,8 +143,12 @@ public class UIManager : MonoBehaviour {
     }
     void SpawnRoad(GameObject go)
     {
-        Vector2Int pos = targetTile.Position;
-        targetTile.ParentGrid.GridSystem.AddTileEntityToTile(pos, new Road());
+        //Start Road Tool
+        roadTool.StartTool(targetTile);
+
+        //    Vector2Int pos = targetTile.Position;
+        //    targetTile.ParentGrid.GridSystem.AddTileEntityToTile(pos, new Road());
+        //
     }
     void DestroyTile(GameObject go)
     {
@@ -154,6 +160,8 @@ public class UIManager : MonoBehaviour {
     #region Menu Control
     public void MoveToTile(WorldGridTile tile)
     {
+        if (roadTool.active) return;
+
         // move the menu up if surrounding tiles have things on them.. or scale it up,.
         if (targetTile == tile && menuState != MenuState.Off)
         {
@@ -163,20 +171,53 @@ public class UIManager : MonoBehaviour {
         
         targetTile = tile;
 
-        if (targetTile.Model)
-        {
-            Vector3 pos = tile.transform.position;
-            pos.y += targetTile.Model.GetComponent<MeshRenderer>().bounds.size.y + 0.025f;
-            transform.position = pos;
-        }
-        else
-        {
-            transform.position = tile.transform.position;
-        }
+        float height = GetHeight(tile) + 0.025f;
+
+        Vector3 pos = tile.transform.position;
+        pos.y += height;
+        transform.position = pos;
+
+        //if (targetTile.Model)
+        //{
+        //    Vector3 pos = tile.transform.position;
+        //    pos.y += targetTile.Model.GetComponent<MeshRenderer>().bounds.size.y + 0.025f;
+        //    transform.position = pos;
+        //}
+        //else
+        //{
+        //    transform.position = tile.transform.position;
+        //}
 
         SwitchState(MenuState.BuildMenu);
         
     }
+
+    float GetHeight(WorldGridTile tile)
+    {
+        float height = 0f;
+        Vector2Int pos = tile.Position;
+        WorldGrid grid = tile.ParentGrid;
+
+
+        for(int i = pos.x - 1; i < pos.x + 2; i++)
+        {
+            for(int j = pos.y -1; j < pos.y + 2; j++)
+            {
+                WorldGridTile adjTile = grid.GetTile(i, j);
+                if (adjTile == null) continue;
+
+                if (adjTile.Model)
+                {
+                    height = (adjTile.Model.GetComponent<MeshRenderer>().bounds.size.y > height) ? adjTile.Model.GetComponent<MeshRenderer>().bounds.size.y : height;
+                }
+            }
+        }
+
+
+        return height;
+    }
+
+
     public void SwitchState(MenuState newState)
     {
         menuState = newState;
