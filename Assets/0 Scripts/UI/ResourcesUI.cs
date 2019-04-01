@@ -23,7 +23,6 @@ public class ResourcesUI : MonoBehaviour
     private List<ResourceData> waterResources;
     private List<ResourceData> electricityResources;
 
-   
     public void Start()
     {
 		UIManager.Instance.StateChanged += ToggleUI;
