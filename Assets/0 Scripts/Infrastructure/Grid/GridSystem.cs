@@ -254,9 +254,10 @@ namespace Infrastructure.Grid
 
         public void AddResourceReference(ResourceData data)
         {
+            //Add a new list for the type if needed.
             if (!_gridResources.ContainsKey(data.resource.GetType())) _gridResources.Add(data.resource.GetType(), new List<ResourceData>());
-
-            _gridResources[data.resource.GetType()].Add(data);
+            //If this list doesnt already have this data, add it.
+            if(!_gridResources[data.resource.GetType()].Contains(data)) _gridResources[data.resource.GetType()].Add(data);
         }
 
         public Node[,] GetNodeSet()
