@@ -22,6 +22,10 @@ public class TapGesture : MonoBehaviour, IInputClickHandler {
         {
             UIManager.Instance.roadTool.TilePressed();
         }
+        else if (UIManager.Instance.buildingTool.active)
+        {
+            UIManager.Instance.buildingTool.TilePressed();
+        }
         else if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponent<CompoundButton>())
         {
             AudioManager.Instance.UISound(true);

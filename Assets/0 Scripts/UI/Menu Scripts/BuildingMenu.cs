@@ -15,6 +15,9 @@ public class BuildingMenu : MonoBehaviour {
     public CompoundButton[] changePageButtons;
     public TextMeshPro pageNumberText;
 
+    [Header("BuildingTool")]
+    public BuildingTool buildingTool;
+
     [Header("Text Materials")]
     public Material On;
     public Material Off;
@@ -23,7 +26,7 @@ public class BuildingMenu : MonoBehaviour {
 
     private List<BuildingMap> Buildings;
     private float iconSize = 0.0391f;
-
+    private GameObject prevObject;
 
     private int currentPage = 1;
     private int CurrentPage
@@ -54,34 +57,53 @@ public class BuildingMenu : MonoBehaviour {
         {
             button.OnButtonClicked += ChangePagePressed;
         }
+
+        buildingTool.buildingMenu = this;
     }
     
     void BuildingPressed(GameObject go)
     {
         if (!UIManager.Instance.targetTile) return;
 
+       
         WorldGridTile targetTile = UIManager.Instance.targetTile;
 
-        int gridID = 0;
-        gridID = targetTile.ParentGrid.Id;
-        Vector2Int pos = targetTile.Position;
+        int index = go.GetComponent<BuildingButton>().index;
+        TileEntity tileEnt = Activator.CreateInstance(Buildings[index].BuildingType) as TileEntity;
 
-        TileEntity tileEnt = Activator.CreateInstance(Buildings[go.GetComponent<BuildingButton>().index].BuildingType) as TileEntity;
 
-        if (targetTile.Model)
-        {
-            targetTile.UpdateModel(tileEnt.GetModel());
-        }
-        else if (targetTile.ParentGrid.GridSystem.QueryPlaceByType(Buildings[go.GetComponent<BuildingButton>().index].BuildingType, pos))
-        {
-            Game.CurrentSession.City.GetGrid(gridID).AddTileEntityToTile(pos.x, pos.y, tileEnt);
-            //Take money
-            Game.CurrentSession.TakeFunds(Buildings[go.GetComponent<BuildingButton>().index].Cost);
-        }
+        buildingTool.StartTool(tileEnt, index, targetTile.ParentGrid.Id);
+
+       
         
         DestroyBuildingButtons();
         UIManager.Instance.SwitchState(UIManager.MenuState.Off);
     }
+
+    public void PlaceBuilding(WorldGridTile tile, int index, TileEntity tileEnt)
+    {
+        int gridID = 0;
+        gridID = tile.ParentGrid.Id;
+        Vector2Int pos = tile.Position;
+        
+
+        if (tile.Model)
+        {
+            tile.UpdateModel(tileEnt.GetModel());
+        }
+        else if (CheckCanPlace(tile, index))
+        {
+            Game.CurrentSession.City.GetGrid(gridID).AddTileEntityToTile(pos.x, pos.y, tileEnt);
+            //Take money
+            Game.CurrentSession.TakeFunds(Buildings[index].Cost);
+        }
+    }
+
+    public bool CheckCanPlace(WorldGridTile tile, int index)
+    {
+        return tile.ParentGrid.GridSystem.QueryPlaceByType(Buildings[index].BuildingType, tile.Position);
+    }
+
 
     public void DestroyBuildingButtons()
     {
@@ -140,6 +162,9 @@ public class BuildingMenu : MonoBehaviour {
 
     void TextButtonPressed(GameObject go)
     {
+        if (prevObject == go) return;
+        else prevObject = go;
+
         string Name = "";
 
         foreach (CompoundButton textButton in textButtons)

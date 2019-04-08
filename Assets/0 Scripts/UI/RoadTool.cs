@@ -132,38 +132,6 @@ public class RoadTool : MonoBehaviour {
             {
                 tileHighlighter.ValidPlace = false;
             }
-
-
-            //if (startTile.Position.x == endTile.Position.x)
-            //{
-            //    int startY = (startTile.Position.y <= endTile.Position.y) ? startTile.Position.y : endTile.Position.y;
-            //    int endY = (startTile.Position.y <= endTile.Position.y) ? endTile.Position.y : startTile.Position.y;
-
-            //    for (int i = startY; i <= endY; i++)
-            //    {
-            //        tiles.Add(grid.GetTile(startTile.Position.x, i));
-            //    }
-
-
-            //    tileHighlighter.ValidPlace = true;
-            //}
-            //else if (startTile.Position.y == endTile.Position.y)
-            //{
-            //    int startX = (startTile.Position.x <= endTile.Position.x) ? startTile.Position.x : endTile.Position.x;
-            //    int endX = (startTile.Position.x <= endTile.Position.x) ? endTile.Position.x : startTile.Position.x;
-
-            //    for (int i = startX; i <= endX; i++)
-            //    {
-            //        tiles.Add(grid.GetTile(i, startTile.Position.y));
-            //    }
-
-            //    tileHighlighter.ValidPlace = true;
-            //}
-            //else
-            //{
-            //    tileHighlighter.ValidPlace = false;
-            //}
-
             HighlightTiles();
 
         }
@@ -194,14 +162,6 @@ public class RoadTool : MonoBehaviour {
             //
 
             StartTool(endTile);
-
-            //foreach (WorldGridTile tile in tiles)
-            //{
-            //    tile.ParentGrid.GridSystem.AddTileEntityToTile(tile.Position, new Road());
-            //}
-            
-            
-            ////StopTool();
         }
         else
         {

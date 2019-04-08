@@ -11,6 +11,6 @@ public class TextButton : MonoBehaviour {
 
     public void ChangeMaterial(Material mat)
     {
-        
+        if (mat && _renderer) _renderer.material = mat;
     }
 }

@@ -52,12 +52,14 @@ public class UIManager : MonoBehaviour {
     [HideInInspector]
     public WorldGridTile targetTile;
     public RoadTool roadTool;
+    public BuildingTool buildingTool;
 
     public void Start()
     {
 
         animator = GetComponent<Animator>();
         roadTool = GetComponent<RoadTool>();
+        buildingTool = GetComponent<BuildingTool>();
 
         Menus = new GameObject[] { buildingMenu, mainMenu, buildMenu };
         
@@ -160,7 +162,7 @@ public class UIManager : MonoBehaviour {
     #region Menu Control
     public void MoveToTile(WorldGridTile tile)
     {
-        if (roadTool.active) return;
+        if (roadTool.active || buildingTool.active) return;
 
         // move the menu up if surrounding tiles have things on them.. or scale it up,.
         if (targetTile == tile && menuState != MenuState.Off)

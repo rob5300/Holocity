@@ -44,6 +44,19 @@ namespace Infrastructure.Residents
         private float _timeWithLowHappiness = 0;
         private float _timeOffset;
 
+        public Resident(string firstName, string secondName, Residential home, bool shouldBeRemoved, bool homeless)
+        {
+            FirstName = firstName;
+            SecondName = secondName;
+            Home = home;
+            ShouldBeRemoved = shouldBeRemoved;
+            Homeless = homeless;
+
+            Happiness = new Happiness(this);
+            sess = Game.CurrentSession;
+            _timeOffset = (float)(new System.Random().NextDouble() * 10 - 5);
+        }
+
         public Resident()
         {
             FirstName = GetRandomFirstName();
