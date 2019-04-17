@@ -73,7 +73,7 @@ public class WorldGrid : MonoBehaviour {
 
     public WorldGridTile GetTile(int x, int y)
     {
-        if (x > Width || y > Height) return null;
+        if (x > Width || y > Height || x < 0 || y < 0) return null;
         return GridTiles[x][y];
     }
 

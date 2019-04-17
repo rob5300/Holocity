@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Grid;
 using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
+using Infrastructure.Residents;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -87,8 +88,16 @@ public class SessionCreator : MonoBehaviour {
                 TileEntity tileEnt = Activator.CreateInstance(buildingMap[index].BuildingType) as TileEntity;
                 
                 grid.AddTileEntityToTile(x,y,tileEnt);
+            }
 
-                
+            foreach (ResidentInfo resInfo in gridInfo[i].residentInfo)
+            {
+
+                //Residential home = grid.GetTile(resInfo.HomePosition).Entity.;
+                //Resident resident = new Resident();
+
+                //grid.Residents.Add(resident);
+                //home.SetResident(resident);
             }
 
         }

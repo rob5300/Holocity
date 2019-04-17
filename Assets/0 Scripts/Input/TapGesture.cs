@@ -18,15 +18,22 @@ public class TapGesture : MonoBehaviour, IInputClickHandler {
 
         eventData.Use();
 
-
-        if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponent<CompoundButton>())
+        if (UIManager.Instance.roadTool.active)
+        {
+            UIManager.Instance.roadTool.TilePressed();
+        }
+        else if (UIManager.Instance.buildingTool.active)
+        {
+            UIManager.Instance.buildingTool.TilePressed();
+        }
+        else if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponent<CompoundButton>())
         {
             AudioManager.Instance.UISound(true);
         }
         else if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponent<FocusHighlighter>())
         {
             WorldGridTile tile = GazeManager.Instance.HitObject.transform.parent.GetComponent<WorldGridTile>();
-            UIManager.Instance.MoveToTile(tile);
+            UIManager.Instance.TilePressed(tile);
             AudioManager.Instance.SelectSound(true);
         }
         else if (!GazeManager.Instance.HitObject && UIManager.Instance.menuState != UIManager.MenuState.Off)
@@ -35,6 +42,8 @@ public class TapGesture : MonoBehaviour, IInputClickHandler {
             AudioManager.Instance.SelectSound(false);
             //turn off UI if player clicks away.
         }
+        
+
     }
 
 }

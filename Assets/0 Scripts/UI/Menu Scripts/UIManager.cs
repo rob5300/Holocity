@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour {
     }
 
     public Action<int> BuildingsGenerated = delegate { };
-    public Action<bool> StateChanged = delegate { };
+    public Action<int> StateChanged = delegate { };
     public MenuState menuState = MenuState.MainMenu;
 
     [Header("Main Menu")]
@@ -51,11 +51,16 @@ public class UIManager : MonoBehaviour {
 
     [HideInInspector]
     public WorldGridTile targetTile;
+    public RoadTool roadTool;
+    public BuildingTool buildingTool;
+    private MoveUI moveUI;
 
     public void Start()
     {
-
         animator = GetComponent<Animator>();
+        roadTool = GetComponent<RoadTool>();
+        buildingTool = GetComponent<BuildingTool>();
+        moveUI = GetComponent<MoveUI>();
 
         Menus = new GameObject[] { buildingMenu, mainMenu, buildMenu };
         
@@ -141,8 +146,12 @@ public class UIManager : MonoBehaviour {
     }
     void SpawnRoad(GameObject go)
     {
-        Vector2Int pos = targetTile.Position;
-        targetTile.ParentGrid.GridSystem.AddTileEntityToTile(pos, new Road());
+        //Start Road Tool
+        roadTool.StartTool(targetTile);
+
+        //    Vector2Int pos = targetTile.Position;
+        //    targetTile.ParentGrid.GridSystem.AddTileEntityToTile(pos, new Road());
+        //
     }
     void DestroyTile(GameObject go)
     {
@@ -152,31 +161,23 @@ public class UIManager : MonoBehaviour {
     #endregion
     
     #region Menu Control
-    public void MoveToTile(WorldGridTile tile)
+    public void TilePressed(WorldGridTile tile)
     {
+        if (roadTool.active || buildingTool.active) return;
+
         // move the menu up if surrounding tiles have things on them.. or scale it up,.
         if (targetTile == tile && menuState != MenuState.Off)
         {
             SwitchState(MenuState.Off);
             return;
         }
-        
         targetTile = tile;
 
-        if (targetTile.Model)
-        {
-            Vector3 pos = tile.transform.position;
-            pos.y += targetTile.Model.GetComponent<MeshRenderer>().bounds.size.y + 0.025f;
-            transform.position = pos;
-        }
-        else
-        {
-            transform.position = tile.transform.position;
-        }
+        moveUI.MoveToTile(targetTile);
 
         SwitchState(MenuState.BuildMenu);
-        
     }
+
     public void SwitchState(MenuState newState)
     {
         menuState = newState;
@@ -184,7 +185,7 @@ public class UIManager : MonoBehaviour {
         if (menuState != MenuState.BuildingSelect)
             _buildingMenu.DestroyBuildingButtons();
 
-        StateChanged((MenuState.Off == menuState));
+        StateChanged((int)menuState);
         animator.SetInteger("MenuState", (int)menuState);
     }
 

@@ -8,6 +8,8 @@ using System.Reflection;
 using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Residents;
 
+
+
 [Serializable]
 public class SaveData
 {
@@ -43,21 +45,22 @@ public class GridInfo
 [Serializable]
 public class ResidentInfo
 {
-    public string FirstName;
-    public string SecondName; 
+    public string FirstName { get; protected set; }
+    public string SecondName { get; protected set; }
     public Vector2Int HomePosition;
-    public bool ShouldBeRemoved; 
+    public bool ShouldBeRemoved { get; set; }
     public bool Homeless = true;
 
     public ResidentInfo()
     {
-
+        
     }
 }
 
 
 
 public class SessionManager : MonoBehaviour {
+    
 
     private SessionCreator sessionCreator;
     private static  string SaveFolder;
@@ -104,9 +107,20 @@ public class SessionManager : MonoBehaviour {
         ResidentInfo info = new ResidentInfo();
 
         Type residentType = typeof(Resident);
-        PropertyInfo[] residentProperties = residentType.GetProperties(BindingFlags.Public);
+        PropertyInfo[] residentProperties = residentType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
         FieldInfo[] residentFields = residentType.GetFields(BindingFlags.Public | BindingFlags.Instance);
 
+       
+        foreach(PropertyInfo property in residentProperties)
+        {
+            object value = property.GetValue(residentToCopy);
+            if (property.PropertyType.IsEquivalentTo(typeof(Happiness))) continue;
+            else
+            {
+                PropertyInfo prop2 = info.GetType().GetProperty(property.Name);
+                if (prop2 != null) prop2.SetValue(info, value);
+            }
+        }
         foreach(FieldInfo field in residentFields)
         {
             object value = field.GetValue(residentToCopy);
@@ -114,9 +128,10 @@ public class SessionManager : MonoBehaviour {
             {
                 info.HomePosition = ((Residential)value).ParentTile.Position;
             }
-            else
+            else 
             {
-                field.SetValue(info, value);
+                FieldInfo field2 = info.GetType().GetField(field.Name);
+                if(field2 != null) field2.SetValue(info, value);
             }
         }
         
