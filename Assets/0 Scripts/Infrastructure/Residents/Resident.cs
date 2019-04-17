@@ -97,6 +97,7 @@ namespace Infrastructure.Residents
             {
                 Job = job;
                 Job.Taken = true;
+                Job.Holder = this;
             }
         }
 

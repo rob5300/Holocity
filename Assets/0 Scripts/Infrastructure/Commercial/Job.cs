@@ -8,12 +8,12 @@ namespace Infrastructure
         public bool Taken = false;
         public Resident Holder;
 
-        public Job(Resident holder)
+        public Job()
         {
-            Holder = holder;
+            
         }
 
-        public Job(Resident holder, float salary) : this(holder)
+        public Job(float salary)
         {
             Salary = salary;
         }
