@@ -9,23 +9,9 @@ namespace Infrastructure.Grid.Entities.Buildings
         public Resident Resident { get; private set; }
         public bool IsVacant { get { return Resident == null; } }
         public int VacantSlots { get; private set; }
-        /// <summary>
-        /// If this building has power;
-        /// </summary>
-        public bool HasPower = false;
-        /// <summary>
-        /// If this building has a water supply.
-        /// </summary>
-        public bool HasWaterSupply = false;
-        private GridTile parent;
-
-        protected WorldGridTaskManager.WorldGridTask electricityWarningTask;
-        protected WorldGridTaskManager.WorldGridTask waterWarningTask;
 
         public Residential()
         {
-            electricityWarningTask = (grid) => { ElectricityWarning.SetActive(!HasPower); };
-            waterWarningTask = (grid) => { WaterWarning.SetActive(!HasWaterSupply); };
             VacantSlots = 1;
         }
 

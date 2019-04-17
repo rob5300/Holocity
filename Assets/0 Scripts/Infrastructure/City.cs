@@ -5,6 +5,7 @@ using Infrastructure.Residents;
 using Infrastructure.Grid.Entities.Buildings;
 using Settings;
 using Settings.Adjustment;
+using System;
 
 namespace Infrastructure {
     public enum TimePeriod { Modern, Future, Past }
@@ -26,6 +27,9 @@ namespace Infrastructure {
         private List<Residential> _vacantResidentialBuildings;
         private List<Resident> _homelessResidents;
 
+        private List<Job> _avaliableJobs;
+        private List<Resident> _unemployedResidents;
+
         private AdjustableFloat ResidentialIncreaseRate;
         private ThresholdAdjusterFloat ResidentialIncreaseAdjuster;
 
@@ -44,6 +48,9 @@ namespace Infrastructure {
             _homelessResidents = new List<Resident>();
             _residentialBuildings = new List<Residential>(Mathf.CeilToInt(ParentSession.Settings.ResidentialDemand));
             _vacantResidentialBuildings = new List<Residential>(Mathf.CeilToInt(ParentSession.Settings.ResidentialDemand));
+
+            _avaliableJobs = new List<Job>();
+            _unemployedResidents = new List<Resident>();
         }
 
         /// <summary>
@@ -54,6 +61,7 @@ namespace Infrastructure {
             ParentSession.TickManager.PostTick += ResetResourceTickCounters_Event;
             ParentSession.TickManager.PreTick += DemandUpdate_Event;
             ParentSession.TickManager.PreTick += ResidentVacancyUpdate_Event;
+            ParentSession.TickManager.PreTick += ResidentJobUpdate_Event;
             ParentSession.TickManager.PreTick += ResidentHappinessUpdate_Event;
             ParentSession.TickManager.LowPriorityTick += ResidentHappinessUpdate_Event;
         }
@@ -63,12 +71,24 @@ namespace Infrastructure {
             GridSystem newGrid = new GridSystem(width, height, CityGrids.Count, this, ParentSession.TickManager, worldGridPosition);
             CityGrids.Add(newGrid);
             newGrid.OnNewResidentialBuilding += NewResidential_Event;
+            newGrid.OnNewCommercialBuilding += NewCommercial_Event;
             return true;
         }
 
         public void ProcessHomelessResident(Resident res)
         {
             _homelessResidents.Add(res);
+            _avaliableJobs.Add(res.Job);
+            res.Job.Taken = false;
+            res.RemoveJob();
+        }
+
+        public void ProcessDestroyedCommercial(Commercial com)
+        {
+            foreach(Job job in com.Jobs)
+            {
+                if (_avaliableJobs.Contains(job)) _avaliableJobs.Remove(job);
+            }
         }
 
         public void ProcessResidentialAsVacant(Residential residentialNowVacant)
@@ -142,6 +162,11 @@ namespace Infrastructure {
             }
         }
 
+        private void NewCommercial_Event(Commercial obj)
+        {
+            _avaliableJobs.AddRange(obj.Jobs);
+        }
+
         /// <summary>
         /// Checks if there is any avaliable residential properties to move residents into
         /// </summary>
@@ -159,9 +184,11 @@ namespace Infrastructure {
                     {
                         //Go through the vacant buildings and add the residents to them.
                         _vacantResidentialBuildings[i].SetResident(new Resident());
+                        //This resident has a home and can now have a job
+                        _unemployedResidents.Add(_vacantResidentialBuildings[i].Resident);
                         //Enqueue the new resident in the tick manager as low priority.
                         ParentSession.TickManager.LowPriorityIncomingQueue.Enqueue(_vacantResidentialBuildings[i].Resident);
-                        //Add the residentia building to the list as it is now holding a resident.
+                        //Add the residential building to the list as it is now holding a resident.
                         _residentialBuildings.Add(_vacantResidentialBuildings[i]);
                         _vacantResidentialBuildings.RemoveAt(i);
                         ParentSession.Settings.ResidentialDemand--;
@@ -181,6 +208,19 @@ namespace Infrastructure {
                     //There are no vacant buildings. Update the fill rate using the current number of residential buildings that are populated.
                     RecalculateFillLimit();
                 }
+            }
+        }
+
+        private void ResidentJobUpdate_Event(Session s, float time)
+        {
+            if (_avaliableJobs.Count == 0) return;
+
+            for (int i = 0; i < _unemployedResidents.Count; i++)
+            {
+                //Give jobs to each unemployed resident until we have no jobs left.
+                _unemployedResidents[i].SetJob(_avaliableJobs[0]);
+                _avaliableJobs.RemoveAt(0);
+                if (_avaliableJobs.Count == 0) return;
             }
         }
         #endregion

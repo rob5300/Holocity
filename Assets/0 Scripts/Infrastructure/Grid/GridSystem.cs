@@ -25,6 +25,7 @@ namespace Infrastructure.Grid
         public Sprite icon;
 
         public event Action<Residential> OnNewResidentialBuilding;
+        public event Action<Commercial> OnNewCommercialBuilding;
 
         private Dictionary<Type, List<ResourceData>> _gridResources;
         private TickManager _tickManager;
@@ -130,6 +131,10 @@ namespace Infrastructure.Grid
             {
                 //We call the event to let the city know that we have a new residential building.
                 OnNewResidentialBuilding?.Invoke((Residential)tileEnt);
+            }
+            if (tileEnt is Commercial)
+            {
+                OnNewCommercialBuilding?.Invoke((Commercial)tileEnt);
             }
             return true; 
         }

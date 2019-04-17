@@ -39,6 +39,7 @@ namespace Infrastructure.Residents
         public Happiness Happiness { get; protected set; }
         public bool ShouldBeRemoved { get; set; }
         public bool Homeless = true;
+        public Job Job { get; private set; }
 
         private Session sess;
         private float _timeWithLowHappiness = 0;
@@ -55,7 +56,11 @@ namespace Infrastructure.Residents
 
         public void Tick(float time)
         {
-            sess.AddFunds(1);
+            if(Job != null)
+            {
+                //Add funds to the player as we have a job.
+                sess.AddFunds((uint)System.Math.Ceiling(Job.Salary / 0.2));
+            }
             if (Happiness.Level <= 0.2f)
             {
                 _timeWithLowHappiness += time;
@@ -71,6 +76,20 @@ namespace Infrastructure.Residents
         protected void MoveOut()
         {
             Home.RemoveResident(this);
+        }
+
+        public void SetJob(Job job)
+        {
+            if(job != null)
+            {
+                Job = job;
+                Job.Taken = true;
+            }
+        }
+
+        public void RemoveJob()
+        {
+            Job = null;
         }
     }
 }
