@@ -21,7 +21,6 @@ public class TileHighlighter : MonoBehaviour {
         indicator = Instantiate(indicator);
         meshRenderer = indicator.GetComponentInChildren<MeshRenderer>();
         UIManager.Instance.StateChanged += ToggleHighlighter;
-        
     }
 
     private void Update()
@@ -61,12 +60,12 @@ public class TileHighlighter : MonoBehaviour {
         }
         else
         {
-            currentTarget = UIManager.Instance.targetTile.gameObject.transform.GetChild(0).gameObject;/// gameObject;
+           // currentTarget = UIManager.Instance.targetTile.gameObject.transform.GetChild(0).gameObject;/// gameObject;
             indicator.SetActive(true);
         }
 
        
-        if(indicator.activeSelf)
+        if(indicator.activeSelf && currentTarget)
         {
             indicator.transform.parent = currentTarget.transform.parent;
             indicator.transform.localPosition = Vector3.zero;
@@ -76,9 +75,9 @@ public class TileHighlighter : MonoBehaviour {
     }
 
 
-    void ToggleHighlighter(bool check)
+    void ToggleHighlighter(int state)
     {
        // indicator.SetActive(check);
-        highlightTiles = check;
+        highlightTiles = (state == 0) ? true : false;
     }
 }

@@ -100,9 +100,9 @@ public class ResourcesUI : MonoBehaviour
         GesturesManager.Instance.SwitchMode(navigate);
     }
 	
-	void ToggleUI(bool check)
+	void ToggleUI(int state)
     {
-        gameObject.SetActive(check);
+        gameObject.SetActive((state == 0));
     }
 
     private void CheckForLists()
