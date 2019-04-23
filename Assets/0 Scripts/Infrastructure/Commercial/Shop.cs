@@ -15,7 +15,7 @@ namespace Infrastructure.Grid.Entities.Buildings
             Jobs = new List<Job>();
             for (int i = 0; i < 10; i++)
             {
-                Jobs.Add(new Job(10));
+                Jobs.Add(new Job(this));
             }
         }
     }

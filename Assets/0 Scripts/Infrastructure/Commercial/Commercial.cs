@@ -1,10 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using Infrastructure.Tick;
+using System.Collections.Generic;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {
-    public class Commercial : Building
+    public class Commercial : Building, ITickable
     {
         public List<Job> Jobs;
+
+        public override void Tick(float time)
+        {
+            base.Tick(time);
+
+            //Loop through each job and pay a small amount
+            foreach(Job j in Jobs)
+            {
+                if (j.Taken)
+                {
+
+                }
+            }
+        }
 
         public override void OnDestroy()
         {

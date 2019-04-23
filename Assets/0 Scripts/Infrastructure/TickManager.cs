@@ -19,8 +19,8 @@ namespace Infrastructure.Tick
         public event SessionAction PostTick;
         public event SessionAction LowPriorityTick;
         public ConcurrentQueue<SessionAction> SessionActionsQueue;
-        public ConcurrentQueue<Tickable> IncomingTickableQueue;
-        public ConcurrentQueue<Tickable> LowPriorityIncomingQueue;
+        public ConcurrentQueue<ITickable> IncomingTickableQueue;
+        public ConcurrentQueue<ITickable> LowPriorityIncomingQueue;
         public delegate void SessionAction(Session s, float tickTime);
         #endregion
 
@@ -43,11 +43,11 @@ namespace Infrastructure.Tick
         /// <summary>
         /// All the tickables that we tick.
         /// </summary>
-        private List<Tickable> TickTargets;
+        private List<ITickable> TickTargets;
         /// <summary>
         /// List of all LowPriority tickable objects. This List is ticked at a lower rate.
         /// </summary>
-        private List<Tickable> LowPriorityTickTargets;
+        private List<ITickable> LowPriorityTickTargets;
         #endregion
 
         /// <summary>
@@ -61,12 +61,12 @@ namespace Infrastructure.Tick
             TargetCity = targetCity;
             _session = TargetCity.ParentSession;
 
-            TickTargets = new List<Tickable>();
+            TickTargets = new List<ITickable>();
             SessionActionsQueue = new ConcurrentQueue<SessionAction>();
-            IncomingTickableQueue = new ConcurrentQueue<Tickable>();
+            IncomingTickableQueue = new ConcurrentQueue<ITickable>();
 
-            LowPriorityIncomingQueue = new ConcurrentQueue<Tickable>();
-            LowPriorityTickTargets = new List<Tickable>();
+            LowPriorityIncomingQueue = new ConcurrentQueue<ITickable>();
+            LowPriorityTickTargets = new List<ITickable>();
 
             IsRunning = false;
             _tickLock = new object();
@@ -78,6 +78,12 @@ namespace Infrastructure.Tick
         /// Sets up the timer and begins the ticking.
         /// </summary>
         public void Start()
+        {
+            _timer.Start();
+            IsRunning = true;
+        }
+
+        public void Initialize()
         {
             //The thread is open and we begin setting up the tick manager to tick.
             _timer = new System.Timers.Timer(TickDelay);
@@ -151,6 +157,15 @@ namespace Infrastructure.Tick
                 //Post tick event.
                 PostTick?.Invoke(_session, ticktimeinseconds);
             }
+            catch (System.Exception e)
+            {
+                #if UNITY_EDITOR
+                //Log the exception on the main thread.
+                //Only worth doing in the editor otherwise it will never be seen in some random file.
+                //However we still want to catch these exceptions, just do nothing.
+                Game.CurrentSession.TaskManager.Tasks.Enqueue(() => { UnityEngine.Debug.LogError(e.Message); });
+                #endif
+            }
             finally
             {
                 if (haveLock) Monitor.Exit(_tickLock);
@@ -176,15 +191,16 @@ namespace Infrastructure.Tick
         {
             for (int i = 0; i < IncomingTickableQueue.Count; i++)
             {
-                Tickable newTickable;
+                ITickable newTickable;
                 while (IncomingTickableQueue.TryDequeue(out newTickable)) TickTargets.Add(newTickable);
             }
             //Dequeue Low Priority targets.
             for (int i = 0; i < LowPriorityIncomingQueue.Count; i++)
             {
-                Tickable newTickable;
+                ITickable newTickable;
                 while (LowPriorityIncomingQueue.TryDequeue(out newTickable)) LowPriorityTickTargets.Add(newTickable);
             }
         }
+
     }
 }

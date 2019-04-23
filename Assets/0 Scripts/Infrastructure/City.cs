@@ -18,20 +18,17 @@ namespace Infrastructure {
         /// </summary>
         public int FillLimitPerUpdate = 1;
 
-        private List<Resident> Residents;
+        public List<Resident> Residents;
         protected List<GridSystem> CityGrids = new List<GridSystem>();
         public float TotalHappinessAverage = 0;
         public TimePeriod CurrentTimePeriod = TimePeriod.Modern;
 
         private List<Residential> _residentialBuildings;
         private List<Residential> _vacantResidentialBuildings;
-        private List<Resident> _homelessResidents;
+        public List<Resident> HomelessResidents;
 
-        private List<Job> _avaliableJobs;
-        private List<Resident> _unemployedResidents;
-
-        private AdjustableFloat ResidentialIncreaseRate;
-        private ThresholdAdjusterFloat ResidentialIncreaseAdjuster;
+        public List<Job> AvaliableJobs;
+        public List<Resident> UnemployedResidents;
 
         private float _residentUpdateTime;
 
@@ -40,17 +37,13 @@ namespace Infrastructure {
             owner = owner != string.Empty ? owner : "Mayor";
             ParentSession = sess;
 
-            //Starting Residential Demand
-            ResidentialIncreaseRate = ParentSession.Settings.ResidentialDemandIncreaseRate;
-            ResidentialIncreaseAdjuster = (ThresholdAdjusterFloat)ResidentialIncreaseRate.Adjuster;
-
             Residents = new List<Resident>(Mathf.CeilToInt(ParentSession.Settings.ResidentialDemand));
-            _homelessResidents = new List<Resident>();
+            HomelessResidents = new List<Resident>();
             _residentialBuildings = new List<Residential>(Mathf.CeilToInt(ParentSession.Settings.ResidentialDemand));
             _vacantResidentialBuildings = new List<Residential>(Mathf.CeilToInt(ParentSession.Settings.ResidentialDemand));
 
-            _avaliableJobs = new List<Job>();
-            _unemployedResidents = new List<Resident>();
+            AvaliableJobs = new List<Job>();
+            UnemployedResidents = new List<Resident>();
         }
 
         /// <summary>
@@ -59,7 +52,7 @@ namespace Infrastructure {
         public void PostSetup()
         {
             ParentSession.TickManager.PostTick += ResetResourceTickCounters_Event;
-            ParentSession.TickManager.PreTick += DemandUpdate_Event;
+            ParentSession.TickManager.PreTick += ParentSession.Settings.UpdateValues;
             ParentSession.TickManager.PreTick += ResidentVacancyUpdate_Event;
             ParentSession.TickManager.PreTick += ResidentJobUpdate_Event;
             ParentSession.TickManager.PreTick += ResidentHappinessUpdate_Event;
@@ -77,8 +70,8 @@ namespace Infrastructure {
 
         public void ProcessHomelessResident(Resident res)
         {
-            _homelessResidents.Add(res);
-            _avaliableJobs.Add(res.Job);
+            HomelessResidents.Add(res);
+            AvaliableJobs.Add(res.Job);
             res.Job.Taken = false;
             res.RemoveJob();
         }
@@ -87,7 +80,7 @@ namespace Infrastructure {
         {
             foreach(Job job in com.Jobs)
             {
-                if (_avaliableJobs.Contains(job)) _avaliableJobs.Remove(job);
+                if (AvaliableJobs.Contains(job)) AvaliableJobs.Remove(job);
             }
         }
 
@@ -135,13 +128,6 @@ namespace Infrastructure {
             TotalHappinessAverage = totalAverage / CityGrids.Count + 1;
         }
 
-        private void DemandUpdate_Event(Session s, float tickTime)
-        {
-            //Update the values for the residential increase amount adjuster
-            //Input the percent of the current resident demand vs the total residents we have
-            ResidentialIncreaseAdjuster.InputValue = Residents.Count > 0 ? Residents.Count / ParentSession.Settings.ResidentialDemand : 0;
-        }
-
         private void ResetResourceTickCounters_Event(Session s, float time)
         {
             foreach(GridSystem grid in CityGrids)
@@ -164,7 +150,7 @@ namespace Infrastructure {
 
         private void NewCommercial_Event(Commercial obj)
         {
-            _avaliableJobs.AddRange(obj.Jobs);
+            AvaliableJobs.AddRange(obj.Jobs);
         }
 
         /// <summary>
@@ -184,8 +170,9 @@ namespace Infrastructure {
                     {
                         //Go through the vacant buildings and add the residents to them.
                         _vacantResidentialBuildings[i].SetResident(new Resident());
+                        Residents.Add(_vacantResidentialBuildings[i].Resident);
                         //This resident has a home and can now have a job
-                        _unemployedResidents.Add(_vacantResidentialBuildings[i].Resident);
+                        UnemployedResidents.Add(_vacantResidentialBuildings[i].Resident);
                         //Enqueue the new resident in the tick manager as low priority.
                         ParentSession.TickManager.LowPriorityIncomingQueue.Enqueue(_vacantResidentialBuildings[i].Resident);
                         //Add the residential building to the list as it is now holding a resident.
@@ -213,14 +200,14 @@ namespace Infrastructure {
 
         private void ResidentJobUpdate_Event(Session s, float time)
         {
-            if (_avaliableJobs.Count == 0) return;
+            if (AvaliableJobs.Count == 0) return;
 
-            for (int i = 0; i < _unemployedResidents.Count; i++)
+            for (int i = 0; i < UnemployedResidents.Count; i++)
             {
                 //Give jobs to each unemployed resident until we have no jobs left.
-                _unemployedResidents[i].SetJob(_avaliableJobs[0]);
-                _avaliableJobs.RemoveAt(0);
-                if (_avaliableJobs.Count == 0) return;
+                UnemployedResidents[i].SetJob(AvaliableJobs[0]);
+                AvaliableJobs.RemoveAt(0);
+                if (AvaliableJobs.Count == 0) return;
             }
         }
         #endregion

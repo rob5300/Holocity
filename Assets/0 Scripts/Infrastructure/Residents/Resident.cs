@@ -4,7 +4,7 @@ using Settings;
 
 namespace Infrastructure.Residents
 {
-    public class Resident : Tickable
+    public class Resident : ITickable
     {
         #region Static Members
         public static System.Random rand;
@@ -45,23 +45,20 @@ namespace Infrastructure.Residents
         private float _timeWithLowHappiness = 0;
         private float _timeOffset;
 
-        public Resident(string firstName, string secondName, Residential home, bool shouldBeRemoved, bool homeless)
+        public Resident()
         {
-            FirstName = firstName;
-            SecondName = secondName;
-            Home = home;
-            ShouldBeRemoved = shouldBeRemoved;
-            Homeless = homeless;
-
+            FirstName = GetRandomFirstName();
+            SecondName = GetRandomSecondName();
             Happiness = new Happiness(this);
             sess = Game.CurrentSession;
             _timeOffset = (float)(new System.Random().NextDouble() * 10 - 5);
         }
 
-        public Resident()
+        public Resident(ResidentData resData)
         {
-            FirstName = GetRandomFirstName();
-            SecondName = GetRandomSecondName();
+            FirstName = resData.FirstName;
+            SecondName = resData.SecondName;
+
             Happiness = new Happiness(this);
             sess = Game.CurrentSession;
             _timeOffset = (float)(new System.Random().NextDouble() * 10 - 5);
@@ -72,7 +69,7 @@ namespace Infrastructure.Residents
             if(Job != null)
             {
                 //Add funds to the player as we have a job.
-                sess.AddFunds((uint)System.Math.Ceiling(Job.Salary / 0.2));
+                sess.AddFunds((uint)System.Math.Ceiling(Job.Salary.GetValue() / 0.2 * time));
             }
             if (Happiness.Level <= 0.2f)
             {

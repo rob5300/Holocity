@@ -31,17 +31,17 @@ namespace Infrastructure.Grid.Entities.Buildings
         protected GameObject ElectricityWarning;
         protected GameObject WaterWarning;
 
-        protected WorldGridTaskManager.WorldGridTask electricityWarningTask;
-        protected WorldGridTaskManager.WorldGridTask waterWarningTask;
+        protected Action electricityWarningTask;
+        protected Action waterWarningTask;
 
-        protected WorldGridTaskManager.WorldGridTask setResTask;
+        protected TaskManager.WorldGridTask setResTask;
 
         public Building()
         {
             ResourcesFolderPath = "Buildings/";
 
-            electricityWarningTask = (grid) => { ElectricityWarning.SetActive(!HasPower); };
-            waterWarningTask = (grid) => { WaterWarning.SetActive(!HasWaterSupply); };
+            electricityWarningTask = () => { ElectricityWarning.SetActive(!HasPower); };
+            waterWarningTask = () => { WaterWarning.SetActive(!HasWaterSupply); };
         }
 
         public override void OnWorldGridTileCreated(WorldGridTile tile)

@@ -11,7 +11,7 @@ namespace Infrastructure.Grid.Entities
     /// <summary>
     /// A TileEntity that is capible of conducting resources via direct contact as well as using them.
     /// </summary>
-    public class ResourceConductEntity : TileEntity, Tickable
+    public class ResourceConductEntity : TileEntity, ITickable
     {
         public bool CanConduct = true;
         public List<ResourceData> NewResources;

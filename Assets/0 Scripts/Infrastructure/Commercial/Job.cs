@@ -1,21 +1,21 @@
-﻿using Infrastructure.Residents;
+﻿using Infrastructure.Grid.Entities.Buildings;
+using Infrastructure.Residents;
+using Settings.Adjustment;
 
 namespace Infrastructure
 {
     public class Job
     {
-        public float Salary = 0;
+        public AdjustableFloat Salary;
         public bool Taken = false;
         public Resident Holder;
+        public Commercial Origin;
 
-        public Job()
+        public Job(Commercial origin)
         {
-            
+            Salary = Game.CurrentSession.Settings.BaseSalary;
+            Origin = origin;
         }
 
-        public Job(float salary)
-        {
-            Salary = salary;
-        }
     }
 }

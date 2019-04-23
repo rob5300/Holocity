@@ -3,7 +3,7 @@ using Infrastructure.Tick;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {
-    public class WaterPlant : Building, Tickable
+    public class WaterPlant : Building, ITickable
     {
         public int PowerIncreaseRate = 15;
 

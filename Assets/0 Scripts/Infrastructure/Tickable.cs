@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Tick
 {
-    public interface Tickable
+    public interface ITickable
     {
         /// <summary>
         /// Tick event callback that is called by a TickManager.

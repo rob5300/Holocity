@@ -123,9 +123,9 @@ namespace Infrastructure.Grid
             tile.SetEntity(this, tileEnt);
             AddTileEntityToWorldGrid(tileEnt, x, y);
             //We check if this is Tickable, if soo we add this to the tick manager in our session.
-            if (tileEnt is Tickable)
+            if (tileEnt is ITickable)
             {
-                _tickManager.IncomingTickableQueue.Enqueue((Tickable)tileEnt);
+                _tickManager.IncomingTickableQueue.Enqueue((ITickable)tileEnt);
             }
             if (tileEnt is Residential)
             {
@@ -182,7 +182,7 @@ namespace Infrastructure.Grid
         {
             GridTile tile =  GetTile(position);
             if (tile.Entity != null) tile.Entity.OnDestroy();
-            Tickable eTick = tile.Entity as Tickable;
+            ITickable eTick = tile.Entity as ITickable;
             if (eTick != null) eTick.ShouldBeRemoved = true;
             WorldGrid.GetTile(position).RemoveModel();
             tile.DestroyEntity();
@@ -276,11 +276,6 @@ namespace Infrastructure.Grid
                 }
             }
             return nodeset;
-        }
-
-        public void QueueTaskOnWorldGrid(WorldGridTaskManager.WorldGridTask task)
-        {
-            WorldGrid.TaskManager.WorldGridTasks.Enqueue(task);
         }
 
     }

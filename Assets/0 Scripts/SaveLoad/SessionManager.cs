@@ -7,8 +7,7 @@ using Infrastructure.Grid;
 using System.Reflection;
 using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Residents;
-
-
+using Infrastructure;
 
 [Serializable]
 public class SaveData
@@ -30,28 +29,31 @@ public class GridInfo
     
     //x,y = pos; z = index
     public List<Vector3Int> gridEntities = new List<Vector3Int>();
-    public List<ResidentInfo> residentInfo = new List<ResidentInfo>();
+    public List<ResidentData> residentData = new List<ResidentData>();
 
-    public GridInfo(int Width, int Height, Vector3 WorldPos, List<Vector3Int> GridEntities, List<ResidentInfo> ResidentInfo)
+    public GridInfo(int Width, int Height, Vector3 WorldPos, List<Vector3Int> GridEntities, List<ResidentData> ResidentInfo)
     {
         width = Width;
         height = Height;
         worldPos = WorldPos;
         gridEntities = GridEntities;
-        residentInfo = ResidentInfo;
+        residentData = ResidentInfo;
     }
 }
 
 [Serializable]
-public class ResidentInfo
+public class ResidentData
 {
     public string FirstName { get; protected set; }
     public string SecondName { get; protected set; }
     public Vector2Int HomePosition;
+    public int HomeGridID;
+    public Vector2Int JobPosition;
+    public int JobGridID;
     public bool ShouldBeRemoved { get; set; }
     public bool Homeless = true;
 
-    public ResidentInfo()
+    public ResidentData()
     {
         
     }
@@ -60,10 +62,9 @@ public class ResidentInfo
 
 
 public class SessionManager : MonoBehaviour {
-    
 
     private SessionCreator sessionCreator;
-    private static  string SaveFolder;
+    private static string SaveFolder;
     private readonly string defaultName = "savegame";
     private readonly string defaultType = ".hsf";
 
@@ -85,7 +86,7 @@ public class SessionManager : MonoBehaviour {
         
         foreach (GridSystem grid in grids)
         {
-            List<ResidentInfo> residentInfo = new List<ResidentInfo>();
+            List<ResidentData> residentInfo = new List<ResidentData>();
             foreach(Resident res in grid.Residents)
             {
                 residentInfo.Add(CopyResidentWithReflection(res));
@@ -102,9 +103,9 @@ public class SessionManager : MonoBehaviour {
         return saveData;
     }
 
-    private ResidentInfo CopyResidentWithReflection(Resident residentToCopy)
+    private ResidentData CopyResidentWithReflection(Resident residentToCopy)
     {
-        ResidentInfo info = new ResidentInfo();
+        ResidentData info = new ResidentData();
 
         Type residentType = typeof(Resident);
         PropertyInfo[] residentProperties = residentType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -115,6 +116,13 @@ public class SessionManager : MonoBehaviour {
         {
             object value = property.GetValue(residentToCopy);
             if (property.PropertyType.IsEquivalentTo(typeof(Happiness))) continue;
+            else if (property.PropertyType.IsEquivalentTo(typeof(Job)))
+            {
+                //Handle the job property saving
+                Job j = (Job)value;
+                info.JobPosition = j.Origin.ParentTile.Position;
+                info.JobGridID = j.Origin.ParentTile.ParentGridSystem.Id;
+            }
             else
             {
                 PropertyInfo prop2 = info.GetType().GetProperty(property.Name);
@@ -127,6 +135,7 @@ public class SessionManager : MonoBehaviour {
             if (field.FieldType.IsEquivalentTo(typeof(Residential)))
             {
                 info.HomePosition = ((Residential)value).ParentTile.Position;
+                info.HomeGridID = ((Residential)value).ParentTile.ParentGridSystem.Id;
             }
             else 
             {
@@ -145,7 +154,7 @@ public class SessionManager : MonoBehaviour {
         string path = SaveFolder + saveName + defaultType;
 
         string json = JsonUtility.ToJson(saveData);
-        byte[] data = Encoding.ASCII.GetBytes(json);
+        byte[] data = Encoding.Unicode.GetBytes(json);
 
         UnityEngine.Windows.File.WriteAllBytes(path, data);
 
@@ -154,10 +163,12 @@ public class SessionManager : MonoBehaviour {
 
     private void Update()
     {
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.B))
         {
-            LoadGame(SaveFolder + defaultName + 1 + defaultType);
+            LoadDGameEditor();
         }
+#endif
     }
 
 
@@ -172,21 +183,20 @@ public class SessionManager : MonoBehaviour {
         string path = SaveFolder + defaultName + i + defaultType;
 
         string json = JsonUtility.ToJson(saveData);
-        byte[] data = Encoding.ASCII.GetBytes(json);
+        byte[] data = Encoding.Unicode.GetBytes(json);
         UnityEngine.Windows.File.WriteAllBytes(path, data);
 
         return true;
     }
-
+    
     public bool LoadGame(string saveName)
     {
         if (!File.Exists(saveName)) return false;
 
-
         string path = saveName;
 
         byte[] data = UnityEngine.Windows.File.ReadAllBytes(path);
-        string json = Encoding.ASCII.GetString(data);
+        string json = Encoding.Unicode.GetString(data);
         SaveData loadedData = JsonUtility.FromJson<SaveData>(json);
 
         sessionCreator.StartGame(loadedData.gridInfo);
@@ -194,8 +204,11 @@ public class SessionManager : MonoBehaviour {
         return true;
     }
 
+#if UNITY_EDITOR
+    [ContextMenu("Load D Save")]
+    public void LoadDGameEditor()
+    {
+        Debug.Log(LoadGame(SaveFolder + defaultName + 1 + defaultType) ? "Save Loaded Successfully" : "Saved failed to load");
+    }
+#endif
 }
-
-
-
-

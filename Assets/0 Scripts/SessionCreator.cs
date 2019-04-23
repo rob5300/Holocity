@@ -1,4 +1,5 @@
-﻿using Infrastructure.Grid;
+﻿using Infrastructure;
+using Infrastructure.Grid;
 using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Residents;
@@ -6,7 +7,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SessionCreator : MonoBehaviour {
+public class SessionCreator : MonoBehaviour
+{
 
     [Header("Grid settings")]
     public int width;
@@ -23,7 +25,8 @@ public class SessionCreator : MonoBehaviour {
         _sessionReadyDel = (sess) => { _sessionReady = true; };
     }
 
-    public void StartNewGame () {
+    public void StartNewGame()
+    {
         Game.SetSession(new Session());
         //We subscribe to know when the session is ready.
         //We must do this as we make a new tick manager and this is not in this thread.
@@ -46,12 +49,12 @@ public class SessionCreator : MonoBehaviour {
         if (_sessionReady)
         {
             _sessionReady = false;
+            Game.CurrentSession.OnSessionReady -= _sessionReadyDel;
 
-            if (gridInfo.Count > 0) LoadGrids();
+            if (gridInfo.Count > 0) LoadDataFromSave();
             else CreateDefaultGrid();
 
-
-            Game.CurrentSession.OnSessionReady -= _sessionReadyDel;
+            Game.CurrentSession.TickManager.Start();
         }
     }
 
@@ -65,39 +68,74 @@ public class SessionCreator : MonoBehaviour {
         grid.AddTileEntityToTile(0, 1, new House());
         grid.AddTileEntityToTile(1, 0, new Flat1());
         grid.AddTileEntityToTile(2, 0, new Flat2());
-        grid.AddTileEntityToTile(1, 1, new Future_House());   
+        grid.AddTileEntityToTile(1, 1, new Future_House());
     }
 
-    public void LoadGrids()
+    /// <summary>
+    /// Load grid data and restore their contents.
+    /// </summary>
+    public void LoadDataFromSave()
     {
         if (gridInfo.Count == 0) return;
 
         List<BuildingMap> buildingMap = BuildingLibrary.GetListForTimePeriod(BuildingCategory.All);
 
-        for (int i =0; i < gridInfo.Count; i++)
+        //Loop and restore each grid entity for each grid.
+        for (int i = 0; i < gridInfo.Count; i++)
         {
             Game.CurrentSession.City.CreateGrid(gridInfo[i].width, gridInfo[i].height, gridInfo[i].worldPos);
             GridSystem grid = Game.CurrentSession.City.GetGrid(i);
 
-            for(int j = 0; j < gridInfo[i].gridEntities.Count; j++)
+            for (int j = 0; j < gridInfo[i].gridEntities.Count; j++)
             {
                 int x = gridInfo[i].gridEntities[j].x;
                 int y = gridInfo[i].gridEntities[j].y;
                 int index = gridInfo[i].gridEntities[j].z;
-                
+
                 TileEntity tileEnt = Activator.CreateInstance(buildingMap[index].BuildingType) as TileEntity;
-                
-                grid.AddTileEntityToTile(x,y,tileEnt);
+
+                grid.AddTileEntityToTile(x, y, tileEnt);
             }
 
-            foreach (ResidentInfo resInfo in gridInfo[i].residentInfo)
+            //Restore residents AFTER grid entities have been restored.
+            foreach (ResidentData resInfo in gridInfo[i].residentData)
             {
+                Resident newResident = null; //Silly vs
+                try
+                {
+                    newResident = new Resident(resInfo);
+                    Game.CurrentSession.City.Residents.Add(newResident);
+                    Residential res = (Residential)Game.CurrentSession.City.GetGrid(resInfo.HomeGridID).GetTile(resInfo.HomePosition)?.Entity;
+                    if (res != null) res.SetResident(newResident);
+                    else
+                    {
+                        Game.CurrentSession.City.ProcessHomelessResident(newResident);
+                    }
 
-                //Residential home = grid.GetTile(resInfo.HomePosition).Entity.;
-                //Resident resident = new Resident();
-
-                //grid.Residents.Add(resident);
-                //home.SetResident(resident);
+                    foreach(Job j in ((Commercial)Game.CurrentSession.City.GetGrid(resInfo.JobGridID).GetTile(resInfo.JobPosition).Entity).Jobs)
+                    {
+                        if (!j.Taken)
+                        {
+                            newResident.SetJob(j);
+                            break;
+                        }
+                    }
+                    if(newResident.Job == null)
+                    {
+                        //Coult not give this resident a job? leave it unemployed.
+                        Game.CurrentSession.City.UnemployedResidents.Add(newResident);
+                    }
+                }
+                catch (Exception)
+                {
+                    //Abandon loading this resident.
+                    //Try to remove it if we added it earlier.
+                    if (newResident != null) {
+                        if (Game.CurrentSession.City.Residents.Contains(newResident)) Game.CurrentSession.City.Residents.Remove(newResident);
+                    }
+                    //Increase demand to offset the lost resident.
+                    Game.CurrentSession.Settings.ResidentialDemand++;
+                }
             }
 
         }

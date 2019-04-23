@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {
-    public class House : Residential, Tickable
+    public class House : Residential, ITickable
     {
         public float ElectricityDrain = 1;
         public float WaterDrain = 0.3f;
@@ -85,7 +85,7 @@ namespace Infrastructure.Grid.Entities.Buildings
                 HasPower = true;
             }
 
-            if(startElecState != HasPower) gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(electricityWarningTask);
+            if(startElecState != HasPower) Game.CurrentSession.TaskManager.Tasks.Enqueue(electricityWarningTask);
             #endregion
             #region Water
             float request_water = WaterDrain * time;
@@ -114,7 +114,7 @@ namespace Infrastructure.Grid.Entities.Buildings
                 HasWaterSupply = true;
             }
 
-            if (startWaterState != HasWaterSupply) gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(waterWarningTask);
+            if (startWaterState != HasWaterSupply) gridtile.ParentGrid.TaskManager.Tasks.Enqueue(waterWarningTask);
             #endregion
         }
     }

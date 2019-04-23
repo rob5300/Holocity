@@ -22,7 +22,7 @@ namespace Infrastructure.Grid.Entities.Buildings
                 Resident = res;
                 VacantSlots = 0;
             }
-            if(res is Tickable)
+            if(res is ITickable)
             {
                 res.Home = this;
                 //Add this new resident to the owning gridsystem reference list.
@@ -38,7 +38,7 @@ namespace Infrastructure.Grid.Entities.Buildings
                 ParentTile.ParentGridSystem.ParentCity.ProcessHomelessResident(Resident);
                 ParentTile.ParentGridSystem.ParentCity.ProcessResidentialAsVacant(this);
                 Resident = null;
-                ParentTile.ParentGridSystem.QueueTaskOnWorldGrid((w) => { UnityEngine.Debug.Log("Resident moved out from " + Name); });
+                Game.CurrentSession.TaskManager.Tasks.Enqueue(() => { UnityEngine.Debug.Log("Resident moved out from " + Name); });
             }
         }
     }

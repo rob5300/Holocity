@@ -12,7 +12,7 @@ public class WorldGrid : MonoBehaviour {
     public GridSystem GridSystem;
     public GameObject GridContainer { get; private set; }
     public GameObject ResourceUI;
-    public WorldGridTaskManager TaskManager;
+    public TaskManager TaskManager;
 
     /// <summary>
     /// How wide a tile will be. Is used to scale position movements
@@ -32,8 +32,6 @@ public class WorldGrid : MonoBehaviour {
         GridContainer = new GameObject("Grid Container");
         GridContainer.transform.SetParent(transform);
         GridContainer.transform.localPosition = Vector3.zero;
-
-        TaskManager = gameObject.AddComponent<WorldGridTaskManager>();
     }
 
 	public void Initialize(int id, int width, int height, GridSystem gridSystem)
@@ -73,7 +71,7 @@ public class WorldGrid : MonoBehaviour {
 
     public WorldGridTile GetTile(int x, int y)
     {
-        if (x > Width || y > Height || x < 0 || y < 0) return null;
+        if (x >= Width || y >= Height || x < 0 || y < 0) return null;
         return GridTiles[x][y];
     }
 

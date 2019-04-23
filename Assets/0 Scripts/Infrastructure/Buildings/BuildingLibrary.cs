@@ -35,10 +35,10 @@ public static class BuildingLibrary
                     ModernBuildings.Add(new BuildingMap(b.GetModel(), typee, b.category, b.Name, b.Cost));
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
 #if UNITY_EDITOR
-                Debug.LogError("BUILDINGLIBRARY FAILED!");
+                Debug.LogError("BUILDING LIBRARY FAILED!");
 #endif
             }
 

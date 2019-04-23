@@ -59,6 +59,11 @@ namespace Settings.Adjustment
         {
         }
 
+        public AdjustableFloat(ValueAdjuster<float> adjuster, float value) : this(adjuster)
+        {
+            _value = value;
+        }
+
         public void Add(float value)
         {
             _value += value;

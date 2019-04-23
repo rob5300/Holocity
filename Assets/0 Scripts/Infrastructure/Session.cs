@@ -18,6 +18,8 @@ public class Session {
 
     public event Action<Session> OnSessionReady;
 
+    public TaskManager TaskManager { get; private set; }
+
     private const uint _fundsCap = 1000000;
     private Thread _thread;
 
@@ -32,6 +34,9 @@ public class Session {
         Cache = new AssetCache();
         Funds = GameSettings.StartingMoney;
 
+        TaskManager = new UnityEngine.GameObject().AddComponent<TaskManager>();
+        TaskManager.gameObject.name = "TaskManager";
+
         //Create a new thread for the tick manager.
         _thread = new Thread(new ThreadStart(ThreadStart));
         _thread.Start();
@@ -43,11 +48,20 @@ public class Session {
 
     private void ThreadStart()
     {
-        //Create a tickmanager and start it off on a new thread.
-        TickManager = new TickManager(City);
-        TickManager.Start();
-        City.PostSetup();
-        OnSessionReady?.Invoke(this);
+        try
+        {
+            //Create a tickmanager and start it off on a new thread.
+            TickManager = new TickManager(City);
+            TickManager.Initialize();
+            City.PostSetup();
+            OnSessionReady?.Invoke(this);
+        }
+        catch (Exception e)
+        {
+            //Log the exception on the main thread.
+            TaskManager.Tasks.Enqueue(() => { UnityEngine.Debug.LogError(e.Message); });
+        }
+    
     }
 
     /// <summary>
