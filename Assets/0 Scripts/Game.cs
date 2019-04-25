@@ -5,7 +5,8 @@ public static class Game {
 
     public static Session CurrentSession { get; private set; }
 
-    public static string PlayerName = "Player";
+    //Should get the name of the current user. If its broken remove
+    public static string PlayerName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
 
     /// <summary>
     /// Set the current session to be the provided instance.

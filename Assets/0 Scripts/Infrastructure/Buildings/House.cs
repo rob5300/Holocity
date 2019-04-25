@@ -114,7 +114,7 @@ namespace Infrastructure.Grid.Entities.Buildings
                 HasWaterSupply = true;
             }
 
-            if (startWaterState != HasWaterSupply) gridtile.ParentGrid.TaskManager.Tasks.Enqueue(waterWarningTask);
+            if (startWaterState != HasWaterSupply) Game.CurrentSession.TaskManager.Tasks.Enqueue(waterWarningTask);
             #endregion
         }
     }

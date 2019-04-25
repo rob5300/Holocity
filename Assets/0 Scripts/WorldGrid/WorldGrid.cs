@@ -12,7 +12,6 @@ public class WorldGrid : MonoBehaviour {
     public GridSystem GridSystem;
     public GameObject GridContainer { get; private set; }
     public GameObject ResourceUI;
-    public TaskManager TaskManager;
 
     /// <summary>
     /// How wide a tile will be. Is used to scale position movements

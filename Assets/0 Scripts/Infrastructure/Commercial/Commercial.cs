@@ -16,7 +16,7 @@ namespace Infrastructure.Grid.Entities.Buildings
             {
                 if (j.Taken)
                 {
-
+                    Game.CurrentSession.AddFunds((uint)System.Math.Floor(j.Salary.Value * 0.05f));
                 }
             }
         }

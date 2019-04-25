@@ -8,10 +8,16 @@ using System.Reflection;
 using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Residents;
 using Infrastructure;
+using Settings;
 
 [Serializable]
 public class SaveData
 {
+    public string Name;
+    public DateTime CreationDate;
+    public double Version;
+    public GameSettings Settings;
+
     public List<GridInfo> gridInfo;
 
     public SaveData(List<GridInfo> GridInfo)
@@ -99,6 +105,11 @@ public class SessionManager : MonoBehaviour {
         }
 
         SaveData saveData = new SaveData(gridInfo);
+
+        //Save the current game settings as well as the players name and session creation date.
+        saveData.Settings = Game.CurrentSession.Settings;
+        saveData.Name = Game.CurrentSession.Name;
+        saveData.CreationDate = Game.CurrentSession.CreationDateTime;
 
         return saveData;
     }
@@ -199,7 +210,7 @@ public class SessionManager : MonoBehaviour {
         string json = Encoding.Unicode.GetString(data);
         SaveData loadedData = JsonUtility.FromJson<SaveData>(json);
 
-        sessionCreator.StartGame(loadedData.gridInfo);
+        sessionCreator.StartGame(loadedData);
 
         return true;
     }

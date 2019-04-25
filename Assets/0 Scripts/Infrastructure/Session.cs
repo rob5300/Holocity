@@ -8,8 +8,6 @@ public class Session {
 
     public GameSettings Settings { get; }
     public City City { get; private set; }
-    public uint Funds { get; private set; }
-    public readonly string CurrencySymbol;
     public AssetCache Cache;
     public TickManager TickManager;
     public double Version;
@@ -23,16 +21,21 @@ public class Session {
     private const uint _fundsCap = 1000000;
     private Thread _thread;
 
-    public Session(string name, DateTime dateTime)
+    public Session() : this(new GameSettings(), Game.PlayerName, DateTime.Now)
     {
-        DateTime now = System.DateTime.Now;
-        Name = name != string.Empty ? name : now.ToShortTimeString() + ":" + now.ToShortDateString();
-        CreationDateTime = dateTime;
-        Settings = new GameSettings();
+        
+    }
+
+    public Session(GameSettings savedSettings, string name, DateTime time)
+    {
+        //Restore these game settings
+        DateTime now = time;
+        Name = name;
+        CreationDateTime = DateTime.Now;
+        Settings = savedSettings;
         City = new City(Game.PlayerName, this);
         Version = Convert.ToDouble(UnityEngine.Application.version);
         Cache = new AssetCache();
-        Funds = GameSettings.StartingMoney;
 
         TaskManager = new UnityEngine.GameObject().AddComponent<TaskManager>();
         TaskManager.gameObject.name = "TaskManager";
@@ -41,10 +44,6 @@ public class Session {
         _thread = new Thread(new ThreadStart(ThreadStart));
         _thread.Start();
     }
-
-    public Session() : this(DateTime.Now.ToShortDateString(), DateTime.Now) { }
-
-    public Session(string name) : this(name, DateTime.Now) { }
 
     private void ThreadStart()
     {
@@ -72,7 +71,7 @@ public class Session {
     public uint AddFunds(uint amount)
     {
         if (amount > _fundsCap) amount = _fundsCap;
-        return Funds += amount;
+        return Settings.Funds += amount;
     }
 
     /// <summary>
@@ -82,8 +81,8 @@ public class Session {
     /// <returns>If the operation was successful.</returns>
     public bool TakeFunds(uint amount)
     {
-        if (amount > Funds) return false;
-        else Funds -= amount;
+        if (amount > Settings.Funds) return false;
+        else Settings.Funds -= amount;
         return true;
     }
 

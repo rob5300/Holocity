@@ -33,10 +33,11 @@ public class SessionCreator : MonoBehaviour
         Game.CurrentSession.OnSessionReady += _sessionReadyDel;
     }
 
-    public void StartGame(List<GridInfo> info)
+    public void StartGame(SaveData data)
     {
-        gridInfo = info ?? null;
-        Game.SetSession(new Session());
+        gridInfo = data.gridInfo ?? null;
+        //Create a new session but use the saved data.
+        Game.SetSession(new Session(data.Settings, data.Name, data.CreationDate));
         //We subscribe to know when the session is ready.
         //We must do this as we make a new tick manager and this is not in this thread.
         Game.CurrentSession.OnSessionReady += _sessionReadyDel;
@@ -92,7 +93,12 @@ public class SessionCreator : MonoBehaviour
                 int y = gridInfo[i].gridEntities[j].y;
                 int index = gridInfo[i].gridEntities[j].z;
 
-                TileEntity tileEnt = Activator.CreateInstance(buildingMap[index].BuildingType) as TileEntity;
+                //Manually handle the road typing.
+                Type entityType;
+                if (index == -1) entityType = typeof(Road);
+                else entityType = buildingMap[index].BuildingType;
+
+                TileEntity tileEnt = Activator.CreateInstance(entityType) as TileEntity;
 
                 grid.AddTileEntityToTile(x, y, tileEnt);
             }

@@ -76,7 +76,7 @@ public class ResourcesUI : MonoBehaviour
 
             _lastUpdateTime = Time.time;
             //Update Money
-            FundsText.text = Game.CurrentSession.Funds.ToString();
+            FundsText.text = Game.CurrentSession.Settings.Funds.ToString();
         }
         //Update the happiness value in the UI
         float happiness = WorldGrid.GridSystem.AverageResidentHappiness;
