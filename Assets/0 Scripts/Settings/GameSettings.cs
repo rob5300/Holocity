@@ -27,12 +27,19 @@ namespace Settings {
         [NonSerialized]
         private PercentageAdjuster salaryAdj = new PercentageAdjuster(0.25f);
 
+        [NonSerialized]
+        private ThresholdAdjusterFloat commercialAdjuster = new ThresholdAdjusterFloat(ThresholdCheckMode.Smaller, ThresholdAdjustmentMode.Multiply, 1.25f, 1000);
+        [NonSerialized]
+        public AdjustableFloat CommercialTaxRateModifier;
+        
+
         public GameSettings()
         {
             ResidentialDemandIncreaseRate = new AdjustableFloat(ResidentialDemandAdj);
             ResidentialDemandIncreaseRate.SetValue(StartingResidentialDemandIncreaseRate);
 
             BaseSalary = new AdjustableFloat(salaryAdj, 5);
+            CommercialTaxRateModifier = new AdjustableFloat(commercialAdjuster, 0.05f);
             Funds = StartingMoney;
         }
 
@@ -44,6 +51,8 @@ namespace Settings {
 
             //Update base salary input value
             salaryAdj.ReferenceValue = s.City.Residents.Count;
+
+            commercialAdjuster.InputValue = Funds;
         }
     }
 }

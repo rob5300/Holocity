@@ -52,9 +52,9 @@ public class ResourcesUI : MonoBehaviour
                     elecInput += r.resource.AddedLastTick;
                     elecOut += r.resource.RecievedLastTick;
                 }
-                ResourceDataObjects[0].ValueText.text = elecVal.ToString();
-                ResourceDataObjects[0].InputText.text = elecInput.ToString();
-                ResourceDataObjects[0].OutputText.text = elecOut.ToString(); 
+                ResourceDataObjects[0].ValueText.text = string.Format("{0:0.00}", elecVal);
+                ResourceDataObjects[0].InputText.text = string.Format("{0:0.00}", elecInput);
+                ResourceDataObjects[0].OutputText.text = string.Format("{0:0.00}", elecOut); 
             }
 
             if (waterResources != null)
@@ -69,9 +69,9 @@ public class ResourcesUI : MonoBehaviour
                     waterInput += r.resource.AddedLastTick;
                     waterOut += r.resource.RecievedLastTick;
                 }
-                ResourceDataObjects[1].ValueText.text = waterVal.ToString();
-                ResourceDataObjects[1].InputText.text = waterInput.ToString();
-                ResourceDataObjects[1].OutputText.text = waterOut.ToString();
+                ResourceDataObjects[1].ValueText.text = string.Format("{0:0.00}", waterVal);
+                ResourceDataObjects[1].InputText.text = string.Format("{0:0.00}", waterInput);
+                ResourceDataObjects[1].OutputText.text = string.Format("{0:0.00}", waterOut);
             }
 
             _lastUpdateTime = Time.time;
@@ -80,7 +80,7 @@ public class ResourcesUI : MonoBehaviour
         }
         //Update the happiness value in the UI
         float happiness = WorldGrid.GridSystem.AverageResidentHappiness;
-        GridHappinessText.text = happiness.ToString();
+        GridHappinessText.text = string.Format("{0:0.##}", happiness);
         
     }
 

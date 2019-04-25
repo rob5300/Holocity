@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Tick;
+using Settings.Adjustment;
 using System.Collections.Generic;
 
 namespace Infrastructure.Grid.Entities.Buildings
@@ -6,6 +7,15 @@ namespace Infrastructure.Grid.Entities.Buildings
     public class Commercial : Building, ITickable
     {
         public List<Job> Jobs;
+
+        private AdjustableFloat commercialRate;
+
+        public override void OnEntityProduced(GridSystem grid)
+        {
+            base.OnEntityProduced(grid);
+
+            commercialRate = Game.CurrentSession.Settings.CommercialTaxRateModifier;
+        }
 
         public override void Tick(float time)
         {
@@ -16,7 +26,7 @@ namespace Infrastructure.Grid.Entities.Buildings
             {
                 if (j.Taken)
                 {
-                    Game.CurrentSession.AddFunds((uint)System.Math.Floor(j.Salary.Value * 0.05f));
+                    Game.CurrentSession.AddFunds((uint)System.Math.Floor(j.Salary.Value * commercialRate.Value));
                 }
             }
         }
