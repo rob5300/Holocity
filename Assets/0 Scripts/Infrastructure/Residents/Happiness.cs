@@ -4,6 +4,8 @@
     {
         #region Static Members
         public static float BaseHappiness { get { return 0.19f; } }
+        public static float BonusHappiness = 0f;
+        public static int BonusProviders = 0;
 
         /// <summary>
         /// Should electricity be evaluated for happiness?
@@ -45,6 +47,17 @@
             }
         }
 
+        public static bool EnableJob {
+            get {
+                return enableJob;
+            }
+
+            set {
+                _evalIsDirty = true;
+                enableJob = value;
+            }
+        }
+
         /// <summary>
         /// How many evaluation variables exist. Cached.
         /// </summary>
@@ -58,6 +71,7 @@
                     if (EvaluateElectricity) value++;
                     if (EvaluateWater) value++;
                     if (EnableBaseHappiness) value++;
+                    if (EnableJob) value++;
                     _evalQuantity = value;
                 }
                 return _evalQuantity;
@@ -69,8 +83,8 @@
         private static bool evaluateElecticity = false;
         private static bool evaluateWater = false;
         private static bool enableBaseHappiness = true;
+        private static bool enableJob = false;
         #endregion
-
 
         public float Level {
             get { return GetLevel(); }
@@ -99,7 +113,7 @@
             {
                 value += BaseHappiness;
             }
-            return value;
+            return value + BonusHappiness;
         }
     }
 }

@@ -314,7 +314,7 @@ GameObject:
   - component: {fileID: 52467425}
   - component: {fileID: 52467424}
   m_Layer: 30
-  m_Name: futuristic
+  m_Name: 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3797,7 +3797,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &846490350
 Transform:
   m_ObjectHideFlags: 0
@@ -4471,7 +4471,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &917098722
 Transform:
   m_ObjectHideFlags: 0
@@ -5007,7 +5007,7 @@ GameObject:
   - component: {fileID: 1040895580}
   - component: {fileID: 1040895579}
   m_Layer: 30
-  m_Name: medeival
+  m_Name: 0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5232,7 +5232,7 @@ GameObject:
   - component: {fileID: 1066776046}
   - component: {fileID: 1066776045}
   m_Layer: 30
-  m_Name: modern
+  m_Name: 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

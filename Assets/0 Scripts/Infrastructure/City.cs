@@ -8,7 +8,6 @@ using Settings.Adjustment;
 using System;
 
 namespace Infrastructure {
-    public enum TimePeriod { Modern, Future, Past }
 
     public class City {
         public string Owner;
@@ -21,7 +20,6 @@ namespace Infrastructure {
         public List<Resident> Residents;
         protected List<GridSystem> CityGrids = new List<GridSystem>();
         public float TotalHappinessAverage = 0;
-        public TimePeriod CurrentTimePeriod = TimePeriod.Modern;
 
         private List<Residential> _residentialBuildings;
         private List<Residential> _vacantResidentialBuildings;

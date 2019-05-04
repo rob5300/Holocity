@@ -21,7 +21,7 @@ public class Session {
     private const uint _fundsCap = 1000000;
     private Thread _thread;
 
-    public Session() : this(new GameSettings(), Game.PlayerName, DateTime.Now)
+    public Session(TimePeriod timePeriod) : this(new GameSettings(), Game.PlayerName, DateTime.Now)
     {
         
     }

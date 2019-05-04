@@ -3,6 +3,7 @@ using Infrastructure.Grid;
 using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Residents;
+using Settings;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,10 +26,9 @@ public class SessionCreator : MonoBehaviour
         _sessionReadyDel = (sess) => { _sessionReady = true; };
     }
 
-    public void StartNewGame(string timePeriod)
+    public void StartNewGame(int timePeriod)
     {
-        Debug.Log(timePeriod);
-        Game.SetSession(new Session());
+        Game.SetSession(new Session((TimePeriod)timePeriod));
         //We subscribe to know when the session is ready.
         //We must do this as we make a new tick manager and this is not in this thread.
         Game.CurrentSession.OnSessionReady += _sessionReadyDel;
@@ -80,7 +80,7 @@ public class SessionCreator : MonoBehaviour
     {
         if (gridInfo.Count == 0) return;
 
-        List<BuildingMap> buildingMap = BuildingLibrary.GetListForTimePeriod(BuildingCategory.All);
+        List<BuildingMap> buildingMap = BuildingLibrary.GetBuildingsForCategory(BuildingCategory.All);
 
         //Loop and restore each grid entity for each grid.
         for (int i = 0; i < gridInfo.Count; i++)
