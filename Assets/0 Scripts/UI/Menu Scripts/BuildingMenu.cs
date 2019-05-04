@@ -184,7 +184,7 @@ public class BuildingMenu : MonoBehaviour {
         ChangeBuildingCategory(Name);
     }
 
-    void ChangeBuildingCategory(string name)
+    public void ChangeBuildingCategory(string name)
     {
         CurrentPage = 1;
 

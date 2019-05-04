@@ -3,14 +3,15 @@ using HoloToolkit.Unity.InputModule;
 
 public class TileHighlighter : MonoBehaviour {
 
+    public bool highlightTiles = true;
     public GameObject indicator;
 
     private bool validPlace = true;
     [HideInInspector]
     public bool ValidPlace { get { return validPlace;} set { validPlace = value; ChangeColour(); } }
-    private bool highlightTiles = true;
     
-    private GameObject currentTarget;
+    
+    public GameObject currentTarget;
     private Quaternion rot = Quaternion.Euler(-90, 0, 0);
 
     private MeshRenderer meshRenderer;
@@ -61,7 +62,7 @@ public class TileHighlighter : MonoBehaviour {
         else
         {
            // currentTarget = UIManager.Instance.targetTile.gameObject.transform.GetChild(0).gameObject;/// gameObject;
-            indicator.SetActive(true);
+           indicator.SetActive(true);
         }
 
        

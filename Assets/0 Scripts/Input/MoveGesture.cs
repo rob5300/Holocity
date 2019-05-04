@@ -16,7 +16,7 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
     private GesturesManager _gesturesManager;
 
     private GridTile gridTile;
-
+    private TileHighlighter tileHighlighter;
 
     void Start()
     {
@@ -30,6 +30,7 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
 
     void IManipulationHandler.OnManipulationStarted(ManipulationEventData eventData)
     {
+        UIManager.Instance.SwitchState(UIManager.MenuState.Off);
         //We now also check if the entity is allowed to be moved.
         if (_gesturesManager.IsNavigating || !_tileParent.GridTileCounterpart.Entity.CanBeMoved) return;
 
@@ -94,6 +95,7 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
 
     void SwapBuilding()
     {
+        UIManager.Instance.tileHighlighter.highlightTiles = true;
         if (_gesturesManager.IsNavigating) return;
 
         InputManager.Instance.PopModalInputHandler();
@@ -120,10 +122,8 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
             {
                 if (focus != _currentFocus)
                 {
-                    if (_currentFocus)
-                        _currentFocus.ResetColour();
-
-                    focus.HighlightObject();
+                    UIManager.Instance.tileHighlighter.highlightTiles = false;
+                    UIManager.Instance.tileHighlighter.currentTarget = hit.transform.gameObject;
                     _currentFocus = focus;
                 }
             }

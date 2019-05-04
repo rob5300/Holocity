@@ -1,10 +1,7 @@
 ﻿using HoloToolkit.Unity.Buttons;
 using HoloToolkit.Unity.InputModule;
 using Infrastructure.Grid.Entities;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using UnityEngine;
 
 public class BuildingTool : MonoBehaviour {
@@ -23,7 +20,7 @@ public class BuildingTool : MonoBehaviour {
 
     public BuildingMenu buildingMenu;
     public GameObject menuPrefab;
-
+    
     private int buildingIndex;
     private int gridID = 0;
     private TileEntity _tileEnt;
@@ -43,7 +40,7 @@ public class BuildingTool : MonoBehaviour {
     {
         _tileEnt = tileEnt;
         if (_tileEnt != null) active = true;
-
+        
         this.gridID = gridID;
         this.buildingIndex = buildingIndex;
 
@@ -149,15 +146,15 @@ public class BuildingTool : MonoBehaviour {
             ghostEnt.SetActive(false);
             validPlace = false;
         }
-
-        
-        
     }
 
     private void CheckPlacement(WorldGridTile tile)
     {
 
+
+
         validPlace = buildingMenu.CheckCanPlace(tile, buildingIndex);
+        validPlace = CheckCost();
 
         if (validPlace)
         {
@@ -166,12 +163,17 @@ public class BuildingTool : MonoBehaviour {
                 if (ghostTile.tile == tile)
                 {
                     validPlace = false;
-                    return;
+                    break;
                 }
             }
         }
 
         SetGhostColour(validPlace);
+    }
+
+    private bool CheckCost()
+    {
+        return (Game.CurrentSession.Settings.Funds >_tileEnt.Cost * (ghostTiles.Count + 1));
     }
 
     public void TilePressed()

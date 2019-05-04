@@ -160,7 +160,7 @@ public class SessionManager : MonoBehaviour {
 
     public bool OverwriteGame(string saveName, SaveData saveData)
     {
-        if (!File.Exists(Application.dataPath + saveName)) return false;
+       // if (!File.Exists(Application.dataPath + saveName)) return false;
 
         string path = SaveFolder + saveName + defaultType;
 
@@ -188,10 +188,10 @@ public class SessionManager : MonoBehaviour {
     {
         SaveData saveData = CreateSaveFile();
 
-        int i = 0;
-        while (File.Exists(SaveFolder + defaultName + i + defaultType)) i++;
+        //int i = 0;
+        //while (File.Exists(SaveFolder + defaultName + i + defaultType)) i++;
 
-        string path = SaveFolder + defaultName + i + defaultType;
+        string path = SaveFolder + defaultName + defaultType;
 
         string json = JsonUtility.ToJson(saveData);
         byte[] data = Encoding.Unicode.GetBytes(json);
@@ -202,6 +202,7 @@ public class SessionManager : MonoBehaviour {
     
     public bool LoadGame(string saveName)
     {
+        saveName = SaveFolder + defaultName + defaultType;
         if (!File.Exists(saveName)) return false;
 
         string path = saveName;

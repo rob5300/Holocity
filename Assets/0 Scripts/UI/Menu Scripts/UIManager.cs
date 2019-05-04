@@ -35,8 +35,12 @@ public class UIManager : MonoBehaviour {
 
     [Header("Main Menu")]
     public SessionCreator sessionCreator;
+    public SessionManager sessionManager;
     public GameObject mainMenu;
+    public GameObject mainOne;
+    public GameObject mainTwo;
     public CompoundButton[] mainMenuButtons;
+    public CompoundButton[] timeButtons;
 
     [Header("Build Menu")]
     public GameObject buildMenu;
@@ -54,6 +58,7 @@ public class UIManager : MonoBehaviour {
     public RoadTool roadTool;
     public BuildingTool buildingTool;
     private MoveUI moveUI;
+    public TileHighlighter tileHighlighter;
 
     public void Start()
     {
@@ -61,6 +66,7 @@ public class UIManager : MonoBehaviour {
         roadTool = GetComponent<RoadTool>();
         buildingTool = GetComponent<BuildingTool>();
         moveUI = GetComponent<MoveUI>();
+        tileHighlighter = GetComponent<TileHighlighter>();
 
         Menus = new GameObject[] { buildingMenu, mainMenu, buildMenu };
         
@@ -72,6 +78,11 @@ public class UIManager : MonoBehaviour {
         foreach (CompoundButton menuButton in mainMenuButtons)
         {
             menuButton.OnButtonClicked += MainMenuButtonPressed;
+        }
+
+        foreach (CompoundButton timeButton in timeButtons)
+        {
+            timeButton.OnButtonClicked += TimeButtonPressed;
         }
         
     }
@@ -96,19 +107,48 @@ public class UIManager : MonoBehaviour {
         switch (Name)
         {
             case "new":
-                sessionCreator.StartNewGame();
+                SwitchMainMenu(true);
                 break; 
             case "quit":
                 Application.Quit();
+                break;
+            case "save":
+                sessionManager.SaveGame();
+                break;
+            case "load":
+                sessionManager.LoadGame("");
                 break;
             default:
                 break;
         }
         
-        SwitchState(MenuState.Off);
+       // SwitchState(MenuState.Off);
 
     }
 
+    void TimeButtonPressed(GameObject go)
+    {
+        string Name = "";
+
+        foreach (CompoundButton timeButton in timeButtons)
+        {
+            if (timeButton == go.GetComponent<CompoundButton>())
+            {
+                timeButton.ButtonState = ButtonStateEnum.Disabled;
+                Name = timeButton.name.ToLower();
+                break;
+            }
+        }
+        
+        sessionCreator.StartNewGame(Name);
+        SwitchState(MenuState.Off);
+    }
+
+    void SwitchMainMenu(bool timeSelection)
+    {
+        mainOne.SetActive(!timeSelection);
+        mainTwo.SetActive(timeSelection);
+    }
     #endregion
 
     #region Build Menu
@@ -174,6 +214,7 @@ public class UIManager : MonoBehaviour {
         targetTile = tile;
 
         moveUI.MoveToTile(targetTile);
+        tileHighlighter.currentTarget = targetTile.transform.GetChild(0).gameObject;
 
         SwitchState(MenuState.BuildMenu);
     }
@@ -181,10 +222,16 @@ public class UIManager : MonoBehaviour {
     public void SwitchState(MenuState newState)
     {
         menuState = newState;
-        
-        if (menuState != MenuState.BuildingSelect)
-            _buildingMenu.DestroyBuildingButtons();
+        SwitchMainMenu(false);
 
+        if (menuState != MenuState.BuildingSelect)
+        {
+            _buildingMenu.DestroyBuildingButtons();
+        }
+        else
+        {
+            _buildingMenu.ChangeBuildingCategory("all");
+        }
         StateChanged((int)menuState);
         animator.SetInteger("MenuState", (int)menuState);
     }

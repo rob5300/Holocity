@@ -10,6 +10,11 @@ public class RoadTool : MonoBehaviour {
     public GameObject indicatorPrefab;
     public GameObject buttonMenuPrefab;
 
+    Stack<WorldGridTile> endTiles = new Stack<WorldGridTile>();
+    List<WorldGridTile> tiles = new List<WorldGridTile>();
+    
+    private List<GameObject> roadIndicators = new List<GameObject>();
+
     public bool active = false;
     WorldGridTile startTile;
     WorldGridTile endTile;
@@ -17,25 +22,34 @@ public class RoadTool : MonoBehaviour {
     private TileHighlighter tileHighlighter;
     private GameObject prevTarget;
     private Quaternion rot = Quaternion.Euler(-90, 0, 0);
+    private Vector3 offset = new Vector3(0.0f, 0.05f, 0.0f);
+    
 
-    private List<WorldGridTile> tiles = new List<WorldGridTile>();
-    private List<GameObject> roadIndicators = new List<GameObject>();
-    
-    
     public void StartTool(WorldGridTile tile)
     {
+        if (active) return;
+
         startTile = (tile != null) ? tile : null;
         if (startTile == null) return;
 
         active = true;
+        endTiles.Push(startTile);
+        HighlightStartTile();
+
+        buttonMenuPrefab.SetActive(true);
+        buttonMenuPrefab.transform.parent = startTile.transform;
+        buttonMenuPrefab.transform.localPosition = offset;
     }
 
     void StopTool()
     {
         active = false;
         startTile = null;
+        endTiles.Clear();
         tiles.Clear();
         DestroyIndicators();
+        tileHighlighter.ValidPlace = true;
+        buttonMenuPrefab.SetActive(false);
     }
     
     private void Start()
@@ -58,6 +72,7 @@ public class RoadTool : MonoBehaviour {
                 if (gc.GetComponent<CompoundButton>())
                 {
                     if (gc.name.ToLower() == "place") gc.GetComponent<CompoundButton>().OnButtonClicked += PlaceRoad;
+                    else if(gc.name.ToLower() == "undo") gc.GetComponent<CompoundButton>().OnButtonClicked += UndoRoad;
                     else gc.GetComponent<CompoundButton>().OnButtonClicked += CancelRoad;
                 }
             }
@@ -66,29 +81,14 @@ public class RoadTool : MonoBehaviour {
 
     private void Update()
     {
-        if (active)
-        {
-            if (!buttonMenuPrefab.activeSelf)
-            {
-                buttonMenuPrefab.SetActive(true);
-                buttonMenuPrefab.transform.parent = startTile.transform;
-                Vector3 pos = Vector3.zero;
-                pos.y += 0.05f;
-
-                buttonMenuPrefab.transform.localPosition = pos;
-            }
-            GetTiles();
-        }
-        else
-        {
-            if (buttonMenuPrefab.activeSelf) buttonMenuPrefab.SetActive(false);
-        }
+        if (active) GetTiles();
     }
 
     void GetTiles()
     {
         if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponent<FocusHighlighter>() && GazeManager.Instance.HitObject != prevTarget)
         {
+
             prevTarget = GazeManager.Instance.HitObject;
             endTile = GazeManager.Instance.HitObject.transform.parent.GetComponent<WorldGridTile>();
             WorldGrid grid = startTile.ParentGrid;
@@ -97,14 +97,15 @@ public class RoadTool : MonoBehaviour {
             DisableIndicators();
 
 
-
             if (startTile.Position.x == endTile.Position.x)
             {
                 int i = (startTile.Position.y <= endTile.Position.y) ? 1 : -1;
 
-                for (int y = startTile.Position.y;;)
+                for (int y = startTile.Position.y; ;)
                 {
-                    tiles.Add(grid.GetTile(startTile.Position.x, y));
+                    WorldGridTile tile = grid.GetTile(startTile.Position.x, y);
+
+                    if (!tiles.Contains(tile)) tiles.Add(tile);
                     
                     if (y == endTile.Position.y) break;
 
@@ -119,27 +120,44 @@ public class RoadTool : MonoBehaviour {
 
                 for (int x = startTile.Position.x; ;)
                 {
-                    tiles.Add(grid.GetTile(x, startTile.Position.y));
+                    WorldGridTile tile = grid.GetTile(x, startTile.Position.y);
+
+                    if (!tiles.Contains(tile)) tiles.Add(tile);
 
                     if (x == endTile.Position.x) break;
 
                     x += i;
                 }
-                
+
                 tileHighlighter.ValidPlace = true;
             }
             else
             {
                 tileHighlighter.ValidPlace = false;
             }
+
             HighlightTiles();
 
         }
     }
 
+    void HighlightStartTile()
+    {
+        if (roadIndicators.Count == 0)
+        {
+            GameObject indicator = Instantiate(indicatorPrefab);
+            roadIndicators.Add(indicator);
+        }
+
+        roadIndicators[0].transform.parent = startTile.transform;
+        roadIndicators[0].transform.localPosition = Vector3.zero;
+        roadIndicators[0].transform.localRotation = rot;
+        roadIndicators[0].transform.localScale = startTile.transform.GetChild(0).transform.localScale;
+        roadIndicators[0].SetActive(true);
+    }
     void HighlightTiles()
     {
-        for(int i =0; i < tiles.Count; i++)
+        for(int i = 0; i < tiles.Count; i++)
         {
             if (i >= roadIndicators.Count)
             {
@@ -155,43 +173,26 @@ public class RoadTool : MonoBehaviour {
         }
     }
     
-    public void TilePressed()
-    {
-        if (tileHighlighter.ValidPlace && tiles.Count > 0)
-        {
-            //
-
-            StartTool(endTile);
-        }
-        else
-        {
-            // play some error sound
-            // AudioManager.Instance.errorSound();
-        }
-    }
-
     void ClearLine()
     {
         for(int i= tiles.Count - 1; i > tiles.IndexOf(startTile); i--)
         {
+            if (i == 0) continue;
             tiles.RemoveAt(i);
         }
     }
     void DisableIndicators()
     {
+
         if (roadIndicators.Count == 0) return;
 
         
         for(int i = roadIndicators.Count - 1; i > tiles.IndexOf(startTile); i--)
         {
+            if (i == 0) continue;
+
             roadIndicators[i].SetActive(false);
         }
-
-        //roadIndicators[0].transform.parent = startTile.transform;
-        //roadIndicators[0].transform.localPosition = Vector3.zero;
-        //roadIndicators[0].transform.localRotation = rot;
-        //roadIndicators[0].transform.localScale = startTile.transform.GetChild(0).transform.localScale;
-        //roadIndicators[0].SetActive(true);
 
     }
     void DestroyIndicators()
@@ -203,6 +204,22 @@ public class RoadTool : MonoBehaviour {
         roadIndicators.Clear();
     }
 
+    public void TilePressed()
+    {
+        if (tileHighlighter.ValidPlace && tiles.Count > 0)
+        {
+            if (!endTiles.Contains(endTile))
+            {
+                startTile = endTile;
+                endTiles.Push(endTile);
+            }
+        }
+        else
+        {
+            // play some error sound
+            // AudioManager.Instance.errorSound();
+        }
+    }
     void PlaceRoad(GameObject go)
     {
         foreach (WorldGridTile tile in tiles)
@@ -211,6 +228,18 @@ public class RoadTool : MonoBehaviour {
         }
         StopTool();
     }
+    void UndoRoad(GameObject go)
+    {
+        if (endTiles.Count < 2) return;
+
+        endTiles.Pop();
+        startTile = endTiles.Peek();
+
+        ClearLine();
+        DisableIndicators();
+        
+    }
+
     void CancelRoad(GameObject go)
     {
         StopTool();

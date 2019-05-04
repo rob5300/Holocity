@@ -25,8 +25,9 @@ public class SessionCreator : MonoBehaviour
         _sessionReadyDel = (sess) => { _sessionReady = true; };
     }
 
-    public void StartNewGame()
+    public void StartNewGame(string timePeriod)
     {
+        Debug.Log(timePeriod);
         Game.SetSession(new Session());
         //We subscribe to know when the session is ready.
         //We must do this as we make a new tick manager and this is not in this thread.

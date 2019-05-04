@@ -17,6 +17,7 @@ public class RotateGesture : MonoBehaviour, INavigationHandler {
     
     void INavigationHandler.OnNavigationStarted(NavigationEventData eventData)
     {
+        UIManager.Instance.SwitchState(UIManager.MenuState.Off);
         //We also check now if the entity is allowed to be rotated
         if (!_gesturesManager.IsNavigating || !_tileParent.GridTileCounterpart.Entity.AllowRotation) return;
 
