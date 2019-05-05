@@ -72,6 +72,21 @@ public class AudioManager : MonoBehaviour
         audioSource.Play();
     }
 
+    public void PlaySound(string soundName)
+    {
+        foreach(Sound sound in sounds)
+        {
+            if(sound.name == soundName)
+            {
+                audioSource.clip = sound.clip;
+                audioSource.pitch = sound.pitch;
+                audioSource.volume = sound.volume;
+                audioSource.Play();
+                break;
+            }
+        }
+    }
+
 
 
 }
