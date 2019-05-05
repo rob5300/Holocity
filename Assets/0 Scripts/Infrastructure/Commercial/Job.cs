@@ -15,6 +15,8 @@ namespace Infrastructure
         {
             Salary = Game.CurrentSession.Settings.BaseSalary;
             Origin = origin;
+
+            Happiness.EnableJob = true;
         }
 
     }

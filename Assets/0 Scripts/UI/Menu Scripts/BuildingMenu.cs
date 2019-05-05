@@ -119,7 +119,7 @@ public class BuildingMenu : MonoBehaviour {
 
     void GetBuildings(BuildingCategory category)
     {
-        Buildings = BuildingLibrary.GetListForTimePeriod(category);
+        Buildings = BuildingLibrary.GetBuildingsForCategory(category);
 
         max = (int)Math.Ceiling(Buildings.Count / 6f);
         

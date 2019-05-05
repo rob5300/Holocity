@@ -140,7 +140,8 @@ public class UIManager : MonoBehaviour {
             }
         }
         
-        sessionCreator.StartNewGame(Name);
+        //Convert the name to an int to then cast to the enum.
+        sessionCreator.StartNewGame(Convert.ToInt32(Name));
         SwitchState(MenuState.Off);
     }
 

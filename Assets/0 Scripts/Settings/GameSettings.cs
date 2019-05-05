@@ -2,6 +2,13 @@
 using System;
 
 namespace Settings {
+
+    [Serializable]
+    public enum TimePeriod
+    {
+        Medieval, Modern, Futuristic
+    }
+
     [Serializable]
     public class GameSettings
     {
@@ -17,6 +24,8 @@ namespace Settings {
         /// </summary>
         public int ResidentialDemand = StartingResidentialDemand;
         public uint Funds;
+        public TimePeriod CurrentTimePeriod;
+        
 
         [NonSerialized]
         private ThresholdAdjusterFloat ResidentialDemandAdj = new ThresholdAdjusterFloat(ThresholdCheckMode.Larger, ThresholdAdjustmentMode.Multiply, 0.5f, 0.15f);
@@ -41,6 +50,11 @@ namespace Settings {
             BaseSalary = new AdjustableFloat(salaryAdj, 5);
             CommercialTaxRateModifier = new AdjustableFloat(commercialAdjuster, 0.05f);
             Funds = StartingMoney;
+        }
+
+        public GameSettings(TimePeriod time) : this()
+        {
+            CurrentTimePeriod = time;
         }
 
         public void UpdateValues(Session s, float tickTime)

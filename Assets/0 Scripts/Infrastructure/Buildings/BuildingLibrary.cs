@@ -20,11 +20,38 @@ public static class BuildingLibrary
             typeof(MultiTileHouse),
             typeof(Old_TownHall)
             };
-    public static List<BuildingMap> ModernBuildings = new List<BuildingMap>();
+
+    public static List<Type> SetupMedievalBuildings = new List<Type>()
+    {
+        typeof(Medieval_Tavern),
+        typeof(Medieval_Theatre),
+        typeof(Medieval_Townhall),
+        typeof(Medieval_Well)
+    };
+
+    public static List<Type> SetupFuturisticBuildings = new List<Type>();
+
+    public static List<BuildingMap> Buildings = new List<BuildingMap>();
 
     static BuildingLibrary()
     {
-        foreach (Type typee in SetupModernBuildings)
+        //Assign list depending on time period
+        List<Type> btypes;
+        switch (Game.CurrentSession.Settings.CurrentTimePeriod)
+        {
+            case Settings.TimePeriod.Futuristic:
+                btypes = SetupFuturisticBuildings;
+                break;
+            case Settings.TimePeriod.Medieval:
+                btypes = SetupMedievalBuildings;
+                break;
+            default:
+            case Settings.TimePeriod.Modern:
+                btypes = SetupModernBuildings;
+                break;
+        }
+
+        foreach (Type typee in btypes)
         {
             try
             {
@@ -32,38 +59,30 @@ public static class BuildingLibrary
                 if (o is Building)
                 {
                     Building b = (Building)o;
-                    ModernBuildings.Add(new BuildingMap(b.GetModel(), typee, b.category, b.Name, b.Cost));
+                    Buildings.Add(new BuildingMap(b.GetModel(), typee, b.category, b.Name, b.Cost));
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-#if UNITY_EDITOR
-                Debug.LogError("BUILDING LIBRARY FAILED!");
-#endif
+                #if UNITY_EDITOR
+                Debug.LogError(e.Message);
+                #endif
             }
 
         }
-#if UNITY_EDITOR
-        Debug.Log("Built Building Library");
-#endif
     }
 
-    public static List<BuildingMap> GetListForTimePeriod(BuildingCategory category)
+    public static List<BuildingMap> GetBuildingsForCategory(BuildingCategory category)
     {
-
-      
-
         if(category == BuildingCategory.All)
         {
-            return ModernBuildings;
+            return Buildings;
         }
         else
         {
-
             List<BuildingMap> map = new List<BuildingMap>(); //this will get the time period list
 
-
-            foreach (BuildingMap buildingMap in ModernBuildings)
+            foreach (BuildingMap buildingMap in Buildings)
             {
                 if (buildingMap.Category == category)
                     map.Add(buildingMap);
@@ -72,6 +91,7 @@ public static class BuildingLibrary
             return map;
         }
     }
+
 }
 
 public struct BuildingMap
