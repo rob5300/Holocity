@@ -2,11 +2,13 @@
 using UnityEngine;
 using UnityEngine.XR.WSA;
 
-public class WorldGridRotateButton : MonoBehaviour, INavigationHandler
+public class WorldGridScaleButton : MonoBehaviour, INavigationHandler
 {
     public WorldGrid GridParent;
+    private Vector3 _startScale;
 
-    float RotationSpeed = 2.0f;
+
+    float ScaleSpeed = 2.0f;
 
     public void OnNavigationCanceled(NavigationEventData eventData)
     {
@@ -28,7 +30,9 @@ public class WorldGridRotateButton : MonoBehaviour, INavigationHandler
     {
         InputManager.Instance.PushModalInputHandler(gameObject);
 
-        if(GridParent.transform.GetComponent<WorldAnchor>()) DestroyImmediate(GridParent.transform.GetComponent<WorldAnchor>());
+        if (GridParent.transform.GetComponent<WorldAnchor>()) DestroyImmediate(GridParent.transform.GetComponent<WorldAnchor>());
+
+        _startScale = GridParent.transform.localScale;
 
         eventData.Use();
     }
@@ -36,9 +40,14 @@ public class WorldGridRotateButton : MonoBehaviour, INavigationHandler
     public void OnNavigationUpdated(NavigationEventData eventData)
     {
         InputManager.Instance.PushModalInputHandler(gameObject);
-        
-        GridParent.transform.Rotate(new Vector3(0, eventData.NormalizedOffset.x * -RotationSpeed, 0));
 
+        Vector3 scale = _startScale * (Mathf.Clamp(1 + eventData.NormalizedOffset.x, 0.2f, 3.0f));
+
+        if (scale.x < 0.5f) scale.x = scale.y = scale.z = 0.2f;
+        if (scale.x > 3.0f) scale.x = scale.y = scale.z = 3.0f;
+
+        GridParent.transform.localScale = scale;
         eventData.Use();
     }
+
 }

@@ -1,7 +1,6 @@
 ﻿using HoloToolkit.Unity.InputModule;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.WSA;
 
 public class WorldGridMoveButton : MonoBehaviour ,IManipulationHandler
 {
@@ -13,8 +12,8 @@ public class WorldGridMoveButton : MonoBehaviour ,IManipulationHandler
     public void OnManipulationCanceled(ManipulationEventData eventData)
     {
         InputManager.Instance.PopModalInputHandler();
-        transform.SetParent(GridParent.GridContainer.transform);
-
+        //transform.SetParent(GridParent.GridContainer.transform);
+        if (!GridParent.transform.GetComponent<WorldAnchor>()) GridParent.transform.gameObject.AddComponent<WorldAnchor>();
         eventData.Use();
 
     }
@@ -22,27 +21,30 @@ public class WorldGridMoveButton : MonoBehaviour ,IManipulationHandler
     public void OnManipulationCompleted(ManipulationEventData eventData)
     {
         InputManager.Instance.PopModalInputHandler();
-        transform.SetParent(GridParent.GridContainer.transform);
+        //transform.SetParent(GridParent.GridContainer.transform);
+        if (!GridParent.transform.GetComponent<WorldAnchor>()) GridParent.transform.gameObject.AddComponent<WorldAnchor>();
         eventData.Use();
 
     }
 
     public void OnManipulationStarted(ManipulationEventData eventData)
     {
-        transform.SetParent(null);
-
         InputManager.Instance.PushModalInputHandler(gameObject);
+        if (GridParent.transform.GetComponent<WorldAnchor>()) DestroyImmediate(GridParent.transform.GetComponent<WorldAnchor>());
 
-        _startPosition = transform.position;
-        _gridStartPosition = GridParent.GridContainer.transform.position;
+        _startPosition = GridParent.transform.position;
+        //_gridStartPosition = GridParent.GridContainer.transform.position;
         eventData.Use();
 
     }
 
     public void OnManipulationUpdated(ManipulationEventData eventData)
     {
-        transform.position = _startPosition + eventData.CumulativeDelta;
-        GridParent.GridContainer.transform.position = _gridStartPosition + eventData.CumulativeDelta;
+        //transform.position = _startPosition + eventData.CumulativeDelta;
+
+        GridParent.transform.position = _startPosition + eventData.CumulativeDelta;
+
+       // GridParent.GridContainer.transform.position = _gridStartPosition + eventData.CumulativeDelta;
         eventData.Use();
 
     }

@@ -64,7 +64,7 @@ public class WorldGrid : MonoBehaviour {
         RotateToFaceUser();
 
 
-        UIGuideCircle.instance.AddTarget(GridContainer.transform, Color.cyan);
+        UIGuideCircle.instance.AddTarget(GridContainer.transform);
 
     }
 
@@ -126,14 +126,14 @@ public class WorldGrid : MonoBehaviour {
     {
         GameObject moveButton = Instantiate(Game.CurrentSession.Cache.RotateButton, GridContainer.transform);
         moveButton.transform.localPosition = position;
-        //moveButton.GetComponent<WorldGridMoveButton>().GridParent = this;
+        moveButton.GetComponent<WorldGridRotateButton>().GridParent = this;
     }
 
     private void AddScaleButton(Vector3 position)
     {
         GameObject moveButton = Instantiate(Game.CurrentSession.Cache.ScaleButton, GridContainer.transform);
         moveButton.transform.localPosition = position;
-        //moveButton.GetComponent<WorldGridMoveButton>().GridParent = this;
+        moveButton.GetComponent<WorldGridScaleButton>().GridParent = this;
     }
 
     private void AddNewGridButton(Vector3 position)

@@ -40,6 +40,7 @@ GameObject:
   - component: {fileID: 23062120983643464}
   - component: {fileID: 65443611925053646}
   - component: {fileID: 114977872437607560}
+  - component: {fileID: 114560036630633394}
   m_Layer: 30
   m_Name: Scale Button
   m_TagString: Untagged
@@ -124,7 +125,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: c46dfaa1dba2d9c42bbb7fa520b5827a, type: 2}
+  - {fileID: 2100000, guid: 3f1b327314dc82f45a8b2fc6cf1165f7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -170,6 +171,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.18, y: 0.18, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0.008797748}
+--- !u!114 &114560036630633394
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1944571837289322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94d4ff95ec612e643a5fbb758a1f4662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114977872437607560
 MonoBehaviour:
   m_ObjectHideFlags: 1

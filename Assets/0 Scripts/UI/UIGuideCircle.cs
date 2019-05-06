@@ -88,11 +88,11 @@ public class UIGuideCircle : MonoBehaviour {
         return OutOfView;
     }
     
-    public void AddTarget(Transform target, Color colour)
+    public void AddTarget(Transform target)
     {
         //Instantiate the circle
         GameObject targetGuide = Instantiate(GuidePrefab, transform);
-        targetGuide.GetComponent<Renderer>().material.color = colour;
+        targetGuide.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value);
 
         Targets.Add(new UITarget(target, targetGuide.transform));
 
