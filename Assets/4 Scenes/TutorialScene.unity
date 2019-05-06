@@ -3253,7 +3253,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 7322359c3d27b2e42a26b4e955e2fffd, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.519
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -3357,6 +3357,10 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 8cc206c276340224faae3d9dba37b9a8, type: 3}
     volume: 0.551
     pitch: -0.26
+  - name: build
+    clip: {fileID: 8300000, guid: aefe32bf7986e38409c51602369463fe, type: 3}
+    volume: 0.3
+    pitch: 0
 --- !u!1 &748818078
 GameObject:
   m_ObjectHideFlags: 0

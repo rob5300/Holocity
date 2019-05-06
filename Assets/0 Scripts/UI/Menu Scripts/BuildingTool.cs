@@ -200,6 +200,8 @@ public class BuildingTool : MonoBehaviour {
             buildingMenu.PlaceBuilding(previewBuilding.tile, buildingIndex, _tileEnt);
         }
 
+        AudioManager.Instance.PlaySound("build");
+
         StopTool();
     }
     void UndoBuilding(GameObject go)
