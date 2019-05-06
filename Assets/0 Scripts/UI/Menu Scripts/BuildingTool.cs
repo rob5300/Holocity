@@ -106,7 +106,9 @@ public class BuildingTool : MonoBehaviour {
     GameObject CreateGhostBuilding()
     {
         GameObject ghost = Instantiate(_tileEnt.GetModel());
-        ghost.GetComponent<MeshRenderer>().material.color = onColour;
+        MeshRenderer mat = ghost.GetComponent<MeshRenderer>();
+        if(mat == null) mat = ghost.GetComponentInChildren<MeshRenderer>();
+        mat.material.color = onColour;
         ghost.layer = LayerMask.NameToLayer("Default");
         ghost.SetActive(false);
         return ghost;
@@ -123,8 +125,10 @@ public class BuildingTool : MonoBehaviour {
 
     void SetGhostColour(bool on)
     {
-        if (on) ghostEnt.GetComponent<MeshRenderer>().material.color = onColour;
-        else ghostEnt.GetComponent<MeshRenderer>().material.color = offColour;
+        MeshRenderer mat = ghostEnt.GetComponent<MeshRenderer>();
+        if(mat == null) mat = ghostEnt.GetComponentInChildren<MeshRenderer>();
+        if (on) mat.material.color = onColour;
+        else mat.material.color = offColour;
     }
 
     void CheckTarget()

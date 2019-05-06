@@ -6,7 +6,18 @@ namespace Infrastructure.Grid.Entities
     {
         private static bool _cachedPrefabs = false;
         private static GameObject[] RoadPrefabs;
-        public static string RoadPath = "Roads/";
+        public static string RoadPath { get {
+            switch (Game.CurrentSession.Settings.CurrentTimePeriod)
+            {
+                case Settings.TimePeriod.Futuristic:
+                    return "Roads/Future/";
+                case Settings.TimePeriod.Medieval:
+                    return "Roads/Medieval/";
+                default:
+                    return "Roads/";
+            }
+            }
+        }
 
         public bool CarryingPower = false;
         public bool CarryingWater = false;

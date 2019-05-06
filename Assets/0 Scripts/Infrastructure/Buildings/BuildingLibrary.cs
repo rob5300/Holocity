@@ -48,6 +48,7 @@ public static class BuildingLibrary
         typeof(Future_House)
     };
 
+
     public static List<BuildingMap> Buildings = new List<BuildingMap>();
 
     static BuildingLibrary()

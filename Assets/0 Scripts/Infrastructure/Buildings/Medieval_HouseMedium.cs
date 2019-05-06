@@ -10,7 +10,7 @@ namespace Infrastructure.Grid.Entities.Buildings
     {
         public Medieval_HouseMedium()
         {
-            PrefabName = "Medieval/Medium-House";
+            PrefabName = "Medieval/Medium House";
             Cost = 300;
             Name = "Medium House";
         }
