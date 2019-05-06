@@ -61,7 +61,7 @@ namespace Settings {
         {
             //Update the values for the residential increase amount adjuster
             //Input the percent of the current resident demand vs the total residents we have
-            ResidentialDemandAdj.InputValue = s.City.Residents.Count > 0 ? s.City.Residents.Count / ResidentialDemand : 0;
+            if(s.City.Residents.Count != 0 && ResidentialDemand != 0) ResidentialDemandAdj.InputValue = s.City.Residents.Count > 0 ? s.City.Residents.Count / ResidentialDemand : 0;
 
             //Update base salary input value
             salaryAdj.ReferenceValue = s.City.Residents.Count;

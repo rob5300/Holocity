@@ -1,5 +1,4 @@
-﻿using Infrastructure.Grid;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace Infrastructure.Grid.Entities.Buildings
@@ -36,6 +35,8 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         protected TaskManager.WorldGridTask setResTask;
 
+        protected WorldGridTile _tile;
+
         public Building()
         {
             ResourcesFolderPath = "Buildings/";
@@ -47,6 +48,31 @@ namespace Infrastructure.Grid.Entities.Buildings
         public override void OnWorldGridTileCreated(WorldGridTile tile)
         {
             base.OnWorldGridTileCreated(tile);
+
+            _tile = tile;
+            InstantiateWarningIndicators(tile);
+        }
+
+        protected void InstantiateWarningIndicators(WorldGridTile tile)
+        {
+            float boundmax = tile.Model.GetComponent<MeshRenderer>().bounds.size.y;
+            //if (boundmax < tile.Model.GetComponent<MeshRenderer>().bounds.max.z) boundmax = tile.Model.GetComponent<MeshRenderer>().bounds.max.z;
+            Vector3 offset = tile.transform.position + new Vector3(0, boundmax, 0);
+
+            if (ElectricityWarning != null) UnityEngine.Object.Destroy(ElectricityWarning);
+            ElectricityWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.ElectricityWarning);
+            ElectricityWarning.transform.position = offset;
+
+            if (WaterWarning != null) UnityEngine.Object.Destroy(WaterWarning);
+            WaterWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.WaterWarning);
+            WaterWarning.transform.position = offset;
+        }
+
+        public override void OnMoveComplete()
+        {
+            base.OnMoveComplete();
+
+            InstantiateWarningIndicators(_tile);
         }
     }
 }

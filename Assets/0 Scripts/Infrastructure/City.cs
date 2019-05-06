@@ -69,9 +69,12 @@ namespace Infrastructure {
         public void ProcessHomelessResident(Resident res)
         {
             HomelessResidents.Add(res);
-            AvaliableJobs.Add(res.Job);
-            res.Job.Taken = false;
-            res.RemoveJob();
+            if (res.Job != null)
+            {
+                AvaliableJobs.Add(res.Job);
+                res.Job.Taken = false;
+                res.RemoveJob(); 
+            }
         }
 
         public void ProcessDestroyedCommercial(Commercial com)

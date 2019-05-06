@@ -29,23 +29,13 @@ namespace Infrastructure.Grid.Entities.Buildings
         {
             base.OnWorldGridTileCreated(tile);
 
-            ElectricityWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.ElectricityWarning, tile.Model.transform);
-            WaterWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.WaterWarning, tile.Model.transform);
-
             gridtile = tile;
-            tile.Model.GetComponent<MeshRenderer>().material.color = Color.grey;
-            //ITS GREY NOT GRAY.
         }
 
         public override void SetResident(Resident res)
         {
             //Must call base on this to actually set the resident.
             base.SetResident(res);
-
-            //Define a delegate with some thing to do on the Unity thread.
-            //setResTask = (wGrid) => { gridtile.Model.GetComponent<MeshRenderer>().material.color = Color.green; };
-            //This is where we queue the delegate. This is thread safe now!
-            //gridtile.ParentGrid.TaskManager.WorldGridTasks.Enqueue(setResTask);
         }
 
         public override void Tick(float time)

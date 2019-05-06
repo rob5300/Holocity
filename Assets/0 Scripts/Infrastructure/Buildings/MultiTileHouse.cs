@@ -14,9 +14,9 @@ namespace Infrastructure.Grid.Entities.Buildings
         {
             PrefabName = "2x2House";
             Cost = 250;
+            Name = "Large House";
             AllowRotation = false;
             CanBeMoved = false;
-            Name = "Large House";
         }
 
         public override void OnEntityProduced(GridSystem grid)

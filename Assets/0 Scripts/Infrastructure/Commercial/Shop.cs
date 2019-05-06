@@ -10,7 +10,6 @@ namespace Infrastructure.Grid.Entities.Buildings
             Name = "Shop";
             PrefabName = "Shop Fixed";
             Cost = 500;
-            category = BuildingCategory.Commercial;
 
             Jobs = new List<Job>();
             for (int i = 0; i < 10; i++)

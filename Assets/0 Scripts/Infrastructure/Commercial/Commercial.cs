@@ -10,6 +10,11 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         private AdjustableFloat commercialRate;
 
+        public Commercial()
+        {
+            category = BuildingCategory.Commercial;
+        }
+
         public override void OnEntityProduced(GridSystem grid)
         {
             base.OnEntityProduced(grid);

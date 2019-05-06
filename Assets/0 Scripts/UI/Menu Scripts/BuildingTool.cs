@@ -116,8 +116,8 @@ public class BuildingTool : MonoBehaviour {
     {
         ghost.transform.parent = parent;
         ghost.transform.localPosition = Vector3.zero;
-        ghost.transform.localRotation = Quaternion.identity;
-        ghost.transform.localScale = Vector3.one;
+        ghost.transform.rotation = _tileEnt.GetModel().transform.rotation;
+        ghost.transform.localScale = _tileEnt.GetModel().transform.localScale;
         ghost.SetActive(true);
     }
 

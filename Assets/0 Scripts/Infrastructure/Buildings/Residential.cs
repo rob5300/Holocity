@@ -1,18 +1,22 @@
 ﻿
 using Infrastructure.Residents;
 using Infrastructure.Tick;
+using System.Collections.Generic;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {
     public class Residential : Building
     {
         public Resident Resident { get; private set; }
+        public List<Resident> Residents { get; private set; }
         public bool IsVacant { get { return Resident == null; } }
         public int VacantSlots { get; private set; }
 
         public Residential()
         {
             VacantSlots = 1;
+            Residents = new List<Resident>();
+            category = BuildingCategory.Residential;
         }
 
         public virtual void SetResident(Resident res)

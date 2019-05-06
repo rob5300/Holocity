@@ -26,7 +26,17 @@ public static class BuildingLibrary
         typeof(Medieval_Tavern),
         typeof(Medieval_Theatre),
         typeof(Medieval_Townhall),
-        typeof(Medieval_Well)
+        typeof(Medieval_Well),
+        typeof(Medieval_House),
+        typeof(Medieval_Fountain),
+        typeof(Medieval_HouseLarge),
+        typeof(Medieval_HouseMedium),
+        typeof(Medieval_Inn),
+        typeof(Medieval_Mine),
+        typeof(Medieval_Bank),
+        typeof(Medieval_Church),
+        typeof(Medieval_Shop),
+        typeof(Medieval_Bank),
     };
 
     public static List<Type> SetupFuturisticBuildings = new List<Type>();
