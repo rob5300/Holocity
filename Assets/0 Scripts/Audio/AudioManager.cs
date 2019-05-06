@@ -48,7 +48,7 @@ public class AudioManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.K))
         {
-            audioSource.clip = sounds[1].clip;
+            audioSource.clip = sounds[2].clip;
             audioSource.Play();
             Debug.Log("Played: " + audioSource.clip);
         }
@@ -62,31 +62,24 @@ public class AudioManager : MonoBehaviour
         
 
         audioSource.clip = sounds[i].clip;
-        audioSource.pitch = sounds[i].pitch;
         audioSource.Play();
     }
     public void UISound(bool success)
     {
         audioSource.clip = sounds[0].clip;
-        audioSource.pitch -= 0.5f;
         audioSource.Play();
     }
 
     public void PlaySound(string soundName)
     {
-        foreach(Sound sound in sounds)
+        foreach (Sound sound in sounds)
         {
             if(sound.name == soundName)
             {
                 audioSource.clip = sound.clip;
-                audioSource.pitch = sound.pitch;
-                audioSource.volume = sound.volume;
                 audioSource.Play();
-                break;
             }
         }
     }
-
-
 
 }
