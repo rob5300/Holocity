@@ -99,20 +99,28 @@ public class WorldGridTile : MonoBehaviour {
 
     public void SnapRotation(Transform target)
     {
-        float dotF = Vector3.Dot(target.forward, target.parent.forward);
-        float dotR = Vector3.Dot(target.forward, target.parent.right);
+        Vector3 parentForward = target.parent.forward;
+        Vector3 parentRight = target.parent.right;
+ 
+        if (Game.CurrentSession.Settings.CurrentTimePeriod == Settings.TimePeriod.Medieval)
+        {
+           // parentForward = transform.parent.up;
+        }
+
+        float dotF = Vector3.Dot(target.forward, parentForward);
+        float dotR = Vector3.Dot(target.forward, parentRight);
         Vector3 dir;
 
 
         if (Mathf.Abs(dotF) > Mathf.Abs(dotR))
         {
-            dir = (target.parent.forward * Mathf.Round(dotF));
+            dir = (parentForward * Mathf.Round(dotF));
             target.rotation = Quaternion.LookRotation(dir);
 
         }
         else if (Mathf.Abs(dotF) < Mathf.Abs(dotR))
         {
-            dir = (target.parent.right * Mathf.Round(dotR));
+            dir = (parentRight * Mathf.Round(dotR));
             target.rotation = Quaternion.LookRotation(dir);
         }
     }

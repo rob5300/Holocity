@@ -54,10 +54,10 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
         if (!InputManager.Instance.CheckModalInputStack(gameObject) || _gesturesManager.IsNavigating) return;
 
         transform.position = _startPosition + eventData.CumulativeDelta;
-        Quaternion rot = Quaternion.LookRotation(_cameraTransform.forward);
-        rot.z = rot.x = 0;
-        rot.y += _startRotation;
-        transform.rotation = rot;
+      //  Quaternion rot = Quaternion.LookRotation(_cameraTransform.forward);
+    //    rot.z = rot.x = 0;
+    //    rot.y += _startRotation;
+   //     transform.rotation = rot;
 
         MoveBuilding();
 

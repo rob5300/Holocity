@@ -7,19 +7,8 @@ using UnityEngine;
 public static class BuildingLibrary
 {
     public static List<Type> SetupModernBuildings = new List<Type>() {
-            typeof(House),
-            typeof(Modern_CityBuildings),
-            typeof(Old_Church),
-            typeof(PowerPlant),
-            typeof(WaterPlant),
-            typeof(Future_House),
-            typeof(Old_House_1),
-            typeof(Shop),
-            typeof(Flat1),
-            typeof(Flat2),
-            typeof(MultiTileHouse),
-            typeof(Old_TownHall)
-            };
+        
+    };
 
     public static List<Type> SetupMedievalBuildings = new List<Type>()
     {
@@ -39,7 +28,25 @@ public static class BuildingLibrary
         typeof(Medieval_Bank),
     };
 
-    public static List<Type> SetupFuturisticBuildings = new List<Type>();
+    public static List<Type> SetupFuturisticBuildings = new List<Type>()
+    {
+        typeof(Future_Airport),
+        typeof(Future_Bank),
+        typeof(Future_Bar),
+        typeof(Future_BusStation),
+        typeof(Future_Church),
+        typeof(Future_Clocktower),
+        typeof(Future_Farm),
+        typeof(Future_Gallery),
+        typeof(Future_PowerPlant),
+        typeof(Future_Statue),
+        typeof(Future_Townhall),
+        typeof(Future_Trainstation),
+        typeof(Future_WaterPlant),
+        typeof(Flat1),
+        typeof(Flat2),
+        typeof(Future_House)
+    };
 
     public static List<BuildingMap> Buildings = new List<BuildingMap>();
 
@@ -69,16 +76,16 @@ public static class BuildingLibrary
                 if (o is Building)
                 {
                     Building b = (Building)o;
-                    Buildings.Add(new BuildingMap(b.GetModel(), typee, b.category, b.Name, b.Cost));
+                    if (b.GetModel() != null)
+                    {
+                        BuildingMap map = new BuildingMap(b.GetModel(), typee, b.category, b.Name, b.Cost);
+                        Buildings.Add(map); 
+                    }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                #if UNITY_EDITOR
-                Debug.LogError(e.Message);
-                #endif
             }
-
         }
     }
 

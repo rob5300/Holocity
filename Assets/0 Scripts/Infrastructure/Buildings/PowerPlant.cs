@@ -1,9 +1,10 @@
 ﻿using CityResources;
 using Infrastructure.Tick;
+using System.Collections.Generic;
 
 namespace Infrastructure.Grid.Entities.Buildings
 {
-    public class PowerPlant : Building, ITickable
+    public class PowerPlant : Commercial, ITickable
     {
         public int PowerIncreaseRate = 5;
 
@@ -14,8 +15,14 @@ namespace Infrastructure.Grid.Entities.Buildings
         {
             Name = "Powerplant";
             PrefabName = "Powerplant Future";
-            Cost = 25000;
+            Cost = 2500;
             category = BuildingCategory.Resource;
+
+            Jobs = new List<Job>();
+            for (int i = 0; i < 5; i++)
+            {
+                Jobs.Add(new Job(this));
+            }
         }
 
         public override void OnEntityProduced(GridSystem grid)

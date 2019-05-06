@@ -29,7 +29,6 @@ namespace Infrastructure.Grid
 
         private Dictionary<Type, List<ResourceData>> _gridResources;
         private TickManager _tickManager;
-        
 
         internal GridSystem(int width, int height, int id, City parentCity, TickManager tickMan, Vector3 worldGridPosition)
         {

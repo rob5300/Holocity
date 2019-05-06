@@ -9,33 +9,6 @@ public class WorldGridMoveButton : MonoBehaviour ,IManipulationHandler
 
     private Vector3 _startPosition;
     private Vector3 _gridStartPosition;
-/*
-    public void OnManipulationCanceled(ManipulationEventData eventData)
-    {
-        //transform.SetParent(GridParent.GridContainer.transform);
-        //InputManager.Instance.PushModalInputHandler(gameObject);
-
-    }
-
-    public void OnManipulationCompleted(ManipulationEventData eventData)
-    {
-        //transform.SetParent(GridParent.GridContainer.transform);
-    }
-
-    public void OnManipulationStarted(ManipulationEventData eventData)
-    {
-        Debug.Log("Move button Start");
-        //transform.SetParent(null);
-        _startPosition = transform.parent.position;
-    }
-
-    public void OnManipulationUpdated(ManipulationEventData eventData)
-    {
-        Debug.Log("Move button Update");
-        transform.position = _startPosition + eventData.CumulativeDelta;
-    }
-*/
-
 
     public void OnManipulationCanceled(ManipulationEventData eventData)
     {

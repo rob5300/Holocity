@@ -57,13 +57,13 @@ namespace Infrastructure {
             ParentSession.TickManager.LowPriorityTick += ResidentHappinessUpdate_Event;
         }
 
-        public bool CreateGrid(int width, int height, Vector3 worldGridPosition)
+        public GridSystem CreateGrid(int width, int height, Vector3 worldGridPosition)
         {
             GridSystem newGrid = new GridSystem(width, height, CityGrids.Count, this, ParentSession.TickManager, worldGridPosition);
             CityGrids.Add(newGrid);
             newGrid.OnNewResidentialBuilding += NewResidential_Event;
             newGrid.OnNewCommercialBuilding += NewCommercial_Event;
-            return true;
+            return newGrid;
         }
 
         public void ProcessHomelessResident(Resident res)

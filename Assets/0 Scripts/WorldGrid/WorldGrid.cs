@@ -35,6 +35,7 @@ public class WorldGrid : MonoBehaviour {
 
 	public void Initialize(int id, int width, int height, GridSystem gridSystem)
     {
+        Id = id;
         GridSystem = gridSystem;
         GridTiles = new WorldGridTile[width][];
         for(int w=0; w < width; w++)
@@ -49,6 +50,10 @@ public class WorldGrid : MonoBehaviour {
         Height = height;
         CenterGridTiles();
         AddMoveButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.15f));
+        AddScaleButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.30f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.15f));
+        AddRotateButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.30f));
+        AddNewGridButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.30f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.30f));
+
 
         //Add in the resources UI.
         AddResourcesUI();
@@ -115,6 +120,27 @@ public class WorldGrid : MonoBehaviour {
         GameObject moveButton = Instantiate(Game.CurrentSession.Cache.MoveButton, GridContainer.transform);
         moveButton.transform.localPosition = position;
         moveButton.GetComponent<WorldGridMoveButton>().GridParent = this;
+    }
+
+    private void AddRotateButton(Vector3 position)
+    {
+        GameObject moveButton = Instantiate(Game.CurrentSession.Cache.RotateButton, GridContainer.transform);
+        moveButton.transform.localPosition = position;
+        //moveButton.GetComponent<WorldGridMoveButton>().GridParent = this;
+    }
+
+    private void AddScaleButton(Vector3 position)
+    {
+        GameObject moveButton = Instantiate(Game.CurrentSession.Cache.ScaleButton, GridContainer.transform);
+        moveButton.transform.localPosition = position;
+        //moveButton.GetComponent<WorldGridMoveButton>().GridParent = this;
+    }
+
+    private void AddNewGridButton(Vector3 position)
+    {
+        GameObject moveButton = Instantiate(Game.CurrentSession.Cache.NewGridButton, GridContainer.transform);
+        moveButton.transform.localPosition = position;
+        moveButton.GetComponent<WorldGridAddNewGrid>().GridParent = this;
     }
 
     [ContextMenu("Center Grid Tiles")]

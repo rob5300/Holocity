@@ -50,5 +50,14 @@ namespace Infrastructure.Grid.Entities.Buildings
 
             ParentTile.ParentGridSystem.ParentCity.ProcessDestroyedCommercial(this);
         }
+
+        protected void AddJobs(int amount)
+        {
+            Jobs = new List<Job>();
+            for (int i = 0; i < amount; i++)
+            {
+                Jobs.Add(new Job(this));
+            }
+        }
     }
 }
