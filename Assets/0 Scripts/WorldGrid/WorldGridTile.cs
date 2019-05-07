@@ -43,15 +43,13 @@ public class WorldGridTile : MonoBehaviour {
         //Add Gesture Components to Buildings
         Model.AddComponent<MoveGesture>();
         Model.AddComponent<RotateGesture>();
-        Model.AddComponent<FocusHighlighter>();
 
         //Set the layer mask.
         Model.layer = LayerMask.NameToLayer("Hologram");
 
         //enable any sounds
         if (Model.GetComponent<AudioSource>()) Model.GetComponent<AudioSource>().Play();
-
-        Model.GetComponent<MeshRenderer>().material.color = Color.white;
+        
         //Tell the Tile entity that this tile exists now.
         tileEnt.OnWorldGridTileCreated(this);
     }
