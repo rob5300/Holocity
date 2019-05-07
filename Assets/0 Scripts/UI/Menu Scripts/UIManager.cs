@@ -114,15 +114,17 @@ public class UIManager : MonoBehaviour {
                 break;
             case "save":
                 sessionManager.SaveGame();
+                SwitchState(MenuState.Off);
                 break;
             case "load":
                 sessionManager.LoadGame("");
+                SwitchState(MenuState.Off);
                 break;
             default:
                 break;
         }
         
-       // SwitchState(MenuState.Off);
+        
 
     }
 
