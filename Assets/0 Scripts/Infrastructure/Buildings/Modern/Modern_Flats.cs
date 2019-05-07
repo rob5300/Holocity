@@ -1,11 +1,11 @@
 ﻿
 namespace Infrastructure.Grid.Entities.Buildings
 {
-    public class Modern_Flats : Residential
+    public class Modern_Flats : MultiTileHouse
     {
         public Modern_Flats()
         {
-            PrefabName = "Modern/Apartment and flat model";
+            PrefabName = "Modern/Apartment";
             Name = "Flats";
             Cost = 500;
         }

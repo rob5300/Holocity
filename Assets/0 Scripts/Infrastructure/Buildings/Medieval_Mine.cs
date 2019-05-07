@@ -13,12 +13,6 @@ namespace Infrastructure.Grid.Entities.Buildings
             Name = "Mine";
             PrefabName = "Medieval/Mine";
             Cost = 2500;
-
-            Jobs = new List<Job>();
-            for (int i = 0; i < 5; i++)
-            {
-                Jobs.Add(new Job(this));
-            }
         }
     }
 }

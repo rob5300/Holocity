@@ -1,8 +1,10 @@
 ﻿using HoloToolkit.Unity.Buttons;
 using HoloToolkit.Unity.InputModule;
-using Infrastructure.Grid.Entities;
+using System.Linq;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Infrastructure.Grid.Entities;
 
 public class BuildingTool : MonoBehaviour {
 
@@ -23,7 +25,7 @@ public class BuildingTool : MonoBehaviour {
     
     private int buildingIndex;
     private int gridID = 0;
-    private TileEntity _tileEnt;
+    private Type _tileEnt;
     private GameObject ghostEnt;
     private List<PreviewBuilding> ghostTiles = new List<PreviewBuilding>();
 
@@ -32,15 +34,22 @@ public class BuildingTool : MonoBehaviour {
 
     private WorldGridTile prevTile;
 
+    private GameObject model;
+    private uint cost;
+
     Vector3 pos = new Vector3(0, 0.01f, 0);
 
     public bool active = false;
     private bool validPlace = false;
 
 
-    public void StartTool(TileEntity tileEnt, int buildingIndex, int gridID)
+    public void StartTool(Type tileEnt, int buildingIndex, int gridID)
     {
         _tileEnt = tileEnt;
+        BuildingMap map = BuildingLibrary.GetBuildingsForCategory(Infrastructure.Grid.Entities.Buildings.BuildingCategory.All).Where(x => x.BuildingType.IsEquivalentTo(tileEnt)).First();
+        model = map.Model;
+        cost = map.Cost;
+
         if (_tileEnt != null) active = true;
         
         this.gridID = gridID;
@@ -107,7 +116,7 @@ public class BuildingTool : MonoBehaviour {
 
     GameObject CreateGhostBuilding()
     {
-        GameObject ghost = Instantiate(_tileEnt.GetModel());
+        GameObject ghost = Instantiate(model);
         MeshRenderer mat = ghost.GetComponent<MeshRenderer>();
         if(mat == null) mat = ghost.GetComponentInChildren<MeshRenderer>();
         mat.material.color = onColour;
@@ -122,7 +131,7 @@ public class BuildingTool : MonoBehaviour {
         ghost.transform.localPosition = pos;
 
         ghost.transform.localRotation = Quaternion.identity;
-        ghost.transform.localScale = _tileEnt.GetModel().transform.localScale;
+        ghost.transform.localScale = model.transform.localScale;
         ghost.SetActive(true);
     }
 
@@ -180,7 +189,7 @@ public class BuildingTool : MonoBehaviour {
 
     private bool CheckCost()
     {
-        return (Game.CurrentSession.Settings.Funds >_tileEnt.Cost * (ghostTiles.Count + 1));
+        return (Game.CurrentSession.Settings.Funds > cost * (ghostTiles.Count + 1));
     }
 
     public void TilePressed()
@@ -204,9 +213,8 @@ public class BuildingTool : MonoBehaviour {
     {
         foreach(PreviewBuilding previewBuilding in ghostTiles)
         {
-            buildingMenu.PlaceBuilding(previewBuilding.tile, buildingIndex, _tileEnt);
+            buildingMenu.PlaceBuilding(previewBuilding.tile, buildingIndex, Activator.CreateInstance(_tileEnt) as TileEntity);
         }
-
         AudioManager.Instance.PlaySound("build");
 
         StopTool();

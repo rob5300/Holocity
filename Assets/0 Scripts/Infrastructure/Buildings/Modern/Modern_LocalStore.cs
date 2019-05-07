@@ -5,7 +5,7 @@ namespace Infrastructure.Grid.Entities.Buildings
     {
         public Modern_LocalStore()
         {
-            PrefabName = "Modern/Local Store";
+            PrefabName = "Modern/Store";
             Name = "Store";
             Cost = 750;
 

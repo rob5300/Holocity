@@ -9,16 +9,16 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1070004835156976}
+  m_RootGameObject: {fileID: 1038072333371244}
   m_IsPrefabAsset: 1
---- !u!1 &1070004835156976
+--- !u!1 &1038072333371244
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4975942789375062}
+  - component: {fileID: 4845518470852604}
   m_Layer: 0
   m_Name: Powerplant
   m_TagString: Untagged
@@ -26,56 +26,56 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &1481274431159824
+--- !u!1 &1652024295238986
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4536544106729966}
-  - component: {fileID: 33706441283830686}
-  - component: {fileID: 23174115736370256}
+  - component: {fileID: 4244012352105670}
+  - component: {fileID: 33699879565320676}
+  - component: {fileID: 23971207219845332}
   m_Layer: 0
-  m_Name: Low Poly Powerplant fbx
+  m_Name: Powerplant 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4536544106729966
+--- !u!4 &4244012352105670
 Transform:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1481274431159824}
-  m_LocalRotation: {x: 0.000000030908623, y: 0.7071068, z: 0.7071068, w: -0.000000030908623}
+  m_GameObject: {fileID: 1652024295238986}
+  m_LocalRotation: {x: -0.000000030908623, y: 0.7071068, z: 0.7071068, w: 0.000000030908623}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5698305, y: 0.56983, z: 1.435402}
   m_Children: []
-  m_Father: {fileID: 4975942789375062}
+  m_Father: {fileID: 4845518470852604}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4975942789375062
+--- !u!4 &4845518470852604
 Transform:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1070004835156976}
+  m_GameObject: {fileID: 1038072333371244}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4536544106729966}
+  - {fileID: 4244012352105670}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23174115736370256
+--- !u!23 &23971207219845332
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1481274431159824}
+  m_GameObject: {fileID: 1652024295238986}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -105,10 +105,10 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33706441283830686
+--- !u!33 &33699879565320676
 MeshFilter:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1481274431159824}
-  m_Mesh: {fileID: 4300000, guid: 370eb33722d850547bf36232f0d72989, type: 3}
+  m_GameObject: {fileID: 1652024295238986}
+  m_Mesh: {fileID: 4300000, guid: 4fdccc0490812e74a86ed988c592a6a8, type: 3}

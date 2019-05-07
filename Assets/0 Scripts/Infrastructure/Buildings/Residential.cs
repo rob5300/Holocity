@@ -46,5 +46,15 @@ namespace Infrastructure.Grid.Entities.Buildings
                 Residents.Remove(res);
             }
         }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            foreach(Resident r in Residents)
+            {
+                RemoveResident(r);
+            }
+        }
     }
 }

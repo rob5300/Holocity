@@ -30,7 +30,7 @@ public class TapGesture : MonoBehaviour, IInputClickHandler {
         {
             AudioManager.Instance.UISound(true);
         }
-        else if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponent<FocusHighlighter>())
+        else if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponentInParent<WorldGridTile>())
         {
             WorldGridTile tile = GazeManager.Instance.HitObject.transform.parent.GetComponent<WorldGridTile>();
             UIManager.Instance.TilePressed(tile);

@@ -69,12 +69,8 @@ public class BuildingMenu : MonoBehaviour {
         WorldGridTile targetTile = UIManager.Instance.targetTile;
 
         int index = go.GetComponent<BuildingButton>().index;
-        TileEntity tileEnt = Activator.CreateInstance(Buildings[index].BuildingType) as TileEntity;
 
-
-        buildingTool.StartTool(tileEnt, index, targetTile.ParentGrid.Id);
-
-       
+        buildingTool.StartTool(Buildings[index].BuildingType, index, targetTile.ParentGrid.Id);
         
         DestroyBuildingButtons();
         UIManager.Instance.SwitchState(UIManager.MenuState.Off);

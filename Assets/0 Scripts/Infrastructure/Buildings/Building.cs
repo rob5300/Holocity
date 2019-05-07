@@ -92,5 +92,13 @@ namespace Infrastructure.Grid.Entities.Buildings
 
             InstantiateWarningIndicators(_tile);
         }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            UnityEngine.Object.Destroy(ElectricityWarning);
+            UnityEngine.Object.Destroy(WaterWarning);
+        }
     }
 }

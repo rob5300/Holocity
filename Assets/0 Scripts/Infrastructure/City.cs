@@ -197,7 +197,8 @@ namespace Infrastructure {
                     time = 0;
                     for (int i = _vacantResidentialBuildings.Count - 1; i >= 0; i--)
                     {
-                        //Go through the vacant buildings and add the residents to each free slot they have
+                        //Go through the building and add the residents to each free slot they have
+                        //Should be using I for building ref.
                         for (int j = 0; j < _vacantResidentialBuildings[i].VacantSlots; j++)
                         {
                             Resident newRes = new Resident();
@@ -220,15 +221,19 @@ namespace Infrastructure {
                         }
 
                         //Check if any building has now run out of vacant slots
-                        foreach(Residential residential in _vacantResidentialBuildings)
+                        for (int r = _vacantResidentialBuildings.Count - 1; r >= 0; r--)
                         {
-                            if(residential.VacantSlots == 0)
+                            Residential residential = _vacantResidentialBuildings[r];
+                            if (residential.VacantSlots == 0)
                             {
                                 //Add the residential building to the list as it is now holding a resident.
-                                _residentialBuildings.Add(_vacantResidentialBuildings[i]);
-                                _vacantResidentialBuildings.RemoveAt(i);
+                                _residentialBuildings.Add(_vacantResidentialBuildings[r]);
+                                _vacantResidentialBuildings.RemoveAt(r);
                             }
                         }
+
+                        //Break early to not break loop.
+                        if (_vacantResidentialBuildings.Count == 0) break;
                     }
                 }
                 else
