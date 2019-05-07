@@ -8,20 +8,14 @@ namespace Infrastructure.Grid.Entities.Buildings
         public override void OnEntityProduced(GridSystem grid)
         {
             base.OnEntityProduced(grid);
-
-            Happiness.BonusHappiness = 0.5f;
-            Happiness.BonusProviders++;
+            Happiness.IncreaseBonusHappiness();
         }
 
         public override void OnDestroy()
         {
             base.OnDestroy();
 
-            Happiness.BonusProviders--;
-            if(Happiness.BonusProviders <= 0)
-            {
-                Happiness.BonusHappiness = 0;
-            }
+            Happiness.ReduceBonusHappiness();
         }
     }
 }

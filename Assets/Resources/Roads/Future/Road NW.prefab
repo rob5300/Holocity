@@ -9,19 +9,16 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1323554021199414}
+  m_RootGameObject: {fileID: 1382544978402082}
   m_IsPrefabAsset: 1
---- !u!1 &1323554021199414
+--- !u!1 &1382544978402082
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4092291336588498}
-  - component: {fileID: 33126073188116456}
-  - component: {fileID: 23244872893578274}
-  - component: {fileID: 65077546089103720}
+  - component: {fileID: 4820295834306304}
   m_Layer: 0
   m_Name: Road NW
   m_TagString: Untagged
@@ -29,25 +26,57 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4092291336588498
+--- !u!1 &1984945215498980
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4380573651873652}
+  - component: {fileID: 33107051829008918}
+  - component: {fileID: 23270437439992806}
+  - component: {fileID: 65548682303974616}
+  m_Layer: 0
+  m_Name: NWRoad
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4380573651873652
 Transform:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1323554021199414}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0.867}
+  m_GameObject: {fileID: 1984945215498980}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
+  m_Father: {fileID: 4820295834306304}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+--- !u!4 &4820295834306304
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1382544978402082}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4380573651873652}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23244872893578274
+--- !u!23 &23270437439992806
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1323554021199414}
+  m_GameObject: {fileID: 1984945215498980}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -57,7 +86,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 64b02f8e75d2e4500a3ea8d7e27bc045, type: 2}
+  - {fileID: 2100000, guid: 51cf1bf1500e4409e807de849889e5ad, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -77,22 +106,22 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33126073188116456
+--- !u!33 &33107051829008918
 MeshFilter:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1323554021199414}
+  m_GameObject: {fileID: 1984945215498980}
   m_Mesh: {fileID: 4300000, guid: 01ac0a0f4dd5e4d48aeab88e4334905d, type: 3}
---- !u!65 &65077546089103720
+--- !u!65 &65548682303974616
 BoxCollider:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1323554021199414}
+  m_GameObject: {fileID: 1984945215498980}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.1500006, y: 0.09118032, z: 0.14999911}
-  m_Center: {x: 0.0000008754432, y: 0.004304312, z: 0.00000013783574}
+  m_Size: {x: 0.15000063, y: 0.09118032, z: 0.14999914}
+  m_Center: {x: 0.00000087544345, y: 0.004304312, z: 0.00000013783577}

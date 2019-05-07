@@ -4,8 +4,14 @@
     {
         #region Static Members
         public static float BaseHappiness { get { return 0.19f; } }
-        public static float BonusHappiness = 0f;
-        public static int BonusProviders = 0;
+        public static float BonusHappiness { get; private set; }
+        private static float InitialBonusValue = 0.4f;
+        private static int BonusProviders = 0;
+
+        static Happiness()
+        {
+            BonusHappiness = 0;
+        }
 
         /// <summary>
         /// Should electricity be evaluated for happiness?
@@ -84,6 +90,19 @@
         private static bool evaluateWater = false;
         private static bool enableBaseHappiness = true;
         private static bool enableJob = false;
+
+        public static void IncreaseBonusHappiness()
+        {
+            BonusProviders++;
+            BonusHappiness += InitialBonusValue * BonusProviders;
+        }
+
+        public static void ReduceBonusHappiness()
+        {
+            BonusHappiness -= InitialBonusValue * BonusProviders;
+            BonusProviders--;
+            if (BonusHappiness < 0) BonusHappiness = 0;
+        }
         #endregion
 
         public float Level {
