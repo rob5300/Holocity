@@ -130,20 +130,9 @@ public class UIManager : MonoBehaviour {
 
     void TimeButtonPressed(GameObject go)
     {
-        string Name = "";
-
-        foreach (CompoundButton timeButton in timeButtons)
-        {
-            if (timeButton == go.GetComponent<CompoundButton>())
-            {
-                timeButton.ButtonState = ButtonStateEnum.Disabled;
-                Name = timeButton.name.ToLower();
-                break;
-            }
-        }
-        
+       
         //Convert the name to an int to then cast to the enum.
-        sessionCreator.StartNewGame(Convert.ToInt32(Name));
+        sessionCreator.StartNewGame(Convert.ToInt32(go.name));
         SwitchState(MenuState.Off);
     }
 

@@ -49,10 +49,10 @@ public class WorldGrid : MonoBehaviour {
         Width = width;
         Height = height;
         CenterGridTiles();
-        AddMoveButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.15f));
-        AddScaleButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.30f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.15f));
-        AddRotateButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.30f));
-        AddNewGridButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.30f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.30f));
+        AddMoveButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z));
+        AddScaleButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z + 0.45f));
+        AddRotateButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z + 0.90f));
+        AddNewGridButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z + 1.35f));
 
 
         //Add ambient sound
