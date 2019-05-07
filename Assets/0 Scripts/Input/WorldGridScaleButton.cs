@@ -43,7 +43,7 @@ public class WorldGridScaleButton : MonoBehaviour, INavigationHandler
 
         Vector3 scale = _startScale * (Mathf.Clamp(1 + eventData.NormalizedOffset.x, 0.2f, 3.0f));
 
-        if (scale.x < 0.5f) scale.x = scale.y = scale.z = 0.2f;
+        if (scale.x < 0.5f) scale.x = scale.y = scale.z = 0.8f;
         if (scale.x > 3.0f) scale.x = scale.y = scale.z = 3.0f;
 
         GridParent.transform.localScale = scale;
