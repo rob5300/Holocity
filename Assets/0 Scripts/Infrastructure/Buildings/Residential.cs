@@ -7,24 +7,26 @@ namespace Infrastructure.Grid.Entities.Buildings
 {
     public class Residential : Building
     {
-        public Resident Resident { get; private set; }
         public List<Resident> Residents { get; private set; }
-        public bool IsVacant { get { return Resident == null; } }
-        public int VacantSlots { get; private set; }
+        public int ResidentCapacity = 1;
+        public int VacantSlots { get
+            {
+                int count = ResidentCapacity - Residents.Count;
+                if (count < 0) count = 0;
+                return count;
+            } }
 
         public Residential()
         {
-            VacantSlots = 1;
             Residents = new List<Resident>();
             category = BuildingCategory.Residential;
         }
 
-        public virtual void SetResident(Resident res)
+        public virtual void AddResident(Resident res)
         {
-            if (Resident == null)
+            if (VacantSlots != 0)
             {
-                Resident = res;
-                VacantSlots = 0;
+                Residents.Add(res);
             }
             if(res is ITickable)
             {
@@ -37,12 +39,11 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         public virtual void RemoveResident(Resident res)
         {
-            if(Resident == res)
+            if(Residents.Contains(res))
             {
-                ParentTile.ParentGridSystem.ParentCity.ProcessHomelessResident(Resident);
+                ParentTile.ParentGridSystem.ParentCity.ProcessHomelessResident(res);
                 ParentTile.ParentGridSystem.ParentCity.ProcessResidentialAsVacant(this);
-                Resident = null;
-                Game.CurrentSession.TaskManager.Tasks.Enqueue(() => { UnityEngine.Debug.Log("Resident moved out from " + Name); });
+                Residents.Remove(res);
             }
         }
     }

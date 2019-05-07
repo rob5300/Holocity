@@ -115,7 +115,7 @@ public class SessionCreator : MonoBehaviour
                     newResident = new Resident(resInfo);
                     Game.CurrentSession.City.Residents.Add(newResident);
                     Residential res = (Residential)Game.CurrentSession.City.GetGrid(resInfo.HomeGridID).GetTile(resInfo.HomePosition)?.Entity;
-                    if (res != null) res.SetResident(newResident);
+                    if (res != null) res.AddResident(newResident);
                     else
                     {
                         Game.CurrentSession.City.ProcessHomelessResident(newResident);

@@ -32,17 +32,11 @@ namespace Infrastructure.Grid.Entities.Buildings
             gridtile = tile;
         }
 
-        public override void SetResident(Resident res)
-        {
-            //Must call base on this to actually set the resident.
-            base.SetResident(res);
-        }
-
         public override void Tick(float time)
         {
             base.Tick(time);
 
-            if (IsVacant) return;
+            if (VacantSlots == ResidentCapacity) return;
 
             bool startElecState = HasPower;
             bool startWaterState = HasWaterSupply;

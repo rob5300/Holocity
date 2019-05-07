@@ -172,7 +172,7 @@ namespace Infrastructure {
                 //If the building is Vacant, we put it in the vacant buildings list.
                 //We need to sort everything now at the expense of memory.
                 //Cant afford to check all buildings each time or use LINQ ;(.
-                if (res.IsVacant)   _vacantResidentialBuildings.Add(res);
+                if (res.VacantSlots != 0)   _vacantResidentialBuildings.Add(res);
                 else                _residentialBuildings.Add(res);
             }
         }
@@ -197,26 +197,38 @@ namespace Infrastructure {
                     time = 0;
                     for (int i = _vacantResidentialBuildings.Count - 1; i >= 0; i--)
                     {
-                        //Go through the vacant buildings and add the residents to them.
-                        _vacantResidentialBuildings[i].SetResident(new Resident());
-                        Residents.Add(_vacantResidentialBuildings[i].Resident);
-                        //This resident has a home and can now have a job
-                        UnemployedResidents.Add(_vacantResidentialBuildings[i].Resident);
-                        //Enqueue the new resident in the tick manager as low priority.
-                        ParentSession.TickManager.LowPriorityIncomingQueue.Enqueue(_vacantResidentialBuildings[i].Resident);
-                        //Add the residential building to the list as it is now holding a resident.
-                        _residentialBuildings.Add(_vacantResidentialBuildings[i]);
-                        _vacantResidentialBuildings.RemoveAt(i);
-                        ParentSession.Settings.ResidentialDemand--;
-
-                        //Check if we should increase the fill limit incase the vacant bulding amount has increased to make the fill rate very slow
-                        if(FillLimitPerUpdate < Mathf.CeilToInt(_residentialBuildings.Count * 0.5f))
+                        //Go through the vacant buildings and add the residents to each free slot they have
+                        for (int j = 0; j < _vacantResidentialBuildings[i].VacantSlots; j++)
                         {
-                            RecalculateFillLimit();
+                            Resident newRes = new Resident();
+                            _vacantResidentialBuildings[i].AddResident(newRes);
+                            Residents.Add(newRes);
+                            //This resident has a home and can now have a job
+                            UnemployedResidents.Add(newRes);
+                            //Enqueue the new resident in the tick manager as low priority.
+                            ParentSession.TickManager.LowPriorityIncomingQueue.Enqueue(newRes);
+                            ParentSession.Settings.ResidentialDemand--;
+
+                            //Check if we should increase the fill limit incase the vacant bulding amount has increased to make the fill rate very slow
+                            if (FillLimitPerUpdate < Mathf.CeilToInt(_residentialBuildings.Count * 0.5f))
+                            {
+                                RecalculateFillLimit();
+                            }
+
+                            //If the demand is now empty or if the fill limit was reached, stop.
+                            if (ParentSession.Settings.ResidentialDemand < 1 || i + 1 > FillLimitPerUpdate) return; 
                         }
 
-                        //If the demand is now empty or if the fill limit was reached, stop.
-                        if (ParentSession.Settings.ResidentialDemand < 1 || i+1 > FillLimitPerUpdate) return;
+                        //Check if any building has now run out of vacant slots
+                        foreach(Residential residential in _vacantResidentialBuildings)
+                        {
+                            if(residential.VacantSlots == 0)
+                            {
+                                //Add the residential building to the list as it is now holding a resident.
+                                _residentialBuildings.Add(_vacantResidentialBuildings[i]);
+                                _vacantResidentialBuildings.RemoveAt(i);
+                            }
+                        }
                     }
                 }
                 else
