@@ -32,22 +32,28 @@ public class UIGuideCircle : MonoBehaviour {
 
     void UpdateGuide()
     {
-        foreach (UITarget target in Targets)
+        for(int i = Targets.Count - 1; i >=0; i--)
         {
-            bool OutOfView = CheckOutOfView(target.targetTransform);
-
-            if (OutOfView && !target.guideTransform.gameObject.activeSelf)
+            if (Targets[i].targetTransform == null)
             {
-                target.guideTransform.gameObject.SetActive(true);
-            }
-            else if(!OutOfView)
-            {
-                target.guideTransform.gameObject.SetActive(false);
+                Targets.Remove(Targets[i]);
                 continue;
             }
 
-            UpdateGuideAlpha(target);
-            UpdateGuideTransform(target);
+            bool OutOfView = CheckOutOfView(Targets[i].targetTransform);
+
+            if (OutOfView && !Targets[i].guideTransform.gameObject.activeSelf)
+            {
+                Targets[i].guideTransform.gameObject.SetActive(true);
+            }
+            else if (!OutOfView)
+            {
+                Targets[i].guideTransform.gameObject.SetActive(false);
+                continue;
+            }
+
+            UpdateGuideAlpha(Targets[i]);
+            UpdateGuideTransform(Targets[i]);
         }
     }
 

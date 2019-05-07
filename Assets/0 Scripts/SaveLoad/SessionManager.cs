@@ -90,7 +90,10 @@ public class SessionManager : MonoBehaviour {
         if (Game.CurrentSession == null) return null;
         List<GridSystem> grids = Game.CurrentSession.City.GetGrids();
         List<GridInfo> gridInfo = new List<GridInfo>();
+
+
         
+
         foreach (GridSystem grid in grids)
         {
             List<ResidentData> residentInfo = new List<ResidentData>();
@@ -100,17 +103,17 @@ public class SessionManager : MonoBehaviour {
             }
 
 
-            GridInfo gridInfos = new GridInfo(grid.Width, grid.Height, grid.Position, grid.GetTilesForSaving(), residentInfo);
+            GridInfo gridInfos = new GridInfo(grid.Width, grid.Height, grid.Position, grid.GetTilesForSaving(Game.CurrentSession.Settings.CurrentTimePeriod), residentInfo);
 
             gridInfo.Add(gridInfos);
         }
 
         SaveData saveData = new SaveData(gridInfo);
-
         //Save the current game settings as well as the players name and session creation date.
         saveData.Settings = Game.CurrentSession.Settings;
         saveData.Name = Game.CurrentSession.Name;
         saveData.CreationDate = Game.CurrentSession.CreationDateTime;
+
 
         return saveData;
     }

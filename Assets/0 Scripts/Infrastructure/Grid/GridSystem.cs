@@ -6,6 +6,7 @@ using Infrastructure.Grid.Entities;
 using Infrastructure.Grid.Entities.Buildings;
 using Infrastructure.Residents;
 using Infrastructure.Tick;
+using Settings;
 using UnityEngine;
 using UnityEngine.XR.WSA;
 
@@ -78,7 +79,7 @@ namespace Infrastructure.Grid
         //}
 
 
-        public List<Vector3Int> GetTilesForSaving()
+        public List<Vector3Int> GetTilesForSaving(TimePeriod CurrentTimePeriod)
         {
             List<Vector3Int> tiles = new List<Vector3Int>();
 
@@ -90,7 +91,22 @@ namespace Infrastructure.Grid
 
                     if (tile.Entity != null)
                     {
-                        int index = BuildingLibrary.SetupModernBuildings.FindIndex(x => x == tile.Entity.GetType());
+                        int index = -1;
+
+                        switch (CurrentTimePeriod)
+                        {
+                            case TimePeriod.Modern: 
+                               index = BuildingLibrary.SetupModernBuildings.FindIndex(x => x == tile.Entity.GetType());
+                                break;
+                            case TimePeriod.Medieval: 
+                                index = BuildingLibrary.SetupMedievalBuildings.FindIndex(x => x == tile.Entity.GetType());
+                                break;
+                            case TimePeriod.Futuristic:
+                                index = BuildingLibrary.SetupFuturisticBuildings.FindIndex(x => x == tile.Entity.GetType());
+                                break;
+                        }
+
+                        
                         Vector3Int ent = new Vector3Int(tile.Position.x, tile.Position.y, index);
                         tiles.Add(ent);
 

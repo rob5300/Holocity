@@ -2,6 +2,7 @@
 using HoloToolkit.Unity.InputModule;
 
 public class TileHighlighter : MonoBehaviour {
+    
 
     public bool highlightTiles = true;
     public GameObject indicator;
@@ -18,7 +19,6 @@ public class TileHighlighter : MonoBehaviour {
 
     private void Start()
     {
-
         indicator = Instantiate(indicator);
         meshRenderer = indicator.GetComponentInChildren<MeshRenderer>();
         UIManager.Instance.StateChanged += ToggleHighlighter;
@@ -45,6 +45,7 @@ public class TileHighlighter : MonoBehaviour {
 
     void HighlightTile()
     {
+
         if (highlightTiles)
         {
             if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponentInParent<WorldGridTile>())
@@ -72,6 +73,7 @@ public class TileHighlighter : MonoBehaviour {
             indicator.transform.localPosition = Vector3.zero;
             indicator.transform.localRotation = rot;
             indicator.transform.localScale = currentTarget.transform.localScale;
+            indicator.transform.parent = null;
         }
     }
 

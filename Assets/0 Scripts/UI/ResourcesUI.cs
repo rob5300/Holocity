@@ -53,6 +53,10 @@ public class ResourcesUI : MonoBehaviour
         SwitchMode(GesturesManager.Instance.IsNavigating);
     }
 
+    private void OnDestroy()
+    {
+        UIManager.Instance.StateChanged -= ToggleUI;
+    }
     public void Update()
     {
         //Look at the user each frame
