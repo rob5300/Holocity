@@ -48,6 +48,9 @@ public class WorldGridTile : MonoBehaviour {
         //Set the layer mask.
         Model.layer = LayerMask.NameToLayer("Hologram");
 
+        //enable any sounds
+        if (Model.GetComponent<AudioSource>()) Model.GetComponent<AudioSource>().Play();
+
         Model.GetComponent<MeshRenderer>().material.color = Color.white;
         //Tell the Tile entity that this tile exists now.
         tileEnt.OnWorldGridTileCreated(this);
@@ -63,6 +66,9 @@ public class WorldGridTile : MonoBehaviour {
         Model.AddComponent<MoveGesture>();
         Model.AddComponent<RotateGesture>();
         Model.AddComponent<FocusHighlighter>();
+
+        //enable any sounds
+        if (Model.GetComponent<AudioSource>()) Model.GetComponent<AudioSource>().Play();
 
         //Set the layer mask.
         Model.layer = LayerMask.NameToLayer("Hologram");

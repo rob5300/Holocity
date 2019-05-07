@@ -12,7 +12,7 @@ public class WorldGrid : MonoBehaviour {
     public GridSystem GridSystem;
     public GameObject GridContainer { get; private set; }
     public GameObject ResourceUI;
-
+    public AudioSource audioSource;
     /// <summary>
     /// How wide a tile will be. Is used to scale position movements
     /// </summary>
@@ -54,6 +54,9 @@ public class WorldGrid : MonoBehaviour {
         AddRotateButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.15f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.30f));
         AddNewGridButton(new Vector3(GridTiles[0][0].transform.localPosition.x - 0.30f, GridTiles[0][0].transform.localPosition.y, GridTiles[0][0].transform.localPosition.z - 0.30f));
 
+
+        //Add ambient sound
+        AddAmbientSound();
 
         //Add in the resources UI.
         AddResourcesUI();
@@ -175,5 +178,31 @@ public class WorldGrid : MonoBehaviour {
         //Set references to the world grid for the ui.
         ResourceUI.GetComponent<ResourcesUI>().WorldGrid = this;
         ResourceUI.transform.localPosition = new Vector3(0, 0.5f, 0);
+    }
+
+    private void AddAmbientSound()
+    {
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.loop = true;
+
+        AudioClip clip = Resources.Load<AudioClip>("Audio/FuturisticAmbience");
+
+        switch (Game.CurrentSession.Settings.CurrentTimePeriod) 
+        {
+            case Settings.TimePeriod.Medieval:
+                clip = Resources.Load<AudioClip>("Audio/MedievalAmbience");
+                break;
+            case Settings.TimePeriod.Modern:
+                clip = Resources.Load<AudioClip>("Audio/ModernAmbience");
+                break;
+        }
+
+        audioSource.clip = clip;
+        audioSource.Play();
+    }
+
+    public void UpdateAmbientVolume(int count)
+    {
+        audioSource.volume = 0 + (count * 0.005f);
     }
 }

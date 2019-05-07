@@ -23,6 +23,8 @@ namespace Infrastructure.Grid
         public float AverageResidentHappiness = 0;
         public List<Resident> Residents;
         public Sprite icon;
+        public int entityCount;
+
 
         public event Action<Residential> OnNewResidentialBuilding;
         public event Action<Commercial> OnNewCommercialBuilding;
@@ -135,6 +137,10 @@ namespace Infrastructure.Grid
             {
                 OnNewCommercialBuilding?.Invoke((Commercial)tileEnt);
             }
+
+            entityCount++;
+            WorldGrid.UpdateAmbientVolume(entityCount);
+
             return true; 
         }
 
