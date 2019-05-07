@@ -113,8 +113,11 @@ public class HandDetection : MonoBehaviour{
     #region Bimanual Gestures
     public void OpenMainMenu(GameObject go)
     {
-        if(go == handOne.obj)
-           UIManager.Instance.SwitchState(UIManager.MenuState.MainMenu);
+        if (go == handOne.obj)
+        {
+            if(UIManager.Instance.menuState == UIManager.MenuState.MainMenu) UIManager.Instance.SwitchState(UIManager.MenuState.Off);
+            else UIManager.Instance.SwitchState(UIManager.MenuState.MainMenu);
+        }
     }
 
     #endregion
