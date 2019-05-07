@@ -28,6 +28,7 @@ public class SessionCreator : MonoBehaviour
 
     public void StartNewGame(int timePeriod)
     {
+        DeleteGame();
         Game.SetSession(new Session((TimePeriod)timePeriod));
         //We subscribe to know when the session is ready.
         //We must do this as we make a new tick manager and this is not in this thread.
@@ -36,6 +37,7 @@ public class SessionCreator : MonoBehaviour
 
     public void StartGame(SaveData data)
     {
+        DeleteGame();
         gridInfo = data.gridInfo ?? null;
         //Create a new session but use the saved data.
         Game.SetSession(new Session(data.Settings, data.Name, data.CreationDate));
@@ -44,6 +46,14 @@ public class SessionCreator : MonoBehaviour
         Game.CurrentSession.OnSessionReady += _sessionReadyDel;
     }
 
+    private void DeleteGame()
+    {
+        if (Game.CurrentSession != null)
+        {
+            Game.CurrentSession.City.DeleteCity();
+            Game.CurrentSession.DestroySession();
+        }
+    }
 
     public void Update()
     {

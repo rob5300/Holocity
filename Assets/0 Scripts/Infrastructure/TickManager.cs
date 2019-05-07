@@ -159,12 +159,12 @@ namespace Infrastructure.Tick
             }
             catch (System.Exception e)
             {
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                 //Log the exception on the main thread.
                 //Only worth doing in the editor otherwise it will never be seen in some random file.
                 //However we still want to catch these exceptions, just do nothing.
                 Game.CurrentSession.TaskManager.Tasks.Enqueue(() => { UnityEngine.Debug.LogError(e.Message); });
-                #endif
+#endif
             }
             finally
             {
@@ -187,6 +187,19 @@ namespace Infrastructure.Tick
             LowPriorityTick = null;
         }
 
+        public void Dispose()
+        {
+            TargetCity = null;
+            PreTick = null;
+            PostTick = null;
+            LowPriorityTick = null;
+            SessionActionsQueue = null;
+            IncomingTickableQueue = null;
+            LowPriorityIncomingQueue = null;
+
+
+        }
+
         private void TryDequingNewTickables()
         {
             for (int i = 0; i < IncomingTickableQueue.Count; i++)
@@ -201,6 +214,5 @@ namespace Infrastructure.Tick
                 while (LowPriorityIncomingQueue.TryDequeue(out newTickable)) LowPriorityTickTargets.Add(newTickable);
             }
         }
-
     }
 }
