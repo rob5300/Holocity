@@ -16,6 +16,9 @@ public class SessionCreator : MonoBehaviour
     public int height;
 
     private bool _sessionReady = false;
+    private bool _failSafe = false;
+    private bool gameStarted = false;
+    private float gameStartTime;
     private List<GridInfo> gridInfo = new List<GridInfo>();
 
     private Action<Session> _sessionReadyDel;
@@ -28,6 +31,9 @@ public class SessionCreator : MonoBehaviour
 
     public void StartNewGame(int timePeriod)
     {
+        gameStarted = true;
+        _failSafe = false;
+        gameStartTime = Time.time;
         Game.SetSession(new Session((TimePeriod)timePeriod));
         //We subscribe to know when the session is ready.
         //We must do this as we make a new tick manager and this is not in this thread.
@@ -57,8 +63,9 @@ public class SessionCreator : MonoBehaviour
     public void Update()
     {
         //We know the session is ready, now we can make our grid.
-        if (_sessionReady)
+        if (_sessionReady || gameStarted && gameStartTime + 4 < Time.time && !_failSafe)
         {
+            _failSafe = true;
             _sessionReady = false;
             Game.CurrentSession.OnSessionReady -= _sessionReadyDel;
 
