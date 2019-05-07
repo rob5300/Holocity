@@ -57,6 +57,34 @@ namespace Infrastructure {
             ParentSession.TickManager.LowPriorityTick += ResidentHappinessUpdate_Event;
         }
 
+        public void DeleteCity()
+        {
+            Residents.Clear();
+            Residents = null;
+
+            foreach(GridSystem gridSys in CityGrids)
+            {
+                gridSys.DeleteGridSystem();
+            }
+            CityGrids.Clear();
+            CityGrids = null;
+
+            _residentialBuildings.Clear();
+            _residentialBuildings = null;
+            _vacantResidentialBuildings.Clear();
+            _vacantResidentialBuildings = null;
+
+            HomelessResidents.Clear();
+            HomelessResidents = null;
+
+            AvaliableJobs.Clear();
+            AvaliableJobs = null;
+
+            UnemployedResidents.Clear();
+            UnemployedResidents = null;
+
+    }
+
         public GridSystem CreateGrid(int width, int height, Vector3 worldGridPosition)
         {
             GridSystem newGrid = new GridSystem(width, height, CityGrids.Count, this, ParentSession.TickManager, worldGridPosition);

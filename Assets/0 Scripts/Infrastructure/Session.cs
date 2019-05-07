@@ -45,6 +45,13 @@ public class Session {
         _thread.Start();
     }
 
+    public void DestroySession()
+    {
+        TickManager.Stop();
+        TickManager.Dispose();
+        OnSessionReady = null;
+    }
+
     private void ThreadStart()
     {
         try

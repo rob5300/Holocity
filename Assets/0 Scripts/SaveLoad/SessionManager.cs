@@ -132,8 +132,11 @@ public class SessionManager : MonoBehaviour {
             {
                 //Handle the job property saving
                 Job j = (Job)value;
-                info.JobPosition = j.Origin.ParentTile.Position;
-                info.JobGridID = j.Origin.ParentTile.ParentGridSystem.Id;
+                if (j != null)
+                {
+                    info.JobPosition = j.Origin.ParentTile.Position;
+                    info.JobGridID = j.Origin.ParentTile.ParentGridSystem.Id; 
+                }
             }
             else
             {
