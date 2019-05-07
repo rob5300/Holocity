@@ -87,6 +87,7 @@ public class SessionManager : MonoBehaviour {
 
     public SaveData CreateSaveFile()
     {
+        if (Game.CurrentSession == null) return null;
         List<GridSystem> grids = Game.CurrentSession.City.GetGrids();
         List<GridInfo> gridInfo = new List<GridInfo>();
         
@@ -187,6 +188,7 @@ public class SessionManager : MonoBehaviour {
     public bool SaveGame()
     {
         SaveData saveData = CreateSaveFile();
+        if (saveData == null) return false;
 
         //int i = 0;
         //while (File.Exists(SaveFolder + defaultName + i + defaultType)) i++;

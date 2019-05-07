@@ -55,7 +55,25 @@ namespace Infrastructure.Grid.Entities.Buildings
 
         protected void InstantiateWarningIndicators(WorldGridTile tile)
         {
-            float boundmax = tile.Model.GetComponent<MeshRenderer>().bounds.size.y;
+            float boundmax = 0.1f;
+            MeshRenderer renderer = tile.Model.GetComponent<MeshRenderer>();
+            if(renderer == null)
+            {
+                MeshRenderer[] renderers = tile.Model.GetComponentsInChildren<MeshRenderer>();
+                foreach(MeshRenderer rend in renderers)
+                {
+                    Vector3 bounds = new Vector3(rend.bounds.max.x * rend.transform.lossyScale.x, rend.bounds.max.y * rend.transform.lossyScale.y, rend.bounds.max.z * rend.transform.lossyScale.z);
+                    if (bounds.y > boundmax) boundmax = bounds.y;
+                    if (bounds.z > boundmax) boundmax = bounds.z;
+                }
+            }
+            else
+            {
+                boundmax = renderer.bounds.max.y * renderer.transform.lossyScale.y;
+                float boundzscaled = renderer.bounds.max.z * renderer.transform.lossyScale.z;
+                if (boundzscaled > boundmax) boundmax = boundzscaled;
+            }
+            
             //if (boundmax < tile.Model.GetComponent<MeshRenderer>().bounds.max.z) boundmax = tile.Model.GetComponent<MeshRenderer>().bounds.max.z;
             Vector3 offset = tile.transform.position + new Vector3(0, boundmax, 0);
 
