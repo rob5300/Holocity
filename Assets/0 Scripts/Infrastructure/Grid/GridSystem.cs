@@ -58,6 +58,17 @@ namespace Infrastructure.Grid
             WorldGrid = CreateWorldGrid(worldGridPosition);
         }
         
+        public void DeleteGridSystem()
+        {
+            ParentCity = null;
+            UnityEngine.Object.Destroy(WorldGrid.GridContainer);
+            
+
+            Residents.Clear();
+            Residents = null;
+        }
+
+
         //private static GameObject GetDefaultAnchor(int Id)
         //{
         //    GameObject ob = new GameObject("Grid Anchor: " + Id);
