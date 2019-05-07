@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Settings;
 
 public class AssetCache
 {
@@ -17,7 +18,7 @@ public class AssetCache
     public GameObject WaterWarning;
 
 
-    public AssetCache()
+    public AssetCache(GameSettings gameSettings)
     {
         TileBorder = Resources.Load<GameObject>("Tile Border");
         MoveButton = Resources.Load<GameObject>("Move Button");
@@ -25,7 +26,15 @@ public class AssetCache
         NewGridButton = Resources.Load<GameObject>("New Grid Button");
         ScaleButton = Resources.Load<GameObject>("Scale Button");
         ResourceUI = Resources.Load<GameObject>("UI/Resource UI");
-        ElectricityWarning = Resources.Load<GameObject>("ElectricityWarning");
+
+        if (gameSettings.CurrentTimePeriod == TimePeriod.Medieval)
+        {
+            ElectricityWarning = Resources.Load<GameObject>("FireWarning");
+        }
+        else
+        {
+            ElectricityWarning = Resources.Load<GameObject>("ElectricityWarning");
+        }
         WaterWarning = Resources.Load<GameObject>("WaterWarning");
     }
 }

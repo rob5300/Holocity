@@ -17,6 +17,10 @@ public class ResourcesUI : MonoBehaviour
     public Toggle rotate;
     public Color ToggleColor;
 
+    public GameObject bolt;
+    public GameObject fire;
+
+
     private float _lastUpdateTime = -999;
     [NonSerialized]
     public WorldGrid WorldGrid;
@@ -24,6 +28,20 @@ public class ResourcesUI : MonoBehaviour
     private Camera lookCamera;
     private List<ResourceData> waterResources;
     private List<ResourceData> electricityResources;
+
+    public void Awake()
+    {
+        if (Game.CurrentSession.Settings.CurrentTimePeriod == Settings.TimePeriod.Medieval)
+        {
+            bolt.SetActive(false);
+            fire.SetActive(true);
+        }
+        else
+        {
+            bolt.SetActive(true);
+            fire.SetActive(false);
+        }
+    }
 
     public void Start()
     {

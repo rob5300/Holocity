@@ -35,7 +35,7 @@ public class Session {
         Settings = savedSettings;
         City = new City(Game.PlayerName, this);
         Version = Convert.ToDouble(UnityEngine.Application.version);
-        Cache = new AssetCache();
+        Cache = new AssetCache(savedSettings);
 
         TaskManager = new UnityEngine.GameObject().AddComponent<TaskManager>();
         TaskManager.gameObject.name = "TaskManager";
