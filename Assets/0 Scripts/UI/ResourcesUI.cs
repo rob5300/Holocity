@@ -11,6 +11,7 @@ public class ResourcesUI : MonoBehaviour
     public ResourceDataInfo[] ResourceDataObjects;
     public TextMeshPro GridHappinessText;
     public TextMeshPro FundsText;
+    public TextMeshPro ResidentDemandText;
     public Toggle move;
     public Toggle rotate;
     public Color ToggleColor;
@@ -77,6 +78,7 @@ public class ResourcesUI : MonoBehaviour
             _lastUpdateTime = Time.time;
             //Update Money
             FundsText.text = Game.CurrentSession.Settings.Funds.ToString();
+            ResidentDemandText.text = Game.CurrentSession.Settings.ResidentialDemand + "";
         }
         //Update the happiness value in the UI
         float happiness = WorldGrid.GridSystem.AverageResidentHappiness;

@@ -74,7 +74,7 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
 
         //Call the move start event on the tile entity
         if (entity != null && oldPosition != entity.ParentTile.Position) entity.OnMoveComplete();
-        else entity.OnMoveCancelled();
+        else if(entity !=null) entity.OnMoveCancelled();
 
         eventData.Use();
     }
@@ -88,7 +88,7 @@ public class MoveGesture : MonoBehaviour, IManipulationHandler
 
         //Call the move start event on the tile entity
         if (oldPosition != entity.ParentTile.Position) entity.OnMoveComplete();
-        else entity.OnMoveCancelled();
+        else if (entity != null) entity.OnMoveCancelled();
 
         eventData.Use();
     }
