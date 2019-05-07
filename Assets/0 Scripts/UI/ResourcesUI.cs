@@ -13,9 +13,14 @@ public class ResourcesUI : MonoBehaviour
     public TextMeshPro FundsText;
     public TextMeshPro ResidentDemandText;
     public TextMeshPro ResidentTotal;
+    public TextMeshPro DistrictName;
     public Toggle move;
     public Toggle rotate;
     public Color ToggleColor;
+
+    public GameObject bolt;
+    public GameObject fire;
+
 
     private float _lastUpdateTime = -999;
     [NonSerialized]
@@ -24,6 +29,22 @@ public class ResourcesUI : MonoBehaviour
     private Camera lookCamera;
     private List<ResourceData> waterResources;
     private List<ResourceData> electricityResources;
+
+    public void Awake()
+    {
+        DistrictName.text = GenerateDistrictName();
+
+        if (Game.CurrentSession.Settings.CurrentTimePeriod == Settings.TimePeriod.Medieval)
+        {
+            bolt.SetActive(false);
+            fire.SetActive(true);
+        }
+        else
+        {
+            bolt.SetActive(true);
+            fire.SetActive(false);
+        }
+    }
 
     public void Start()
     {
@@ -119,6 +140,50 @@ public class ResourcesUI : MonoBehaviour
         {
             electricityResources = WorldGrid.GridSystem.GetResourceList(typeof(Electricity));
         }
+    }
+
+    private string GenerateDistrictName()
+    {
+        string name = "District";
+        int i = UnityEngine.Random.Range(0, 10);
+
+        switch (i)
+        {
+            case 0: name = "Metropolitan District";
+                break;
+            case 1:
+                name = "Upper North Whilgosk";
+                break;
+            case 2:
+                name = "Seckum Hills";
+                break;
+            case 3:
+                name = "North Stant";
+                break;
+            case 4:
+                name = "Liggon Hill";
+                break;
+            case 5:
+                name = "Lower West Meogurd";
+                break;
+            case 6:
+                name = "Straub Heights";
+                break;
+            case 7:
+                name = "Eager Avenue";
+                break;
+            case 8:
+                name = "Matthew's Way";
+                break;
+            case 9:
+                name = "Jon's Square";
+                break;
+            case 10:
+                name = "Clariff Heights";
+                break;
+        }
+
+        return name;
     }
 }
 
