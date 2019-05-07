@@ -15,7 +15,7 @@ namespace Settings {
         #region Constants
         public const uint StartingMoney = 5000;
         public const int StartingResidentialDemand = 20;
-        public const float StartingResidentialDemandIncreaseRate = 0.05f;
+        public const float StartingResidentialDemandIncreaseRate = 0.2f;
         public const float ResidentTimeWithLowHappiness = 20f;
         #endregion
 
@@ -23,6 +23,7 @@ namespace Settings {
         /// The demand for residents to move in. If there is avaliable housing found or a new house built, this will reduce to fill the buildings.
         /// </summary>
         public int ResidentialDemand = StartingResidentialDemand;
+        public float ResidentialDemandAcculimative = 0;
         public uint Funds;
         public TimePeriod CurrentTimePeriod;
         
@@ -63,8 +64,13 @@ namespace Settings {
             //Input the percent of the current resident demand vs the total residents we have
             if(s.City.Residents.Count != 0 && ResidentialDemand != 0) ResidentialDemandAdj.InputValue = s.City.Residents.Count > 0 ? s.City.Residents.Count / ResidentialDemand : 0;
 
-            //Update base salary input value
-            salaryAdj.ReferenceValue = s.City.Residents.Count;
+            //Increase residential demand and keep track of the decimal values.
+            //Floor to only increase when the rate goes to an int again.
+            ResidentialDemandAcculimative += ResidentialDemandIncreaseRate.Value * tickTime;
+            ResidentialDemand = (int)Math.Floor(ResidentialDemandAcculimative);
+
+           //Update base salary input value
+           salaryAdj.ReferenceValue = s.City.Residents.Count;
 
             commercialAdjuster.InputValue = Funds;
         }
