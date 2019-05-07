@@ -28,7 +28,6 @@ public class SessionCreator : MonoBehaviour
 
     public void StartNewGame(int timePeriod)
     {
-        DeleteGame();
         Game.SetSession(new Session((TimePeriod)timePeriod));
         //We subscribe to know when the session is ready.
         //We must do this as we make a new tick manager and this is not in this thread.
