@@ -7,7 +7,17 @@ using UnityEngine;
 public static class BuildingLibrary
 {
     public static List<Type> SetupModernBuildings = new List<Type>() {
-        
+        typeof(Modern_Airport),
+        typeof(Modern_Bank),
+        typeof(Modern_BusStop),
+        typeof(Modern_Flats),
+        typeof(Modern_House),
+        typeof(Modern_LocalStore),
+        typeof(Modern_Museum),
+        typeof(Modern_Office),
+        typeof(Modern_PoliceStation),
+        typeof(Modern_Powerplant),
+        typeof(Modern_Waterplant)
     };
 
     public static List<Type> SetupMedievalBuildings = new List<Type>()
