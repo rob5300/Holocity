@@ -48,7 +48,7 @@ public class TileHighlighter : MonoBehaviour {
 
         if (highlightTiles)
         {
-            if (GazeManager.Instance.HitObject && GazeManager.Instance.HitObject.GetComponentInParent<WorldGridTile>())
+            if (GazeManager.Instance.HitObject && (GazeManager.Instance.HitObject.GetComponentInParent<WorldGridTile>() || GazeManager.Instance.HitObject.transform.parent.GetComponentInParent<WorldGridTile>()))
             {
                 if (GazeManager.Instance.HitObject == currentTarget) return;
 
