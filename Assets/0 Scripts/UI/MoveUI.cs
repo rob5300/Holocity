@@ -82,7 +82,14 @@ public class MoveUI : MonoBehaviour
 
                 if (adjTile.Model)
                 {
-                    height = (adjTile.Model.GetComponent<MeshRenderer>().bounds.size.y > height) ? adjTile.Model.GetComponent<MeshRenderer>().bounds.size.y : height;
+                    if (adjTile.Model.GetComponent<MeshRenderer>())
+                    {
+                        height = (adjTile.Model.GetComponent<MeshRenderer>().bounds.size.y > height) ? adjTile.Model.GetComponent<MeshRenderer>().bounds.size.y : height;
+                    }
+                    else
+                    {
+                        height = (adjTile.Model.GetComponentInChildren<MeshRenderer>().bounds.size.y > height) ? adjTile.Model.GetComponentInChildren<MeshRenderer>().bounds.size.y : height;
+                    }
                 }
             }
         }

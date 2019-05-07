@@ -23,7 +23,7 @@ namespace Settings {
         /// The demand for residents to move in. If there is avaliable housing found or a new house built, this will reduce to fill the buildings.
         /// </summary>
         public int ResidentialDemand = StartingResidentialDemand;
-        public float ResidentialDemandAcculimative = 0;
+        public float ResidentialDemandAcculimative = StartingResidentialDemand;
         public uint Funds;
         public TimePeriod CurrentTimePeriod;
         
