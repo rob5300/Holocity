@@ -32,6 +32,8 @@ public class BuildingTool : MonoBehaviour {
 
     private WorldGridTile prevTile;
 
+    Vector3 pos = new Vector3(0, 0.01f, 0);
+
     public bool active = false;
     private bool validPlace = false;
 
@@ -117,7 +119,6 @@ public class BuildingTool : MonoBehaviour {
     void SetGhostPosition(GameObject ghost, Transform parent)
     {
         ghost.transform.parent = parent;
-        Vector3 pos = new Vector3(0, 0.02f, 0);
         ghost.transform.localPosition = pos;
 
         ghost.transform.localRotation = Quaternion.identity;
