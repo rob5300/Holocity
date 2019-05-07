@@ -5,6 +5,7 @@
         public Medieval_Tavern()
         {
             PrefabName = "Medieval/Tavern";
+            Name = "Tavern";
         }
     }
 }

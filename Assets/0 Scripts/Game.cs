@@ -18,6 +18,7 @@ public static class Game {
         if(session != null && session.Version <= Convert.ToDouble(UnityEngine.Application.version))
         {
             CurrentSession = session;
+            CurrentSession.Initialize();
             return true;
         }
 

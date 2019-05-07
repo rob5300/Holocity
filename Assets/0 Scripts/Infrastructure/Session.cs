@@ -3,6 +3,7 @@ using Infrastructure.Tick;
 using Settings;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 public class Session {
 
@@ -99,5 +100,10 @@ public class Session {
     public void Unload()
     {
 
+    }
+
+    public void Initialize()
+    {
+        BuildingLibrary.Initialize(Settings);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Infrastructure.Grid.Entities.Buildings;
+using Settings;
 using UnityEngine;
 
 
@@ -34,7 +35,7 @@ public static class BuildingLibrary
         typeof(Medieval_Bank),
         typeof(Medieval_Church),
         typeof(Medieval_Shop),
-        typeof(Medieval_Bank),
+        typeof(Medieval_Farm),
     };
 
     public static List<Type> SetupFuturisticBuildings = new List<Type>()
@@ -60,11 +61,11 @@ public static class BuildingLibrary
 
     public static List<BuildingMap> Buildings = new List<BuildingMap>();
 
-    static BuildingLibrary()
+    public static void Initialize(GameSettings settings)
     {
         //Assign list depending on time period
         List<Type> btypes;
-        switch (Game.CurrentSession.Settings.CurrentTimePeriod)
+        switch (settings.CurrentTimePeriod)
         {
             case Settings.TimePeriod.Futuristic:
                 btypes = SetupFuturisticBuildings;

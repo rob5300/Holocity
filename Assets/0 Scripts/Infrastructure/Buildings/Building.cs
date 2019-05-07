@@ -78,17 +78,24 @@ namespace Infrastructure.Grid.Entities.Buildings
             Vector3 offset = tile.transform.position + new Vector3(0, boundmax, 0);
 
             if (ElectricityWarning != null) UnityEngine.Object.Destroy(ElectricityWarning);
-            ElectricityWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.ElectricityWarning);
+            ElectricityWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.ElectricityWarning, ParentTile.ParentGridSystem.WorldGrid.transform);
             ElectricityWarning.transform.position = offset;
 
             if (WaterWarning != null) UnityEngine.Object.Destroy(WaterWarning);
-            WaterWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.WaterWarning);
+            WaterWarning = UnityEngine.Object.Instantiate(Game.CurrentSession.Cache.WaterWarning, ParentTile.ParentGridSystem.WorldGrid.transform);
             WaterWarning.transform.position = offset;
         }
 
         public override void OnMoveComplete()
         {
             base.OnMoveComplete();
+
+            InstantiateWarningIndicators(_tile);
+        }
+
+        public override void OnMoveCancelled()
+        {
+            base.OnMoveCancelled();
 
             InstantiateWarningIndicators(_tile);
         }

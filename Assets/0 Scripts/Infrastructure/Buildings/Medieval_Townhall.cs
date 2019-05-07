@@ -6,6 +6,7 @@
         public  Medieval_Townhall()
         {
             PrefabName = "Medieval/Town Hall";
+            Name = "Town Hall";
         }
     }
 }
