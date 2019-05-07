@@ -13,7 +13,8 @@ public class VoiceCommands: MonoBehaviour, ISpeechHandler
     public const string move = "move building";
     public const string rotate = "rotate building";
     public const string menu = "main menu";
-
+    public const string money = "give me money";
+    public const string close = "close menu";
     //Used for Audio
     public Action<bool> VoiceCommand = delegate { };
 
@@ -46,7 +47,13 @@ public class VoiceCommands: MonoBehaviour, ISpeechHandler
                 IsNavigating = true;
                 break;
             case menu:
-                //Open Menu
+                UIManager.Instance.SwitchState(UIManager.MenuState.MainMenu);
+                break;
+            case close:
+                UIManager.Instance.SwitchState(UIManager.MenuState.Off);
+                break;
+            case money:
+                Game.CurrentSession.AddFunds(10000);
                 break;
             default:
                 break;
